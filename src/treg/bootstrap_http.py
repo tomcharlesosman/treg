@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import gzip
+import re
 from urllib.parse import urlsplit
 
 from fastapi import Request
@@ -247,3 +248,64 @@ for _middleware in (
     _BodyDecodeMiddleware,
 ):
     _middleware.__module__ = "treg.api"
+
+
+# Pages that also exist as a Markdown twin at `<path>.md`, plus three whose twin has another name.
+# An agent that asks for `text/markdown` gets the twin at the page's own URL, the way it would by
+# appending `.md`; a browser keeps getting HTML. Every path here answers `Vary: Accept`, so a cache
+# never hands one reader the other's format.
+_MD_TWIN_PATTERN = re.compile(
+    r"^/(?:agents/[^/.]+|use-cases/[^/.]+(?:/[^/.]+)?|workflows/[^/.]+|hub/[^/]+|compare/treg-vs-[^/.]+)$")
+_MD_TWIN_ALIASES = {"/tutorial": "/tutorial.md", "/vendor-listing": "/vendor-listing.md",
+                    "/gtm-engineering": "/gtm-engineering.md"}
+
+
+def _prefers_markdown(accept: str) -> bool:
+    """True when the Accept header ranks text/markdown at least as high as text/html. A wildcard
+    alone never selects Markdown: browsers and most HTTP clients send `*/*`."""
+    best = {"text/markdown": 0.0, "text/html": 0.0}
+    for part in accept.split(","):
+        fields = [f.strip() for f in part.split(";")]
+        media = fields[0].lower()
+        if media not in best:
+            continue
+        q = 1.0
+        for f in fields[1:]:
+            if f.lower().startswith("q="):
+                try:
+                    q = float(f[2:])
+                except ValueError:
+                    q = 0.0
+        best[media] = max(best[media], q)
+    return best["text/markdown"] > 0 and best["text/markdown"] >= best["text/html"]
+
+
+class _MarkdownNegotiationMiddleware:
+    """`Accept: text/markdown` on a page with a Markdown twin is served the twin in place. Only GET
+    and HEAD on the paths above are touched; the rewrite happens before routing, so the twin's own
+    route answers, with its own status and headers."""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http" or scope["method"] not in ("GET", "HEAD"):
+            return await self.app(scope, receive, send)
+        path = scope["path"]
+        twin = _MD_TWIN_ALIASES.get(path) or (path + ".md" if _MD_TWIN_PATTERN.match(path) else None)
+        if twin is None:
+            return await self.app(scope, receive, send)
+        accept = next((v.decode("latin-1") for k, v in scope.get("headers", []) if k == b"accept"), "")
+        if _prefers_markdown(accept):
+            scope = dict(scope, path=twin, raw_path=twin.encode())
+
+        async def send_with_vary(message):
+            if message["type"] == "http.response.start":
+                message = dict(message, headers=list(message.get("headers", [])))
+                headers = MutableHeaders(scope=message)
+                vary = [v.strip() for v in headers.get("vary", "").split(",") if v.strip()]
+                if "accept" not in {v.lower() for v in vary}:
+                    headers["Vary"] = ", ".join(vary + ["Accept"])
+            await send(message)
+
+        return await self.app(scope, receive, send_with_vary)

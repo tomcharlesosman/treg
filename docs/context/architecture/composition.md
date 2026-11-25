@@ -92,6 +92,13 @@ still sends a 500 when an app returns without starting a response on a live conn
 does not hide a genuine missing-response bug. `_DevTitleMiddleware` is registered only when
 `Settings.local_dev` is true; the surface snapshot omits it.
 
+`_MarkdownNegotiationMiddleware` is registered first, so it sits closest to the router and the
+legacy-host redirect still sees the original path. On GET and HEAD to a page with a Markdown twin
+(agent, use-case, workflow, hub and comparison pages, plus `/tutorial`, `/vendor-listing` and
+`/gtm-engineering`), an `Accept` header that ranks `text/markdown` at least as high as `text/html`
+rewrites the path to the twin before routing; a bare `*/*` never does. Every such path answers
+`Vary: Accept`.
+
 `call_surface.split_call_path` lets the pool-saturation and HTTP-exception handlers in
 `bootstrap_handlers.py` treat `/call/`, `/catalog/call/` and `/table/` alike (call id, audit,
 idempotency release). A pool timeout before caller identity is resolved emits `call_intake_failed`

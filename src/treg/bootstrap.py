@@ -30,6 +30,7 @@ from .bootstrap_http import (
     _DevTitleMiddleware,
     _ClientNoticeMiddleware,
     _LegacyHostRedirectMiddleware,
+    _MarkdownNegotiationMiddleware,
     _SecurityHeadersMiddleware,
 )
 from .config import TREG_USER_AGENT, get_settings
@@ -993,6 +994,7 @@ def create_app(role: AppRole = "all", *, archive_object_store=None) -> FastAPI:
     )
 
     # Registration order is part of the compatibility surface. add_middleware prepends entries.
+    app.add_middleware(_MarkdownNegotiationMiddleware)
     app.add_middleware(_LegacyHostRedirectMiddleware)
     app.add_middleware(_SecurityHeadersMiddleware)
     app.add_middleware(_ClientNoticeMiddleware)

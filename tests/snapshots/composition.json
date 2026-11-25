@@ -71,6 +71,11 @@
       "args": [],
       "class": "treg.api._LegacyHostRedirectMiddleware",
       "kwargs": {}
+    },
+    {
+      "args": [],
+      "class": "treg.bootstrap_http._MarkdownNegotiationMiddleware",
+      "kwargs": {}
     }
   ]
 }
