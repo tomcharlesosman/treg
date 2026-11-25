@@ -451,8 +451,9 @@ runs (a rejected token) or by an exception handler is rendered too. Routes with 
 
 - `/llms.txt`, `/skill.md`, `/quickstart.md`, `/tutorial.md`, `/vendor-listing` and
   `/install.sh` are templated with `{BASE}` from the serving host, so a self-hosted registry
-  advertises itself. `/.well-known/skills/index.json` reads its `description` from the skill's
-  frontmatter at request time, never a second copy ([skill](skill.md)).
+  advertises itself. Both skill indexes (`/.well-known/agent-skills/index.json` and the legacy
+  `/.well-known/skills/index.json`) read each `description` from the skill's frontmatter at request
+  time, never a second copy ([skill](skill.md)).
 - `/install.sh?channel=beta` and `/install.ps1` install the binary CLI; `/cli/latest` names its
   release per channel and platform, `/cli/latest/<os>-<arch>` redirects to that archive, and `/cli/events` relays its anonymous usage events
   ([cli-binary](cli-binary.md)).

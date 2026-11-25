@@ -237,3 +237,37 @@ def test_published_skill_frontmatter_is_valid_yaml(path):
     """skills.sh and Claude Code parse the frontmatter as YAML and silently skip a skill that fails."""
     fm = yaml.safe_load(path.read_text().split("---\n", 2)[1])
     assert isinstance(fm, dict) and isinstance(fm.get("name"), str) and isinstance(fm.get("description"), str)
+
+
+async def test_agent_skills_discovery_index_v0_2(clients):
+    """Agent Skills discovery draft v0.2.0: the index at /.well-known/agent-skills/, one `skill-md`
+    artifact per skill, each with a sha256 digest of exactly the bytes a client then downloads."""
+    import hashlib
+
+    r = await clients.get("/.well-known/agent-skills/index.json")
+    assert r.status_code == 200
+    assert r.headers["access-control-allow-origin"] == "*"
+    index = r.json()
+    assert index["$schema"] == "https://schemas.agentskills.io/discovery/0.2.0/schema.json"
+    legacy = (await clients.get("/.well-known/skills/index.json")).json()["skills"]
+    assert [s["name"] for s in index["skills"]] == [s["name"] for s in legacy]
+    for entry in index["skills"]:
+        assert set(entry) == {"name", "type", "description", "url", "digest"}
+        assert entry["type"] == "skill-md"
+        assert entry["description"] and len(entry["description"]) <= 1024
+        art = await clients.get(entry["url"])
+        assert art.status_code == 200
+        assert art.headers["content-type"].startswith("text/markdown")
+        assert entry["digest"] == "sha256:" + hashlib.sha256(art.content).hexdigest()
+        assert art.text.startswith(f"---\nname: {entry['name']}")
+        assert "{BASE}" not in art.text
+
+
+async def test_agent_skills_artifacts_match_the_canonical_files(clients):
+    """One skill, one text: the new path serves what /skill.md and the legacy path serve."""
+    new = await clients.get("/.well-known/agent-skills/treg/SKILL.md")
+    assert new.text == (await clients.get("/skill.md")).text
+    assert new.text == (await clients.get("/.well-known/skills/treg/SKILL.md")).text
+    recruit = await clients.get("/.well-known/agent-skills/recruit/SKILL.md")
+    assert recruit.text == (await clients.get("/.well-known/skills/recruit/SKILL.md")).text
+    assert (await clients.get("/.well-known/agent-skills/nope/SKILL.md")).status_code == 404

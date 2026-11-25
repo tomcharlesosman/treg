@@ -4787,6 +4787,14 @@ def _skill_frontmatter(name: str = "skill.md") -> dict:
     return fm if isinstance(fm, dict) else {}
 
 
+# The skills this host publishes, in the order both discovery indexes list them: (name in the
+# well-known URLs, bundled file). The name is also the skill's own frontmatter `name`.
+_PUBLISHED_SKILLS: tuple[tuple[str, str], ...] = (
+    ("treg", "skill.md"), ("make-ugc", "skills/make-ugc/SKILL.md"),
+    ("lead-signals", "skills/lead-signals/SKILL.md"), ("web-access", "skills/web-access/SKILL.md"),
+    ("recruit", "skills/recruit/SKILL.md"), ("doomscroll", "skills/doomscroll/SKILL.md"),
+)
+
 @app.get("/.well-known/skills/index.json", include_in_schema=False)
 async def well_known_skills_index():
     """Advertise treg's own skill under the agentskills.io well-known convention.
@@ -4796,10 +4804,7 @@ async def well_known_skills_index():
     — the same skill the plugins ship and `install.sh` drops, reached by whoever asks the domain.
     """
     entries = []
-    for name, path in (("treg", "skill.md"), ("make-ugc", "skills/make-ugc/SKILL.md"),
-                       ("lead-signals", "skills/lead-signals/SKILL.md"),
-                       ("web-access", "skills/web-access/SKILL.md"), ("recruit", "skills/recruit/SKILL.md"),
-                       ("doomscroll", "skills/doomscroll/SKILL.md")):
+    for name, path in _PUBLISHED_SKILLS:
         fm = _skill_frontmatter(path)
         entry = {"name": fm.get("name", name), "description": fm.get("description", ""), "files": ["SKILL.md"]}
         if summary := (fm.get("metadata") or {}).get("summary"):
@@ -4845,6 +4850,46 @@ async def well_known_recruit_md():
 async def well_known_doomscroll_md():
     """The sixth entry `index.json` promises; the same file as /skills/doomscroll/SKILL.md."""
     return _serve_md("skills/doomscroll/SKILL.md")
+
+
+# Agent Skills discovery, draft v0.2.0 (github.com/cloudflare/agent-skills-discovery-rfc): the index
+# moved to `/.well-known/agent-skills/` and each entry names one artifact with its sha256 digest,
+# which a client checks before it loads the skill. The legacy `/.well-known/skills/` routes above stay
+# for clients that only know them. Both serve the same bytes as `/skill.md` and `/skills/…`.
+_AGENT_SKILLS_SCHEMA = "https://schemas.agentskills.io/discovery/0.2.0/schema.json"
+_DISCOVERY_HEADERS = {"Access-Control-Allow-Origin": "*", "Cache-Control": "public, max-age=600"}
+
+
+async def _published_skill_body(name: str, path: str, request: Request, db: AsyncSession) -> bytes:
+    """The exact bytes served for one published skill. Only the core skill varies with the hub gate,
+    so the digest in the index always matches what the same caller then downloads."""
+    hub_on = None
+    if name == "treg":
+        from .hub_gate import hub_visible
+        hub_on = (await hub_visible(request, db))[0]
+    return bytes(_serve_md(path, hub_on).body)
+
+
+@app.get("/.well-known/agent-skills/index.json", include_in_schema=False)
+async def agent_skills_index(request: Request, db: AsyncSession = Depends(get_session)):
+    skills = []
+    for name, path in _PUBLISHED_SKILLS:
+        fm = _skill_frontmatter(path)
+        body = await _published_skill_body(name, path, request, db)
+        skills.append({"name": fm.get("name", name), "type": "skill-md",
+                       "description": fm.get("description", ""),
+                       "url": f"/.well-known/agent-skills/{name}/SKILL.md",
+                       "digest": "sha256:" + hashlib.sha256(body).hexdigest()})
+    return JSONResponse({"$schema": _AGENT_SKILLS_SCHEMA, "skills": skills}, headers=_DISCOVERY_HEADERS)
+
+
+@app.get("/.well-known/agent-skills/{name}/SKILL.md", include_in_schema=False)
+async def agent_skill_artifact(name: str, request: Request, db: AsyncSession = Depends(get_session)):
+    path = dict(_PUBLISHED_SKILLS).get(name)
+    if path is None:
+        raise HTTPException(status_code=404, detail="unknown skill")
+    body = await _published_skill_body(name, path, request, db)
+    return Response(body, media_type="text/markdown; charset=utf-8", headers=_DISCOVERY_HEADERS)
 
 
 @app.get("/connect-demo", include_in_schema=False)

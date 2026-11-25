@@ -284,6 +284,8 @@ _CONTROL_ROUTE_KEYS: frozenset[RouteKey] = frozenset({
     ('/.well-known/skills/web-access/SKILL.md', ('GET',), 'well_known_web_access_md'),
     ('/.well-known/skills/recruit/SKILL.md', ('GET',), 'well_known_recruit_md'),
     ('/.well-known/skills/doomscroll/SKILL.md', ('GET',), 'well_known_doomscroll_md'),
+    ('/.well-known/agent-skills/index.json', ('GET',), 'agent_skills_index'),
+    ('/.well-known/agent-skills/{name}/SKILL.md', ('GET',), 'agent_skill_artifact'),
     ('/connect-demo', ('GET',), 'connect_demo_page'),
     ('/connect-demo/callback', ('GET',), 'connect_demo_callback'),
     ('/help', ('GET',), 'support_page'),

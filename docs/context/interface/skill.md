@@ -69,7 +69,7 @@ other two: a static file cannot follow a team list or a switch.
 
 | door | artifact | reached by |
 |---|---|---|
-| served | `GET /skill.md` (`{BASE}` filled per request), `GET /.well-known/skills/index.json` + `/.well-known/skills/<name>/SKILL.md` | agentskills.io readers (Hermes) |
+| served | `GET /skill.md` (`{BASE}` filled per request); `GET /.well-known/agent-skills/index.json` + `/.well-known/agent-skills/<name>/SKILL.md` (discovery draft v0.2.0: `$schema`, one `skill-md` artifact per skill with the sha256 of the exact bytes served, `text/markdown`, open CORS); the legacy `/.well-known/skills/index.json` + `/.well-known/skills/<name>/SKILL.md` serve the same files | agentskills.io readers (Hermes), `npx skills` and other discovery clients |
 | installer | `install.sh` -> `treg skill bootstrap` writes the treg skill into every detected agent's skills dir | `curl {BASE}/install.sh \| sh` |
 | bare skill | generated `skills/treg/SKILL.md` at the repo root, the served page unchanged plus `version:` | `npx skills add superdesigndev/treg -s treg`, ClawHub |
 | Claude Code / Cursor plugin | `.claude-plugin/marketplace.json` and `.cursor-plugin/marketplace.json` -> `plugins/treg/`; workflow skills as optional plugins in `plugins/workflows/<name>/` | `/plugin marketplace add superdesigndev/treg`, the Cursor marketplace |
