@@ -257,6 +257,8 @@ jobs are rows on the agent page, never URLs. `agent_pages.py` has no heavy impor
   reachable.
 - The Hermes guide shows a manual `~/.hermes/config.yaml` block: `treg mcp install` detects Hermes
   but only prints instructions (`test_the_hermes_page_and_treg_mcp_install_agree_on_the_server`).
+- The Codex guide prints the `[mcp_servers.treg]` table `treg mcp install` writes to
+  `~/.codex/config.toml` (`test_the_codex_page_shows_the_table_treg_mcp_install_writes`).
 - Agent pages list every `WORKFLOWS` entry.
 
 ## Use-case pages - `/use-cases/<job>` and `/use-cases`

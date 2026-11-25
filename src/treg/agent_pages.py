@@ -923,6 +923,113 @@ AGENTS["cursor"] = {
         ],
 }
 
+# Codex reads MCP servers from ~/.codex/config.toml, and `treg mcp install` writes one `[mcp_servers.treg]` table with an inline `http_headers` map; the page shows the same
+# table. Codex is where a developer ships their own product, so its page leads with checking what
+# AI answers and Google say about that product, written into the repo.
+AGENTS["codex"] = {
+    "name": "Codex",
+    "h1_noun": "MCP server",
+    "h1": "Codex MCP server: check what ChatGPT and Google say about your product",
+    "title": "Codex MCP server: {n} APIs, no keys | treg.to",
+    "description": (
+        "Give Codex {n} ready-to-call APIs across {p} platforms: AI answers, Google results, "
+        "keyword data, web pages and people data. One MCP table in config.toml, priced per call at "
+        "the provider's own rate with no markup."),
+    "definition": (
+        "treg.to is an MCP server and CLI for Codex that gives it {n} ready-to-call APIs across "
+        "{p} platforms: ChatGPT and Perplexity answers, Google results and keyword volumes, web "
+        "scraping, people and company data. Calls run on treg.to's keys at the provider's rate with "
+        "$0.000 markup, and your own keys are never metered."),
+    "install_steps": [
+        "In Codex, send: <code>set up treg &mdash; https://treg.to/llms.txt</code>",
+        "It installs the treg CLI and its skill into <code>~/.codex/skills/treg/</code> and opens "
+        "the browser for you to sign in. By hand: <code>curl -fsSL https://treg.to/install.sh | "
+        "sh</code>, then <code>treg login</code>.",
+        "For treg's MCP tools as well as the CLI, run <code>treg mcp install</code>, which adds "
+        "treg to <code>~/.codex/config.toml</code>, and restart Codex. Your first team starts with "
+        "$1.00 of free calls.",
+        "Ask for what you want done, or run <code>treg catalog get &lt;endpoint-id&gt;</code> for "
+        "the price and parameters, then <code>treg call &lt;endpoint-id&gt;</code>.",
+    ],
+    "install_image": None,
+    "focus": ("Search & rankings", "Web & scraping"),
+    "roles": ("developers shipping a product", "founders", "growth engineers", "DevRel teams"),
+    "guide": [
+        {"id": "config", "seclab": "The config",
+         "h2": "The table treg mcp install writes",
+         "html": (
+             "<p>Codex keeps its MCP servers in <code>~/.codex/config.toml</code>. "
+             "<code>treg mcp install</code> replaces any earlier treg table and writes one:</p>"
+             "<pre><code>[mcp_servers.treg]\n"
+             "url = \"https://treg.to/mcp/\"\n"
+             "http_headers = { \"Authorization\" = \"Bearer &lt;your team token&gt;\" }</code></pre>"
+             "<p>Keep the token in <code>http_headers</code>, not behind "
+             "<code>bearer_token_env_var</code>: the Codex app does not always inherit your "
+             "shell's environment, and when the variable is missing Codex drops treg's tools "
+             "without saying why. Prefer browser sign-in? <code>treg mcp install --oauth</code> "
+             "writes the URL alone; then run <code>codex mcp login treg</code>.</p>")},
+        {"id": "ai-visibility", "seclab": "The main job",
+         "h2": "What ChatGPT and Google say about your product, from your repo",
+         "html": (
+             "<p>Codex already knows what your product is: it is in the repo. Two calls show how "
+             "the question your buyers ask is answered today, by an AI assistant and by "
+             "Google:</p>"
+             "<pre><code># 1. the answer ChatGPT gives, with the pages it cites\n"
+             "treg call treg.ai-search.chatgpt.scrape --method POST --data '{\"q\":\"What is the best transactional email API for developers?\",\"country\":\"US\"}'\n\n"
+             "# 2. Google's first page for the same question\n"
+             "treg call treg.google.serp.organic --method POST --data '{\"q\":\"best transactional email api\",\"country\":\"us\"}'</code></pre>"
+             "<p>On 25 Nov 2026 the pair cost $0.0032. ChatGPT named Resend first and cited 27 "
+             "pages. Google's first page for the same question had nine results, led by "
+             "comparison posts, and no page from resend.com. The two channels rank on "
+             "different evidence, which is why one check is not enough.</p>")},
+        {"id": "prompt", "seclab": "A real run",
+         "h2": "One prompt, a report in the repo",
+         "html": (
+             "<p>Let Codex read the README for the product and its category, then run the "
+             "check across the questions a buyer would ask:</p>"
+             "<pre><code>Using treg, read README.md and write down the five questions a buyer asks "
+             "before choosing a product like this one. For each, get the ChatGPT answer and "
+             "Google's first page. Write docs/ai-visibility.md: who is named, which pages are "
+             "cited, whether we appear, and what each lookup cost.</code></pre>"
+             "<p>Ten lookups at the prices above come to a few cents. Run it again after a launch "
+             "and diff the file. The same check, step by step, is at "
+             "<a href=\"/use-cases/how-ai-answers-mention-your-brand\">how AI answers mention your brand</a>.</p>")},
+        {"id": "mcp-or-cli", "seclab": "In Codex",
+         "h2": "MCP, CLI or skill: which to use",
+         "html": (
+             "<ul>"
+             "<li><b>MCP</b> for questions and small lookups. Codex sees "
+             "<code>catalog_search</code>, <code>catalog_get</code> and <code>call</code>, and "
+             "reads the price before it spends.</li>"
+             "<li><b>CLI</b> for batches. A loop in Codex's shell writes each answer to a file, so "
+             "the rows never pass through the context window, and the CLI prints what each "
+             "call was charged.</li>"
+             "<li><b>The skill</b> is how Codex knows the flow. <code>install.sh</code> puts it in "
+             "<code>~/.codex/skills/treg/</code>; the same file is served at "
+             "<a href=\"/skill.md\">/skill.md</a>.</li>"
+             "</ul>")},
+    ],
+    "faq": [
+        ("Is treg.to free to use in Codex?",
+         "Installing is free and your first team starts with $1.00 of calls. After that each call "
+         "is metered from the team's prepaid balance at the provider's own rate, with no markup, "
+         "no subscription and no seats. Calls on your team's own keys are free."),
+        ("Do I need API keys from the providers?",
+         "No. treg.to makes the upstream request on its own key and relays the answer, so Codex "
+         "never holds a provider credential. If your team already pays for a provider, register "
+         "that key and those calls are never metered."),
+        ("Codex shows no treg tools after a restart. Why?",
+         "Usually the token is referenced through bearer_token_env_var and the Codex app started "
+         "without that variable. Run treg mcp install again: it rewrites the table with the token "
+         "in http_headers, or with --oauth, the URL alone for codex mcp login treg."),
+        ("What does a call cost?",
+         "It depends on the job and the provider: well under a cent for a Google results page, "
+         "a fraction of a cent for a ChatGPT answer, a few cents for a verified work email. "
+         "treg.to adds $0.000 on top of the provider's rate, and Codex can read the price before "
+         "it spends it."),
+    ],
+}
+
 USE_CASE_PAGES["verify-an-email"] = {
     "label": "Verify an email before you send",
     "sentence": "Email verification API: is this address deliverable, before you send",

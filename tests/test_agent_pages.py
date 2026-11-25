@@ -330,6 +330,26 @@ def test_the_hermes_page_and_treg_mcp_install_agree_on_the_server(monkeypatch):
     assert re.findall(r"mcp__treg__\w+", steps) and not re.findall(r"mcp_treg_\w+", steps)
 
 
+def test_the_codex_page_shows_the_table_treg_mcp_install_writes(tmp_path, monkeypatch):
+    """The Codex guide prints the `[mcp_servers.treg]` table by hand. It must parse to what
+    `treg mcp install` writes, token aside, so the page never teaches a config Codex rejects."""
+    import html
+    import re
+    import tomllib
+    from treg import mcp_install
+    cfg = tmp_path / ".codex" / "config.toml"
+    monkeypatch.setitem(mcp_install.MCP_AGENTS["codex"], "path", lambda: cfg)
+    monkeypatch.setitem(mcp_install.MCP_AGENTS["codex"], "marker", lambda: True)
+    mcp_install.install_mcp(base_url="https://treg.to", token="TOKEN", only=["codex"])
+    written = tomllib.loads(cfg.read_text())["mcp_servers"]["treg"]
+    guide = agent_pages.AGENTS["codex"]["guide"][0]["html"]
+    block = html.unescape(re.search(r"<pre><code>(.*?)</code></pre>", guide, re.S).group(1))
+    shown = tomllib.loads(block)["mcp_servers"]["treg"]
+    assert shown["url"] == written["url"]
+    assert set(shown["http_headers"]) == set(written["http_headers"]) == {"Authorization"}
+    assert shown["http_headers"]["Authorization"].startswith("Bearer ")
+
+
 def test_agent_titles_fit_a_search_result():
     """A title past ~65 characters is cut in the result page; the census count is formatted in,
     so check with today's numbers."""
