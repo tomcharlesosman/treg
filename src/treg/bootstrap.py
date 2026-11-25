@@ -166,6 +166,7 @@ _CONTROL_ROUTE_KEYS: frozenset[RouteKey] = frozenset({
     ('/app/skills/{name}', ('GET',), 'dashboard_skill_page'),
     ('/app/tools/{name}', ('GET',), 'dashboard_tool_page'),
     ('/llms.txt', ('GET',), 'llms_txt'),
+    ('/llms-full.txt', ('GET',), 'llms_full_txt'),
     ('/robots.txt', ('GET',), 'robots_txt'),
     ('/sitemap.xml', ('GET',), 'sitemap_xml'),
     ('/7c2e4a91b5d3f8e6treg2026.txt', ('GET',), 'indexnow_key'),

@@ -451,7 +451,9 @@ runs (a rejected token) or by an exception handler is rendered too. Routes with 
 
 - `/llms.txt`, `/skill.md`, `/quickstart.md`, `/tutorial.md`, `/vendor-listing` and
   `/install.sh` are templated with `{BASE}` from the serving host, so a self-hosted registry
-  advertises itself. `/.well-known/skills/index.json` reads its `description` from the skill's
+  advertises itself. On the hosted service `/llms.txt` also lists the workflow, use-case
+  and agent pages by their `.md` twins (generated, placed before `## Optional`; comparison pages stay
+  out of it), and `/llms-full.txt` joins llms.txt with every bundled guide it links, in one file. `/.well-known/skills/index.json` reads its `description` from the skill's
   frontmatter at request time, never a second copy ([skill](skill.md)).
 - `/install.sh?channel=beta` and `/install.ps1` install the binary CLI; `/cli/latest` names its
   release per channel and platform, `/cli/latest/<os>-<arch>` redirects to that archive, and `/cli/events` relays its anonymous usage events

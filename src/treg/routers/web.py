@@ -3500,14 +3500,71 @@ async def llms_txt(request: Request, db: AsyncSession = Depends(get_session)):
     """Agent-readable overview (llms.txt convention) — an AI agent that fetches this learns the
     whole registry: the call protocol, discovery, auth, CLI, skills, and links to the tutorial/docs.
     The serving domain is templated in so links stay correct across deploys."""
+    from .hub_gate import hub_visible
+    hub_on = (await hub_visible(request, db))[0]
+    return PlainTextResponse(_llms_text(hub_on), media_type="text/plain; charset=utf-8")
+
+
+def _llms_text(hub_on: bool | None) -> str:
+    """The bundled llms.txt, templated, with the generated page index placed before `## Optional`
+    (the section the llms.txt convention lets a reader skip)."""
     f = _WEB_DIR / "llms.txt"
     if not f.exists():
         raise HTTPException(status_code=404, detail="llms.txt not bundled")
+    base = get_settings().public_url.rstrip("/")
+    text = _strip_hosted(_fill_headline(_strip_routed(f.read_text(encoding="utf-8"), hub_on))).replace("{BASE}", base)
+    index = _llms_page_index(base)
+    if index:
+        head, sep, tail = text.partition("\n## Optional\n")
+        text = head.rstrip("\n") + "\n\n" + index + ("\n" + sep.lstrip("\n") + tail if sep else "")
+    return text
+
+
+def _llms_page_index(base: str) -> str:
+    """A map of the generated pages, each by its Markdown twin, so an agent fetches the page it
+    needs instead of guessing a URL. Hosted-only, like the pages it lists (`_hosted`)."""
+    if not _hosted():
+        return ""
+    # The comparison pages stay out: some products may be named only on their own page and the hub,
+    # which `## Optional` already links.
+    out = ["## Workflows", "",
+           "Whole jobs as one prompt, each with the steps, live prices and a dated receipt from a real run.", ""]
+    for slug, spec in agent_pages.WORKFLOWS.items():
+        out.append(f"- [{spec['sentence']}]({base}/workflows/{slug}.md)")
+    out += ["", "## Use cases", "", "One job each: which capability does it, which providers serve it, what it costs.", ""]
+    for slug, spec in agent_pages.USE_CASE_PAGES.items():
+        out.append(f"- [{spec['sentence']}]({base}/use-cases/{slug}.md)")
+    out += ["", "## Agent setup", "", "Connecting treg to a specific agent, and what to ask it first.", ""]
+    for slug, spec in agent_pages.AGENTS.items():
+        if slug == "grok-bot":
+            continue  # redirects to /grokbot, which has no Markdown twin
+        out.append(f"- [{spec['name']}]({base}/agents/{slug}.md)")
+    out += ["", f"Every page above and every guide this file links, in one file: {base}/llms-full.txt", ""]
+    return "\n".join(out)
+
+
+# The bundled guides that /llms-full.txt joins, in reading order. Hosted-only guides last.
+_LLMS_FULL_GUIDES = ("skill.md", "quickstart.md", "integrate.md", "feedback.md", "tutorial.md",
+                     "tutorial-import-shell.md", "tutorial-access.md", "vendor-listing.md")
+
+
+@app.get("/llms-full.txt", include_in_schema=False)
+async def llms_full_txt(request: Request, db: AsyncSession = Depends(get_session)):
+    """llms.txt and every bundled guide it links, joined into one file for an agent or a tool that
+    wants the whole set in one fetch. The generated pages stay one fetch each, listed in llms.txt."""
     from .hub_gate import hub_visible
     hub_on = (await hub_visible(request, db))[0]
     base = get_settings().public_url.rstrip("/")
-    return PlainTextResponse(_strip_hosted(_fill_headline(_strip_routed(f.read_text(encoding="utf-8"), hub_on))).replace("{BASE}", base),
-                             media_type="text/plain; charset=utf-8")
+    parts = [_llms_text(hub_on)]
+    names = _LLMS_FULL_GUIDES + (("gtm-engineering.md",) if _hosted() else ())
+    for name in names:
+        f = _WEB_DIR / name
+        if not f.exists():
+            continue
+        body = _strip_hosted(_fill_headline(_strip_routed(f.read_text(encoding="utf-8"), hub_on if name == "skill.md" else None)))
+        parts.append(f"<!-- source: {base}/{name} -->\n\n" + body.replace("{BASE}", base).strip())
+    return PlainTextResponse("\n\n---\n\n".join(parts) + "\n", media_type="text/plain; charset=utf-8",
+                             headers={"Cache-Control": "public, max-age=600"})
 
 
 @app.get("/robots.txt", include_in_schema=False)
