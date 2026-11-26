@@ -1,0 +1,2635 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>buy-smart preview</title>
+<meta name="description" content="Paste any product link, product name, or whole cart into Claude, Codex, OpenClaw, or Hermes. @treg buy-smart checks CamelCamelCamel & Wayback price history, catches used buybox hijacks, and mines Reddit owners for $0.00552.">
+<link rel="canonical" href="https://treg.to/buy-smart"/>
+<link rel="icon" type="image/svg+xml" href="https://treg.to/favicon.svg"/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://treg.to/buy-smart"/>
+<meta property="og:title" content="Use @treg buy-smart — Your Agent Catches Fake Black Friday Deals"/>
+<meta property="og:description" content="Amazon's '48% off' Dyson V15 ($440.07) was a 3P Used buybox while Target had brand-new 1P for $407.97. Caught for $0.00548 — zero affiliate links, 150+ audits free in your $1 signup credit."/>
+<meta property="og:image" content="https://treg.to/media/og/buy-smart.jpg"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:site" content="@treg_ai"/>
+<meta name="twitter:title" content="Use @treg buy-smart — Catch Fake Black Friday Deals for Half a Cent"/>
+<meta name="twitter:description" content="Wayback Machine ($0) + CamelCamelCamel ($0.00025) + 40 sanitized shops + Reddit owners + optional Jev 1.13. Zero affiliate links."/>
+<meta name="twitter:image" content="https://treg.to/media/og/buy-smart.jpg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Geist+Pixel&display=swap">
+<style>
+  :root {
+    --bg: #FDFCFB;
+    --surface: #FFFFFF;
+    --card: #F6F5F2;
+    --ink: #101010;
+    --ink2: #2E2D2B;
+    --muted: #5F5D59;
+    --muted2: #6A6762;
+    --quiet: #86837E;
+    --hair: rgba(16, 16, 16, 0.08);
+    --hair-strong: rgba(16, 16, 16, 0.14);
+    --green: #118453;
+    --green-text: #0E7548;
+    --red: #B8322B;
+    --amber: #9A5300;
+    --obsidian: #141416;
+    --shadow-card: 0 1px 2px rgba(20,18,12,.04), 0 10px 28px -14px rgba(20,18,12,.10);
+    --shadow-stage: 0 1px 2px rgba(20,18,12,.04), 0 28px 64px -24px rgba(20,18,12,.16);
+    --ease: cubic-bezier(.22, 1, .36, 1);
+    --display: 'Geist', 'Geist Fallback', -apple-system, BlinkMacSystemFont, sans-serif;
+    --pixel: 'Geist Pixel', 'DM Mono', ui-monospace, monospace;
+    --mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --r-lg: 20px;
+    --r-md: 14px;
+    --r-sm: 10px;
+  }
+
+  /* Arial tuned to Geist's metrics, so text doesn't jump when Geist arrives */
+  @font-face {
+    font-family: 'Geist Fallback';
+    src: local('Arial'), local('ArialMT'), local('Helvetica Neue'), local('Helvetica'), local('Liberation Sans');
+    size-adjust: 102%; ascent-override: 98.6%; descent-override: 28.9%; line-gap-override: 0%;
+  }
+  @property --split { syntax: '<percentage>'; inherits: true; initial-value: 48%; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* DM Mono stops at 500 and Geist Pixel at 400: never let the browser smear a fake bold. */
+  html { scroll-behavior: smooth; font-synthesis: style; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--display); font-size: 16px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: rgba(17, 132, 83, 0.18); }
+  a { color: inherit; }
+  button { font-family: inherit; cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 6px; }
+  .mono { font-family: var(--mono); }
+  .pixel { font-family: var(--pixel); }
+  .nowrap { white-space: nowrap; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+  section, #auditor { scroll-margin-top: 84px; }
+  code { font-family: var(--mono); font-size: 0.92em; }
+
+  /* Product photos sit straight on the paper: no box, no seam. */
+  .prod-photo {
+    object-fit: contain; mix-blend-mode: multiply; background: transparent;
+    border: none; border-radius: 0; display: block; user-select: none; flex-shrink: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* ---------- Top nav ---------- */
+  .nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 90;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 12px 32px;
+    background: rgba(253, 252, 251, 0.88);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid transparent; transition: border-color .22s var(--ease);
+  }
+  .nav.scrolled { border-bottom-color: var(--hair); }
+  .wordmark {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 36px;
+    text-decoration: none; font-weight: 600; font-size: 15px; letter-spacing: -0.02em; white-space: nowrap;
+  }
+  .treg-sq {
+    width: 22px; height: 22px; border-radius: 6px; background: var(--ink);
+    display: inline-flex; align-items: center; justify-content: center; padding: 4px;
+  }
+  .treg-sq img { width: 100%; height: 100%; filter: invert(1); display: block; }
+  .wm-slash { color: var(--muted2); font-weight: 400; }
+  .nav-right { display: flex; align-items: center; gap: 28px; }
+  .nav-links { display: flex; align-items: center; gap: 24px; }
+  .nav-links a {
+    display: inline-flex; align-items: center; min-height: 36px;
+    font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none;
+    transition: color .15s; white-space: nowrap;
+  }
+  .nav-links a:hover { color: var(--ink); }
+
+  /* Section jump strip, revealed on scroll below the desktop breakpoint */
+  .mobile-subnav {
+    display: none; position: fixed; top: 60px; left: 0; right: 0; z-index: 80;
+    background: rgba(253, 252, 251, 0.96); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--hair);
+    padding: 8px 14px; gap: 6px; overflow-x: auto; scrollbar-width: none;
+    transform: translateY(-115%); opacity: 0; pointer-events: none;
+    transition: transform .22s var(--ease), opacity .22s;
+  }
+  .mobile-subnav.visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
+  .mobile-subnav::-webkit-scrollbar { display: none; }
+  .mobile-subnav a {
+    display: inline-flex; align-items: center; min-height: 36px;
+    font-size: 13px; font-weight: 500; color: var(--ink2); text-decoration: none;
+    padding: 0 13px; border-radius: 999px; background: var(--card);
+    white-space: nowrap; flex-shrink: 0;
+  }
+
+  /* ---------- Buttons ---------- */
+  .pill {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    font-weight: 500; font-size: 15px; line-height: 1; min-height: 46px;
+    padding: 0 22px; border-radius: 999px;
+    border: 1px solid var(--hair-strong); background: var(--surface); color: var(--ink);
+    text-decoration: none; white-space: nowrap;
+    transition: background .18s var(--ease), border-color .18s var(--ease), transform .18s var(--ease);
+  }
+  .pill:hover { background: var(--card); transform: translateY(-1px); }
+  .pill.dark { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .pill.dark:hover { background: #262625; border-color: #262625; }
+  .pill.green { background: var(--green); color: #fff; border-color: var(--green); }
+  .pill.green:hover { background: #0e6f45; border-color: #0e6f45; }
+  .pill.ghost-dark { background: rgba(255,255,255,0.09); color: #fff; border-color: rgba(255,255,255,0.14); }
+  .pill.ghost-dark:hover { background: rgba(255,255,255,0.16); }
+  .pill.sm { min-height: 36px; padding: 0 15px; font-size: 13.5px; }
+  .play-dot {
+    width: 20px; height: 20px; border-radius: 999px; background: var(--ink);
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .play-dot svg { width: 8px; height: 9px; fill: #fff; margin-left: 1px; }
+  .dur { color: var(--muted); font-family: var(--mono); font-size: 13px; }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- Hero: one headline, one sentence, one action ---------- */
+  .hero { padding: 140px 24px 0; text-align: center; }
+  .hero-slug {
+    font-family: var(--pixel); font-size: 15px; color: var(--muted2);
+    letter-spacing: 0.02em; margin-bottom: 22px; line-height: 22px; height: 22px;
+  }
+  .hero-h1 {
+    font-size: clamp(42px, 6vw, 76px);
+    line-height: 1.02; letter-spacing: -0.04em; font-weight: 600;
+    max-width: 940px; margin: 0 auto; color: var(--ink);
+  }
+  .hero-agent-rot { display: inline-flex; align-items: baseline; gap: 0.2em; }
+  .hero-agent-rot img {
+    width: 0.72em; height: 0.72em; border-radius: 0.16em; object-fit: contain; align-self: center;
+    transition: transform .25s var(--ease), opacity .22s;
+  }
+  .hl-green { color: var(--green); }
+  .hl-quiet { color: var(--quiet); }
+
+  .hero-sub {
+    max-width: 620px; margin: 26px auto 34px;
+    font-size: 18.5px; line-height: 1.55; color: var(--muted);
+  }
+  .hero-sub strong { color: var(--ink); font-weight: 600; }
+  .hero-sub a { color: var(--ink); font-weight: 500; text-underline-offset: 4px; text-decoration-color: rgba(16,16,16,0.28); }
+  .hero-sub a:hover { text-decoration-color: var(--ink); }
+
+  .hero-ctas { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; }
+
+  .hero-note { margin-top: 16px; font-size: 14px; color: var(--muted2); }
+
+  /* ---------- Live audit stage ---------- */
+  .term-shell {
+    max-width: 1052px; margin: 64px auto 0; text-align: left;
+    border-radius: var(--r-lg); overflow: hidden;
+    background: var(--surface);
+    border: 1px solid rgba(16, 16, 16, 0.06);
+    box-shadow: var(--shadow-stage);
+  }
+  /* Try your own link: a light field under the demo */
+  .try-own { max-width: 720px; margin: 40px auto 0; text-align: left; }
+  .try-lbl { display: block; text-align: center; font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; margin-bottom: 14px; }
+  .try-field {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 6px 6px 16px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--hair-strong); box-shadow: var(--shadow-card);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .try-field:focus-within { border-color: var(--ink); outline: 2px solid var(--ink); outline-offset: 2px; }
+  .try-field img { width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; }
+  .term-input {
+    flex: 1; min-width: 0; min-height: 40px; background: transparent; border: none; outline: none;
+    color: var(--ink); font-family: var(--display); font-size: 15px; padding: 0;
+  }
+  .term-input:focus-visible { outline: none; }
+  .term-input::placeholder { color: var(--muted2); }
+  .term-clear {
+    width: 36px; height: 36px; border-radius: 999px; border: none;
+    background: transparent; color: var(--muted2);
+    font-size: 17px; line-height: 1; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+    transition: background .15s, color .15s;
+  }
+  .term-clear:hover { background: var(--card); color: var(--ink); }
+  .term-input:placeholder-shown + .term-clear { display: none; }
+  .try-hint { text-align: center; font-size: 13.5px; color: var(--muted); margin-top: 12px; }
+  .term-head-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 36px; padding: 0 16px; border-radius: 999px; border: none;
+    background: rgba(255,255,255,0.12); color: #fff; text-decoration: none;
+    font-size: 13.5px; font-weight: 500; white-space: nowrap; transition: background .15s;
+  }
+  .term-head-btn:hover { background: rgba(255,255,255,0.20); }
+  .term-head-btn.emerald { background: var(--green); color: #fff; }
+  .term-head-btn.emerald:hover { background: #0e6f45; }
+
+  /* One row of deals; the price shows only on the open tab */
+  .deal-tabs {
+    display: flex; align-items: stretch; flex-wrap: nowrap; overflow-x: auto;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x proximity;
+    gap: 2px; padding: 0 14px; background: var(--surface); border-bottom: 1px solid var(--hair);
+  }
+  .deal-tabs::-webkit-scrollbar { display: none; }
+  /* The tabs and the first audit are built by script: hold their space so nothing jumps on slow phones */
+  .deal-tabs:empty { min-height: 49px; }
+  #audit-body:empty { min-height: 577px; }
+  .deal-tab {
+    display: inline-flex; align-items: center; gap: 7px; min-height: 48px;
+    padding: 0 10px; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px;
+    background: transparent; font-size: 13.5px; font-weight: 500; color: var(--muted);
+    white-space: nowrap; flex-shrink: 0; scroll-snap-align: start; transition: color .15s, border-color .15s;
+  }
+  .deal-tab:hover { color: var(--ink); }
+  .deal-tab.active { color: var(--ink); font-weight: 600; border-bottom-color: var(--ink); }
+  .tab-thumb { width: 18px; height: 18px; }
+  .tab-price { display: none; font-family: var(--mono); font-size: 12.5px; font-weight: 400; color: var(--muted); }
+  .deal-tab.active .tab-price { display: inline; }
+
+  /* What ran, in the footer */
+  .trace-strip {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; min-width: 0;
+    font-size: 13px; color: var(--muted);
+  }
+  .trace-step { display: inline-flex; align-items: center; gap: 5px; color: var(--ink2); white-space: nowrap; }
+  .trace-step .chk { color: var(--green-text); font-weight: 600; }
+  .trace-sep { color: var(--muted2); }
+
+  .custom-banner {
+    display: none; margin: 14px 0 0; padding: 14px 16px; border-radius: var(--r-md);
+    background: var(--obsidian); color: #F5F5F7; border: 1px solid rgba(255,255,255,0.12);
+    font-size: 13.5px; line-height: 1.5;
+  }
+  .custom-banner.open { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .custom-banner strong { color: #fff; font-weight: 600; }
+  .cb-prompt { color: #B4B4C2; margin-top: 3px; font-family: var(--mono); font-size: 12.5px; }
+  .cb-actions { display: inline-flex; align-items: center; gap: 10px; }
+  .custom-banner .term-clear { color: #A6A6B2; }
+  .custom-banner .term-clear:hover { background: rgba(255,255,255,0.14); color: #fff; }
+  .cb-ok { color: #6EE7B7; font-size: 13px; }
+
+  /* ---------- Signature: slide the store's price tag off the truth ---------- */
+  .xray-stage {
+    position: relative; height: 236px; margin: 0;
+    overflow: hidden; user-select: none; touch-action: pan-y;
+    border-bottom: 1px solid var(--hair); cursor: ew-resize;
+    --split: 48%;
+  }
+  .xray-stage.intro { transition: --split 1.25s cubic-bezier(.65, 0, .25, 1); }
+  .xray-stage:focus-within { outline: 2px solid var(--ink); outline-offset: -3px; }
+  .xray-layer {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 44px; gap: 24px;
+  }
+  .xray-store { background: #FFFFFF; color: var(--ink); }
+  .xr-lbl { position: absolute; top: 18px; font-size: 13px; font-weight: 500; white-space: nowrap; }
+  .xray-store .xr-lbl { left: 44px; color: var(--muted); }
+  .xray-truth .xr-lbl { right: 44px; color: #A6A6B4; }
+  .xs-wrap { display: flex; align-items: center; gap: 24px; min-width: 0; max-width: calc(var(--split) - 64px); }
+  .xray-photo { width: 140px; height: 140px; }
+  .xs-left { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .xs-badge {
+    display: inline-block; width: fit-content; padding: 4px 9px; border-radius: 4px;
+    background: #CC0C39; color: #fff; font-size: 13px; font-weight: 600; letter-spacing: 0.02em; white-space: nowrap;
+  }
+  .xs-price-row { display: grid; grid-template-columns: auto; justify-items: start; gap: 6px; }
+  .xs-price-row .xs-price { margin-bottom: 4px; }
+  .xs-price { font-size: 48px; font-weight: 600; letter-spacing: -0.04em; color: #111; line-height: 1; font-variant-numeric: tabular-nums; }
+  .xs-list { font-size: 15px; color: #6E6B66; text-decoration: line-through; }
+  .xs-urg { font-size: 14px; color: #B12704; font-weight: 500; }
+  .xs-btn {
+    padding: 12px 24px; border-radius: 999px; background: #FFD814;
+    color: #0F1111; font-size: 14px; font-weight: 600; white-space: nowrap; flex-shrink: 0;
+  }
+  .xray-truth {
+    background: var(--obsidian); color: #F5F5F7;
+    clip-path: inset(0 0 0 var(--split));
+    justify-content: flex-end;
+  }
+  .xt-box { display: flex; flex-direction: column; align-items: flex-end; text-align: right; gap: 10px; max-width: 46%; }
+  .xt-tag { font-family: var(--mono); font-size: 13px; font-weight: 500; letter-spacing: 0.04em; }
+  .xt-red { color: #FCA5A5; }
+  .xt-green { color: #6EE7B7; }
+  .xt-amber { color: #FCD34D; }
+  .xt-head { font-size: 26px; font-weight: 600; color: #fff; line-height: 1.18; letter-spacing: -0.025em; text-wrap: balance; }
+  .xt-right { font-size: 15px; color: #A6A6B4; line-height: 1.45; text-wrap: pretty; }
+  /* The handle moves by transform, so dragging and the reveal never count as layout shift */
+  .xray-handle { position: absolute; inset: 0; z-index: 5; pointer-events: none; transform: translateX(var(--split)); }
+  .xray-beam {
+    position: absolute; top: 0; bottom: 0; left: 0; width: 2px; margin-left: -1px;
+    background: #fff; box-shadow: 0 0 0 1px rgba(16,16,16,0.12);
+  }
+  .xray-knob {
+    position: absolute; top: 50%; left: 0; transform: translate(-50%, -50%);
+    width: 44px; height: 44px; border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #FFFFFF; color: #101010;
+    border: 1px solid rgba(16, 16, 16, 0.14);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
+    font-size: 16px; font-weight: 600;
+  }
+  .xray-range {
+    position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; z-index: 6; margin: 0;
+  }
+
+  /* ---------- Audit workspace ---------- */
+  .audit-top {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap;
+    padding: 28px 24px 22px; border-bottom: 1px solid var(--hair);
+  }
+  .audit-prod { font-size: 21px; font-weight: 600; letter-spacing: -0.025em; color: var(--ink); line-height: 1.2; }
+  .audit-meta { font-size: 14px; color: var(--muted); margin-top: 5px; }
+  .verdict-txt { font-family: var(--mono); font-size: 12.5px; font-weight: 500; letter-spacing: 0.03em; white-space: nowrap; }
+  .vt-red { color: var(--red); }
+  .vt-green { color: var(--green-text); }
+  .vt-amber { color: var(--amber); }
+
+  .audit-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+  .audit-col-l {
+    padding: 22px 24px 24px; border-right: 1px solid var(--hair);
+    display: flex; flex-direction: column; gap: 18px; min-width: 0;
+  }
+  .audit-col-r {
+    padding: 22px 24px 24px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 20px; min-width: 0;
+  }
+  .viz-block { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .viz-head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 4px 16px; flex-wrap: wrap;
+    font-size: 13px; color: var(--muted); margin-bottom: 8px;
+  }
+  .viz-head span:first-child { color: var(--ink2); font-weight: 500; }
+
+  .chart-wrap { position: relative; width: 100%; flex: 1; min-height: 190px; max-height: 280px; }
+  .chart-wrap svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .chart-tip {
+    position: absolute; top: 6px; left: 56px; pointer-events: none; opacity: 0;
+    background: var(--obsidian); color: #fff;
+    border-radius: 8px; padding: 8px 11px; font-family: var(--mono); font-size: 12px; line-height: 1.4;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.22); transition: opacity .12s; z-index: 10; max-width: 260px;
+  }
+  .chart-tip.show { opacity: 1; }
+  .chart-tip .ct-delta-bad { color: #FCA5A5; }
+  .chart-tip .ct-delta-good { color: #6EE7B7; }
+  .chart-tip .ct-src { color: #B4B4C2; }
+
+  .bar-chart { display: flex; flex-direction: column; gap: 14px; padding: 6px 0 2px; }
+  .bar-row { display: flex; flex-direction: column; gap: 6px; }
+  .bar-row-top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--ink2); }
+  .bar-row-top strong { font-family: var(--mono); font-weight: 500; font-size: 12.5px; }
+  .bar-row-top .bar-note { color: var(--muted); font-weight: 400; }
+  .bar-track { height: 8px; border-radius: 99px; background: var(--card); overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 99px; transition: width .25s var(--ease); }
+  .bf-muted { background: #A8A59E; }
+  .bf-bad { background: var(--red); }
+  .bf-good { background: var(--green); }
+  .saas-slider-box { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--hair); font-size: 13px; color: var(--ink2); }
+  .saas-slider-head { display: flex; justify-content: space-between; gap: 4px 12px; flex-wrap: wrap; }
+  .saas-slider-head .ssh-total { color: var(--green-text); font-weight: 600; }
+  .saas-slider-box input[type=range] { width: 100%; height: 28px; accent-color: var(--ink); margin-top: 6px; cursor: pointer; }
+
+  .kpi-strip {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px;
+    padding-top: 18px; border-top: 1px solid var(--hair);
+  }
+  .kpi-lbl { font-size: 13px; color: var(--muted); }
+  .kpi-val { font-family: var(--mono); font-size: 17px; font-weight: 500; color: var(--ink); margin-top: 3px; font-variant-numeric: tabular-nums; }
+  .kpi-val.quiet { color: var(--muted); }
+  .kpi-val.red { color: var(--red); }
+  .kpi-val.green { color: var(--green-text); }
+  .kpi-val.amber { color: var(--amber); }
+
+  .score-line { padding-bottom: 18px; border-bottom: 1px solid var(--hair); }
+  .score-row { display: flex; align-items: baseline; justify-content: space-between; gap: 4px 16px; flex-wrap: wrap; }
+  .score-big { font-family: var(--mono); font-size: 26px; font-weight: 500; letter-spacing: -0.03em; line-height: 1.15; font-variant-numeric: tabular-nums; }
+  .score-sub { font-size: 14px; font-weight: 500; color: var(--ink2); }
+  .flags-inline { font-size: 13.5px; color: var(--muted); line-height: 1.5; margin-top: 8px; }
+
+  .evidence-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 18px; }
+  .evidence-list li { font-size: 14.5px; line-height: 1.55; color: var(--ink2); padding-left: 16px; position: relative; }
+  .evidence-list li::before {
+    content: ""; width: 4px; height: 4px; border-radius: 99px;
+    background: var(--quiet); position: absolute; left: 1px; top: 10px;
+  }
+
+  .proof-links { display: flex; align-items: center; flex-wrap: wrap; gap: 0 20px; }
+  .proof-link {
+    display: inline-flex; align-items: center; min-height: 32px;
+    font-size: 13.5px; font-weight: 500; color: var(--ink2);
+    text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(16,16,16,0.22);
+    transition: color .15s, text-decoration-color .15s;
+  }
+  .proof-link:hover { color: var(--ink); text-decoration-color: var(--ink); }
+
+  .move-bar {
+    padding: 18px 24px; border-top: 1px solid var(--hair); background: #FAF9F7;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px 24px; flex-wrap: wrap;
+  }
+  .move-txt { font-size: 15px; color: var(--ink2); flex: 1; min-width: 260px; line-height: 1.5; }
+  .move-txt strong { color: var(--ink); font-weight: 600; }
+  .move-actions { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .term-foot {
+    padding: 12px 24px; background: var(--surface); border-top: 1px solid var(--hair);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px 20px; flex-wrap: wrap;
+  }
+  .receipt-toggle {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 36px;
+    padding: 0 14px; border-radius: 9px; border: 1px solid var(--hair-strong); background: var(--surface);
+    font-size: 13.5px; font-weight: 500; color: var(--ink); white-space: nowrap; transition: background .15s;
+  }
+  .receipt-toggle:hover { background: var(--card); }
+  .receipt-toggle .cost { font-family: var(--mono); color: var(--green-text); font-weight: 500; }
+
+  .drawer-wrap {
+    display: grid; grid-template-rows: 0fr; transition: grid-template-rows .26s var(--ease);
+    background: var(--obsidian); color: #E4E4EA; visibility: hidden;
+  }
+  .drawer-wrap.open { grid-template-rows: 1fr; visibility: visible; }
+  .drawer-inner { overflow: hidden; }
+  .drawer-pad { padding: 22px 24px 24px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+  .drawer-h { font-size: 13px; color: #A6A6B4; margin-bottom: 10px; }
+  .mini-ledger { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .mini-ledger td { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #D4D4DC; vertical-align: top; }
+  .mini-ledger td.r { text-align: right; color: #6EE7B7; font-family: var(--mono); font-size: 12.5px; padding-left: 12px; white-space: nowrap; }
+  .mini-ledger .ml-ep { display: block; font-family: var(--mono); font-size: 12px; color: #9C9CA8; overflow-wrap: anywhere; }
+  .mini-ledger tr.ml-total td { border-bottom: none; color: #fff; font-weight: 600; }
+  .drawer-note { margin-top: 14px; font-size: 13px; line-height: 1.5; color: #A6A6B4; }
+  .drawer-note s { color: #9C9CA8; }
+  .raw-pre {
+    background: rgba(255,255,255,0.04); border-radius: var(--r-sm); padding: 14px 16px;
+    font-family: var(--mono); font-size: 12px; color: #C8C8D4; overflow: auto; max-height: 240px; line-height: 1.5;
+  }
+
+  
+  /* ---------- Section rhythm ---------- */
+  section { padding: 128px 0; }
+  .hero + section { margin-top: 128px; }
+  section.alt { background: var(--card); }
+  .sec-h2 {
+    text-align: center; font-size: clamp(30px, 3.9vw, 46px);
+    line-height: 1.08; letter-spacing: -0.034em; font-weight: 600;
+    color: var(--ink); max-width: 780px; margin: 0 auto; text-wrap: balance;
+  }
+  .sec-sub {
+    text-align: center; max-width: 600px; margin: 20px auto 64px;
+    font-size: 17px; color: var(--muted); line-height: 1.55; text-wrap: pretty;
+  }
+  .sec-sub strong { color: var(--ink2); font-weight: 600; }
+
+  /* ---------- Before / after ---------- */
+  .ba-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
+  .ba-card { border-radius: var(--r-lg); padding: 40px; display: flex; flex-direction: column; min-width: 0; }
+  .ba-before { background: var(--card); }
+  .ba-after { background: var(--obsidian); color: #F5F5F7; box-shadow: var(--shadow-stage); }
+  .ba-kicker { font-family: var(--mono); font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+  .ba-after .ba-kicker { color: #6EE7B7; }
+  .ba-title { font-size: 26px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.2; color: var(--ink); margin-bottom: 28px; }
+  .ba-after .ba-title { color: #fff; }
+  .ba-list { list-style: none; display: flex; flex-direction: column; gap: 16px; flex: 1; }
+  .ba-list li { display: flex; align-items: flex-start; gap: 14px; font-size: 16px; line-height: 1.5; color: var(--muted); }
+  .ba-after .ba-list li { color: #D4D4DC; }
+  .ba-ico {
+    flex-shrink: 0; width: 24px; height: 24px; border-radius: 999px; margin-top: 0;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600;
+  }
+  .ba-before .ba-ico { background: rgba(184, 50, 43, 0.10); color: var(--red); }
+  .ba-after .ba-ico { background: rgba(110, 231, 183, 0.14); color: #6EE7B7; }
+  .ba-result { margin-top: 32px; padding-top: 22px; border-top: 1px solid var(--hair-strong); display: flex; flex-direction: column; gap: 6px; }
+  .ba-after .ba-result { border-top-color: rgba(255,255,255,0.12); }
+  .ba-result-lbl { font-size: 13.5px; color: var(--muted); }
+  .ba-after .ba-result-lbl { color: #A6A6B4; }
+  .ba-result-val { font-size: 19px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.35; color: var(--red); }
+  .ba-after .ba-result-val { color: #6EE7B7; }
+  .ba-cta { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 48px; }
+
+  /* ---------- Six traps ---------- */
+  .bento-6 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .mini-term {
+    background: var(--surface);
+    border: 1px solid rgba(16, 16, 16, 0.05);
+    border-radius: 18px; overflow: hidden; box-shadow: var(--shadow-card);
+    display: flex; flex-direction: column; cursor: pointer; text-align: left; color: inherit;
+    transition: transform .18s var(--ease), box-shadow .18s var(--ease);
+  }
+  .mini-term:hover { transform: translateY(-2px); box-shadow: var(--shadow-stage); }
+  .mt-head {
+    background: #F7F6F3; color: var(--muted2);
+    padding: 16px 20px 0; font-family: var(--mono); font-size: 12px;
+    display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .mt-head span.p { color: var(--muted2); }
+  .mt-stage {
+    height: 128px; background: #F7F6F3; padding: 8px 20px 18px;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  }
+  .mt-stage img.prod-photo { height: 88px; width: 88px; }
+  .mt-stage-fig { text-align: right; line-height: 1.35; min-width: 0; }
+  .mt-fig-main { font-family: var(--mono); font-size: 16px; font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .mt-fig-main.bad { color: var(--red); }
+  .mt-fig-main.good { color: var(--green-text); }
+  .mt-fig-main.warn { color: var(--amber); }
+  .mt-fig-sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .mt-body { padding: 22px 20px 20px; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .mt-title { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink); line-height: 1.3; }
+  .mt-desc { font-size: 14.5px; color: var(--muted); line-height: 1.55; }
+  .mt-foot {
+    padding: 13px 20px; border-top: 1px solid var(--hair);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    font-size: 13px; color: var(--muted2);
+  }
+  .mt-foot .mt-cost { font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+  .mt-foot .mt-arr { opacity: 0.5; transition: opacity .15s, transform .15s; }
+  .mini-term:hover .mt-arr { opacity: 1; transform: translate(1px, -1px); color: var(--ink); }
+
+  /* ---------- Cart audit ---------- */
+  .cart-shell {
+    background: var(--surface);
+    border: 1px solid rgba(16, 16, 16, 0.06);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-stage); overflow: hidden;
+    display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.88fr);
+  }
+  .cart-left { padding: 28px 28px 26px; display: flex; flex-direction: column; min-width: 0; }
+  .cart-head-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .cart-head-title { display: inline-flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .cart-title { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; }
+  .cart-count { font-size: 13px; color: var(--muted); white-space: nowrap; }
+  .cart-presets { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .preset-btn {
+    min-height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--hair-strong); background: var(--surface);
+    font-size: 13px; font-weight: 500; color: var(--ink2); transition: background .14s;
+  }
+  .preset-btn:hover { background: var(--card); color: var(--ink); }
+
+  .cart-list { display: flex; flex-direction: column; margin-top: 18px; border-top: 1px solid var(--hair); }
+  .cart-item-shell { position: relative; display: flex; align-items: center; border-bottom: 1px solid var(--hair); }
+  .cart-item {
+    width: 100%; text-align: left; border: none; background: transparent; border-radius: 0; color: inherit;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 12px 6px; transition: background .14s;
+  }
+  .cart-item:hover { background: rgba(16, 16, 16, 0.024); }
+  .ci-l { display: flex; align-items: center; gap: 13px; min-width: 0; flex: 1; }
+  .cart-chk {
+    width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid rgba(16,16,16,0.32);
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+    background: var(--surface); color: #fff; font-size: 12px; font-weight: 700;
+  }
+  .cart-item.on .cart-chk { background: var(--ink); border-color: var(--ink); }
+  .ci-photo { width: 40px; height: 40px; }
+  .ci-meta { min-width: 0; }
+  .cart-name { font-size: 14.5px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+  .cart-note { font-size: 13px; color: var(--muted); line-height: 1.4; margin-top: 2px; }
+  .ci-r { text-align: right; flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+  .cart-price { font-family: var(--mono); font-size: 14.5px; font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .ci-verdict { font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.02em; }
+  .cv-red { color: var(--red); }
+  .cv-green { color: var(--green-text); }
+  .cv-amber { color: var(--amber); }
+  .cv-pend { color: var(--muted); }
+  .ci-del {
+    margin-left: 8px; width: 32px; height: 32px; font-size: 15px; color: var(--muted2);
+    border: 1px solid var(--hair-strong); border-radius: 8px; background: var(--surface); flex-shrink: 0;
+  }
+  .ci-del:hover { color: var(--red); }
+
+  .add-item-form { margin-top: 18px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .add-inp {
+    min-height: 40px; padding: 0 12px; border-radius: var(--r-sm); border: 1px solid var(--hair-strong); background: var(--bg);
+    font-family: inherit; font-size: 14px; color: var(--ink);
+  }
+  .add-inp::placeholder { color: var(--muted2); }
+  .add-inp.name { flex: 1; min-width: 180px; }
+  .add-inp.price { width: 104px; }
+  .add-item-form .pill.sm { min-height: 40px; }
+
+  .cart-right {
+    padding: 28px; background: var(--obsidian); color: #F5F5F7;
+    display: flex; flex-direction: column; gap: 24px; min-width: 0;
+  }
+  .cart-dual-kpis { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; padding-bottom: 4px; }
+  .cdk-lbl { font-size: 13px; color: #A6A6B4; }
+  .cdk-num { font-family: var(--mono); font-size: 44px; font-weight: 500; letter-spacing: -0.04em; margin-top: 4px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .cdk-num.g { color: #6EE7B7; }
+  .cdk-num.r { color: #FCA5A5; }
+  .cdk-num .cents { font-size: 0.56em; opacity: 0.7; letter-spacing: 0; }
+
+  .cart-bar-labels { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: #A6A6B4; }
+  .cart-bar-labels .cbl-saved { color: #FCA5A5; }
+  .cart-bar-track { height: 8px; border-radius: 99px; background: rgba(255,255,255,0.11); overflow: hidden; display: flex; margin: 9px 0 0; }
+  .cart-bar-spend { background: #34D399; height: 100%; transition: width .3s var(--ease); }
+  .cart-bar-saved { background: #E06C65; height: 100%; transition: width .3s var(--ease); }
+
+  .cart-stat-rows {
+    border-top: 1px solid rgba(255,255,255,0.10);
+    padding-top: 18px; display: flex; flex-direction: column; gap: 10px; font-size: 13.5px;
+  }
+  .cart-stat-row { display: flex; justify-content: space-between; gap: 12px; color: #A6A6B4; }
+  .cart-stat-row strong { font-family: var(--mono); font-size: 13px; color: #fff; font-weight: 500; font-variant-numeric: tabular-nums; text-align: right; }
+  .cart-stat-row strong.g { color: #6EE7B7; }
+
+  .cart-foot { margin-top: auto; display: flex; flex-direction: column; gap: 14px; }
+  .cart-prompt-mini {
+    font-family: var(--mono); font-size: 12.5px; color: #B4B4C2; line-height: 1.55; overflow-wrap: anywhere;
+    padding: 14px 16px; border-radius: var(--r-sm); background: rgba(255,255,255,0.05);
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .cart-prompt-mini .g { color: #6EE7B7; }
+  .cart-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cart-btns .pill { flex: 1 1 auto; }
+
+  .mobile-cart-dock {
+    display: none; position: sticky; bottom: 10px; z-index: 45; margin-top: 12px;
+    background: var(--obsidian); color: #fff; border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--r-md); padding: 10px 10px 10px 16px; box-shadow: 0 12px 32px rgba(0,0,0,0.28);
+    align-items: center; justify-content: space-between; gap: 10px;
+    transition: opacity .18s var(--ease), transform .18s var(--ease);
+  }
+  .mobile-cart-dock.hidden { opacity: 0; pointer-events: none; transform: translateY(10px); }
+  .mcd-txt { font-size: 13.5px; line-height: 1.4; min-width: 0; }
+  .mcd-txt .mcd-swap { color: #6EE7B7; font-weight: 600; }
+  .mcd-txt .mcd-block { color: #FCA5A5; }
+  .mcd-txt .mcd-bill { color: #A6A6B4; font-size: 12.5px; }
+
+  /* ---------- Receipt ---------- */
+  .receipt-tabs {
+    max-width: 900px; margin: 0 auto 28px;
+    display: flex; align-items: stretch; justify-content: space-between; overflow-x: auto; scrollbar-width: none;
+    border-bottom: 1px solid var(--hair); gap: 2px;
+  }
+  .receipt-tabs::-webkit-scrollbar { display: none; }
+  .rc-tab {
+    display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 56px;
+    padding: 0 10px; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; background: transparent;
+    font-size: 13.5px; font-weight: 500; color: var(--muted); white-space: nowrap; flex-shrink: 0;
+    transition: color .14s, border-color .14s;
+  }
+  .rc-tab .rc-tab-cost { font-family: var(--mono); font-size: 12px; font-weight: 400; color: var(--muted2); }
+  .rc-tab:hover { color: var(--ink); }
+  .rc-tab.active { color: var(--ink); font-weight: 600; border-bottom-color: var(--ink); }
+  .rc-tab.active .rc-tab-cost { color: var(--green-text); font-weight: 500; }
+
+  .receipt-wrap { max-width: 900px; margin: 0 auto; }
+  .receipt-meta-bar {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 6px 16px; flex-wrap: wrap;
+    font-size: 14px; color: var(--muted); margin-bottom: 14px;
+  }
+  .receipt-meta-bar .rc-head-right { color: var(--green-text); font-weight: 600; }
+  .receipt-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .receipt-table th {
+    text-align: left; padding: 11px 16px; background: #EFECE6;
+    font-size: 13px; font-weight: 500; color: var(--muted);
+  }
+  .receipt-table th:first-child { border-radius: 8px 0 0 8px; }
+  .receipt-table th:last-child { border-radius: 0 8px 8px 0; }
+  .receipt-table th.r, .receipt-table td.r { text-align: right; }
+  .receipt-table td.r:last-child { white-space: nowrap; }
+  .receipt-table td { padding: 15px 16px; border-bottom: 1px solid var(--hair); color: var(--ink2); vertical-align: middle; }
+  .receipt-table td.mono { font-size: 14px; }
+  .receipt-table td.rc-free { color: var(--green-text); font-weight: 500; }
+  .rc-step-wrap { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+  .rc-step-wrap img { width: 18px; height: 18px; object-fit: contain; margin-top: 3px; flex-shrink: 0; border-radius: 4px; }
+  .rc-step-wrap strong { font-weight: 600; color: var(--ink); }
+  .rc-ep { display: block; font-family: var(--mono); font-size: 12.5px; color: var(--muted2); margin-top: 2px; overflow-wrap: anywhere; }
+  .receipt-table tr.total-row td {
+    border-top: 1px solid var(--hair-strong); border-bottom: none;
+    font-weight: 600; color: var(--ink); padding-top: 18px;
+  }
+  .receipt-table tr.total-row .rc-runs { font-weight: 400; color: var(--muted); font-size: 14px; }
+  .receipt-table tr.total-row td.rc-total { color: var(--green-text); font-size: 16px; }
+  .receipt-note {
+    max-width: 680px; margin: 36px auto 0; text-align: center;
+    font-size: 14.5px; color: var(--muted); line-height: 1.6; text-wrap: pretty;
+  }
+  .receipt-note strong { color: var(--ink2); font-weight: 600; }
+
+  /* ---------- Limits ---------- */
+  .limits-ledger { max-width: 860px; margin: 0 auto; border-top: 1px solid var(--hair-strong); }
+  .limit-row {
+    display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 32px;
+    padding: 28px 0; border-bottom: 1px solid var(--hair); align-items: baseline;
+  }
+  .limit-label { font-size: 16px; font-weight: 600; color: var(--ink); letter-spacing: -0.015em; }
+  .limit-text { font-size: 15.5px; color: var(--muted); line-height: 1.6; }
+  .limit-text strong { color: var(--ink); font-weight: 600; }
+  .limit-text a { color: var(--ink); text-underline-offset: 4px; text-decoration-color: rgba(16,16,16,0.28); }
+
+  /* ---------- Comparison ---------- */
+  .cmp-wrap {
+    overflow-x: auto; border-radius: 18px;
+    border: 1px solid rgba(16, 16, 16, 0.06);
+    background: var(--surface); box-shadow: var(--shadow-card); position: relative;
+  }
+  .cmp-table { width: 100%; border-collapse: collapse; min-width: 720px; font-size: 14.5px; }
+  .cmp-table th {
+    padding: 16px 20px; text-align: left; background: #FAF9F7;
+    border-bottom: 1px solid var(--hair); font-weight: 600; color: var(--ink); white-space: nowrap;
+  }
+  .cmp-table th.hi { background: var(--obsidian); color: #fff; }
+  .cmp-table td { padding: 16px 20px; border-bottom: 1px solid var(--hair); color: var(--muted); }
+  .cmp-table td.feat { font-weight: 500; color: var(--ink); background: var(--surface); }
+  .cmp-table th:first-child, .cmp-table td.feat { position: sticky; left: 0; z-index: 2; }
+  .cmp-table th:first-child { background: #FAF9F7; }
+  .cmp-table td.hi { background: #F4F8F6; color: var(--ink); font-weight: 600; }
+  .cmp-table tr:last-child td { border-bottom: none; }
+  .yes { color: var(--green-text); font-weight: 600; }
+  .no { color: var(--muted2); }
+  .cmp-hint { display: none; text-align: center; font-size: 13px; color: var(--muted); margin-top: 14px; }
+
+  /* ---------- Setup ---------- */
+  .setup-card {
+    max-width: 840px; margin: 0 auto;
+    background: var(--surface); border: 1px solid rgba(16, 16, 16, 0.06); border-radius: var(--r-lg);
+    padding: 36px; box-shadow: var(--shadow-stage);
+  }
+  .step0-bar {
+    padding: 18px 20px; border-radius: var(--r-md); margin-bottom: 32px;
+    background: var(--card); border: none;
+    display: flex; align-items: center; justify-content: space-between; gap: 14px 20px; flex-wrap: wrap;
+  }
+  .step0-l { flex: 1; min-width: 260px; font-size: 14.5px; color: var(--ink2); line-height: 1.55; }
+  .step0-l strong { color: var(--ink); font-weight: 600; }
+  .step0-l code { font-size: 12.5px; background: var(--surface); padding: 2px 6px; border-radius: 5px; color: var(--ink); overflow-wrap: anywhere; }
+  .step0-actions { display: inline-flex; gap: 8px; flex-wrap: wrap; }
+
+  .agent-tabs { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+  .agent-tab {
+    display: inline-flex; align-items: center; gap: 9px; min-height: 40px; padding: 0 16px; border-radius: 11px;
+    border: 1px solid var(--hair-strong); background: var(--surface); font-size: 14px; font-weight: 600; color: var(--ink2);
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .agent-tab img { width: 20px; height: 20px; border-radius: 5px; object-fit: contain; }
+  .agent-tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .step-lbl { font-size: 15px; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; margin: 0 0 12px; }
+  .step-lbl .step-aside { font-weight: 400; color: var(--muted); }
+  .step-lbl + .code-bar, .step-lbl + .prompt-modes { margin-top: 0; }
+  .code-bar {
+    background: var(--obsidian); color: #F5F5F7; padding: 10px 10px 10px 18px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    font-family: var(--mono); font-size: 13.5px; margin-bottom: 10px;
+  }
+  .code-bar code { font-size: inherit; color: #F5F5F7; overflow-wrap: anywhere; min-width: 0; }
+  .code-bar code .g { color: #6EE7B7; }
+  .agent-note { font-size: 13.5px; color: var(--muted); margin-bottom: 36px; }
+
+  .prompt-modes { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .pm-btn {
+    min-height: 36px; padding: 0 13px; border-radius: 9px; border: 1px solid var(--hair-strong);
+    background: var(--surface); font-size: 13.5px; font-weight: 500; color: var(--ink2);
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .pm-btn.active { background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 600; }
+  .prompt-preview {
+    background: var(--card); border-radius: 12px;
+    padding: 12px 12px 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    font-family: var(--mono); font-size: 13px; line-height: 1.55; color: var(--ink);
+  }
+  .prompt-preview > span { min-width: 0; overflow-wrap: anywhere; }
+  .skill-details { margin-top: 32px; border-top: 1px solid var(--hair); padding-top: 8px; }
+  .skill-details summary {
+    font-size: 14px; color: var(--muted); cursor: pointer; list-style: none; min-height: 40px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  }
+  .skill-details summary::-webkit-details-marker { display: none; }
+  .skill-details summary strong { color: var(--ink2); font-weight: 600; }
+  .skill-details summary:hover { color: var(--ink); }
+  .skill-raw { display: inline-flex; align-items: center; min-height: 32px; font-size: 13.5px; color: var(--ink2); text-underline-offset: 4px; text-decoration-color: rgba(16,16,16,0.28); }
+  .skill-code {
+    margin-top: 10px; background: var(--obsidian); color: #D4D4DC; padding: 16px 18px;
+    border-radius: 12px; font-family: var(--mono); font-size: 12.5px; line-height: 1.55;
+    max-height: 260px; overflow: auto; white-space: pre-wrap;
+  }
+
+  /* ---------- Closing ---------- */
+  .final-stage { max-width: 920px; margin: 0 auto; padding: 144px 24px 128px; text-align: center; }
+  .final-h2 {
+    font-family: var(--pixel); font-size: clamp(32px, 4.6vw, 54px);
+    font-weight: 400; line-height: 1.1; color: var(--ink); margin-bottom: 22px;
+  }
+  .final-agents { display: inline-flex; align-items: center; gap: 10px; vertical-align: middle; margin-left: 8px; }
+  .final-agents img { width: 36px; height: 36px; border-radius: 9px; object-fit: contain; }
+  .final-sub { color: var(--muted); max-width: 520px; margin: 0 auto 36px; font-size: 17px; text-wrap: pretty; }
+  .final-ctas { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  footer { border-top: 1px solid var(--hair); padding: 28px 24px; font-size: 14px; color: var(--muted); }
+  .foot-in { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; }
+  .foot-brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--ink); }
+  .foot-links { display: flex; gap: 0 22px; flex-wrap: wrap; }
+  .foot-links a { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; min-height: 32px; text-decoration: none; color: var(--muted); }
+  .foot-links a:hover { color: var(--ink); }
+
+  /* ---------- Video modal & toast ---------- */
+  .modal-bg {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(10, 10, 12, 0.84); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-bg.open { display: flex; }
+  .modal-box {
+    width: 100%; max-width: 960px; background: #0B0B0E;
+    border-radius: var(--r-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.14);
+    box-shadow: 0 32px 90px rgba(0,0,0,0.65);
+  }
+  .modal-head {
+    padding: 10px 10px 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    color: #fff; font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .modal-close {
+    width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.18);
+    background: transparent; color: #fff; font-size: 20px; line-height: 1; flex-shrink: 0;
+  }
+  .modal-video { width: 100%; aspect-ratio: 16/9; display: block; background: #000; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--obsidian); color: #fff; padding: 12px 18px; border-radius: 12px;
+    font-size: 14px; line-height: 1.4; text-align: center;
+    max-width: min(520px, calc(100vw - 32px)); opacity: 0; pointer-events: none;
+    transition: opacity .22s var(--ease), transform .22s var(--ease); z-index: 300; box-shadow: 0 12px 32px rgba(0,0,0,0.28);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1140px) {
+    .deal-tabs, .receipt-tabs { justify-content: flex-start; }
+    .deal-tabs {
+      mask-image: linear-gradient(90deg, #000 0%, #000 92%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 92%, transparent 100%);
+    }
+  }
+  @media (max-width: 1020px) {
+    .cart-dual-kpis { grid-template-columns: 1fr 1fr; }
+    .cdk-num { font-size: 36px; }
+    section, #auditor { scroll-margin-top: 122px; }
+    .nav-links { display: none; }
+    .mobile-subnav { display: flex; }
+    section { padding: 104px 0; }
+    .hero + section { margin-top: 104px; }
+    .bento-6 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cart-shell { grid-template-columns: minmax(0, 1fr); }
+    .mobile-cart-dock { display: flex; }
+    .drawer-pad { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 780px) {
+    .nav { padding: 12px 16px; }
+    .wrap { padding: 0 18px; }
+    .hero { padding: 116px 18px 0; }
+    .hero-slug { margin-bottom: 18px; }
+    .hero-sub { font-size: 17px; margin: 22px auto 28px; }
+    .hero-ctas { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; max-width: 400px; margin: 0 auto; }
+    .term-shell { margin-top: 56px; border-radius: 18px; }
+    .deal-tabs { padding: 0 8px; }
+    .xray-stage { height: 212px; --split: 47%; }
+    .xray-layer { padding: 26px 14px 0; gap: 8px; }
+    .xray-store .xr-lbl { left: 14px; top: 12px; }
+    .xray-truth .xr-lbl { right: 14px; top: 12px; }
+    .xr-more { display: none; }
+    .xray-store { padding: 0 26px 0 12px; }
+    .xray-truth { padding: 0 14px 0 26px; }
+    .xray-photo { width: 64px; height: 64px; }
+    .xs-wrap { flex-direction: column; align-items: flex-start; gap: 10px; max-width: calc(var(--split) - 34px); }
+    .xs-badge { font-size: 12px; padding: 3px 7px; }
+    .xs-price { font-size: 28px; }
+    .xs-list, .xs-urg, .xs-btn { display: none; }
+    .xt-box { max-width: 50%; gap: 6px; }
+    .xt-tag { font-size: 12px; white-space: nowrap; letter-spacing: 0.02em; }
+    .xt-head { font-size: 15.5px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+    .xt-right { display: none; }
+    .xray-knob { width: 40px; height: 40px; }
+    .try-own { margin-top: 32px; }
+    .try-field { padding: 4px 4px 4px 14px; gap: 6px; }
+    .term-input { font-size: 16px; min-height: 44px; }
+    .term-clear { width: 40px; height: 40px; }
+    .try-field .pill { min-height: 44px; padding: 0 16px; }
+    .audit-top { padding: 22px 16px 18px; }
+    .audit-prod { font-size: 19px; }
+    .audit-grid { grid-template-columns: minmax(0, 1fr); }
+    .audit-col-l { border-right: none; border-bottom: 1px solid var(--hair); padding: 18px 16px 20px; }
+    .audit-col-r { padding: 20px 16px; }
+    .chart-wrap { flex: none; height: 210px; }
+    .kpi-strip { gap: 12px; }
+    .kpi-val { font-size: 15px; }
+    .proof-link { min-height: 44px; }
+    .move-bar, .term-foot { padding-left: 16px; padding-right: 16px; }
+    .move-actions .pill, .cart-btns .pill, .step0-actions .pill, .mobile-cart-dock .pill { min-height: 44px; }
+    .receipt-toggle { min-height: 44px; }
+    .drawer-pad { padding: 18px 16px 20px; }
+    .bento-6 { grid-template-columns: minmax(0, 1fr); }
+    .ba-grid { grid-template-columns: minmax(0, 1fr); }
+    .ba-card { padding: 28px 22px; }
+    .ba-title { font-size: 23px; margin-bottom: 22px; }
+    .ba-cta { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 400px; margin: 36px auto 0; }
+    section { padding: 88px 0; }
+    .hero + section { margin-top: 88px; }
+    .sec-sub { font-size: 16.5px; margin-bottom: 44px; }
+    .limit-row { grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 24px 0; }
+    .cart-left { padding: 22px 16px; }
+    .cart-right { padding: 24px 18px; }
+    .cart-presets { width: 100%; }
+    .preset-btn { flex: 1; min-height: 40px; padding: 0 8px; white-space: nowrap; }
+    .cart-item { gap: 10px; padding: 14px 2px; }
+    .ci-photo { width: 34px; height: 34px; }
+    .add-inp { font-size: 16px; min-height: 44px; }
+    .add-item-form .pill.sm { min-height: 44px; flex: 1; }
+    .rc-tab { padding: 0 12px; }
+    .receipt-table { font-size: 14.5px; }
+    .receipt-table th, .receipt-table td { padding: 13px 8px; }
+    .receipt-table th:first-child, .receipt-table td:first-child { padding-left: 12px; }
+    .receipt-table th:last-child, .receipt-table td:last-child { padding-right: 12px; }
+    .rc-step-wrap { gap: 10px; }
+    .cmp-table { font-size: 14px; min-width: 640px; }
+    .cmp-table th, .cmp-table td { padding: 14px; }
+    .cmp-table td.feat { max-width: 132px; }
+    .cmp-table th:first-child, .cmp-table td.feat { box-shadow: 1px 0 0 var(--hair); }
+    .cmp-hint { display: block; }
+    .setup-card { padding: 22px 16px; border-radius: 18px; }
+    .agent-tab { min-height: 44px; }
+    .pm-btn { min-height: 40px; }
+    .code-bar, .prompt-preview { flex-direction: column; align-items: stretch; padding: 14px; }
+    .code-bar .term-head-btn, .prompt-preview .pill { min-height: 44px; }
+    .skill-details summary { min-height: 44px; }
+    .final-stage { padding: 104px 18px 96px; }
+    .foot-links a { min-height: 40px; }
+    .kbd-hint { display: none; }
+    #audit-body:empty { min-height: 1236px; }
+  }
+  @media (max-width: 480px) {
+    .cart-dual-kpis { grid-template-columns: 1fr 1fr; gap: 14px; }
+    .cdk-num { font-size: 28px; }
+    .ci-verdict { letter-spacing: 0; }
+    .trace-strip { font-size: 12.5px; }
+    .rc-step-wrap img { display: none; }
+    .rc-step-wrap strong { overflow-wrap: anywhere; }
+    .receipt-table td.mono { font-size: 13px; }
+    .receipt-table tr.total-row td.rc-total { font-size: 14px; }
+    .receipt-table th, .receipt-table td { padding-left: 6px; padding-right: 6px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- TOP NAV -->
+  <nav class="nav" id="topnav">
+    <a class="wordmark" href="#">
+      <span class="treg-sq"><img data-logo="treg" alt=""></span>
+      <span>treg</span>
+      <span class="wm-slash">/</span>
+      <span>Buy smart</span>
+    </a>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="#before-after">Before / after</a>
+        <a href="#traps">Traps</a>
+        <a href="#cart">Cart audit</a>
+        <a href="#receipt">Receipt</a>
+        <a href="#compare">vs Keepa</a>
+      </div>
+      <a href="#setup" class="pill dark sm">Set up treg</a>
+    </div>
+  </nav>
+
+  <!-- AUTO-REVEALING MOBILE SECTION JUMP BAR -->
+  <nav class="mobile-subnav" aria-label="Jump to section">
+    <a href="#auditor">Live audits</a>
+    <a href="#before-after">Before / after</a>
+    <a href="#traps">Traps</a>
+    <a href="#cart">Cart audit</a>
+    <a href="#receipt">Receipt</a>
+    <a href="#compare">vs Keepa</a>
+    <a href="#setup">Set up</a>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-slug">/buy-smart skill</div>
+
+    <h1 class="hero-h1">
+      <span class="hero-agent-rot">
+        <img id="rot-logo" data-logo="claude" alt="Claude">
+        <span id="rot-name">Claude</span>
+      </span>
+      catches<br>
+      <span class="hl-green">fake Black Friday deals.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Before you click Buy, ask your agent. <strong class="nowrap">@treg buy-smart</strong> checks the price history and owner reviews behind any badge, for <a class="nowrap" href="#receipt">about half a cent</a>.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="#setup" class="pill dark">Set up treg</a>
+      <button type="button" class="pill" id="watch-btn">
+        <span class="play-dot"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg></span>
+        Watch the launch <span class="dur">0:36</span>
+      </button>
+    </div>
+    <p class="hero-note">$1 of free credit covers about 150 audits.</p>
+
+    <!-- SIGNATURE INTERACTIVE HERO TERMINAL -->
+    <div class="term-shell" id="auditor">
+
+      <div class="deal-tabs" id="deal-tabs" role="tablist" aria-label="Audited Black Friday deals"></div>
+
+      <!-- PHYSICAL X-RAY PRICE TAG WITH REAL PRODUCT PHOTOGRAPHY -->
+      <div class="xray-stage" id="xray-stage">
+        <div class="xray-layer xray-store" id="xray-store"></div>
+        <div class="xray-layer xray-truth" id="xray-truth"></div>
+        <div class="xray-handle" aria-hidden="true">
+          <div class="xray-beam"></div>
+          <div class="xray-knob">↔</div>
+        </div>
+        <input type="range" min="14" max="86" value="48" class="xray-range" id="xray-range" aria-label="Slide between the store's price tag and what the audit found">
+      </div>
+
+      <div id="sr-announcer" class="sr-only" aria-live="polite"></div>
+      <div id="audit-body"></div>
+
+      <div class="term-foot">
+        <div class="trace-strip" id="trace-strip" aria-label="Checks run for this audit"></div>
+        <button type="button" class="receipt-toggle" id="receipt-drawer-btn" aria-expanded="false" aria-controls="receipt-drawer">
+          <span>Receipt &amp; JSON</span>
+          <span class="cost" id="foot-cost">$0.00548</span>
+          <span id="drawer-chev" aria-hidden="true">▾</span>
+        </button>
+      </div>
+
+      <div class="drawer-wrap" id="receipt-drawer">
+        <div class="drawer-inner">
+          <div class="drawer-pad">
+            <div>
+              <div class="drawer-h"><span id="foot-calls">4 paid calls, Wayback $0.00</span> · <span id="foot-status">Captured Nov 25, 2026, zero affiliate links</span></div>
+              <table class="mini-ledger" id="drawer-ledger"></table>
+              <p class="drawer-note" id="drawer-stripped"></p>
+            </div>
+            <div>
+              <div class="drawer-h">Audit summary JSON (from audit.py pipeline)</div>
+              <pre class="raw-pre" id="drawer-json" tabindex="0"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="try-own">
+      <label class="try-lbl" for="custom-input">Try it on your own link</label>
+      <div class="try-field">
+        <img id="term-agent-ico" data-logo="claude" alt="">
+        <input id="custom-input" class="term-input" type="text" placeholder="Paste a product link or name" autocomplete="off" aria-describedby="try-hint">
+        <button type="button" class="term-clear" id="term-clear" aria-label="Clear input">×</button>
+        <button type="button" class="pill dark sm" id="term-run-custom">Copy prompt</button>
+      </div>
+      <p class="try-hint" id="try-hint">We turn it into a ready-to-run prompt for your agent. Nothing runs on this page.</p>
+      <div class="custom-banner" id="custom-banner" role="status" aria-live="polite">
+        <div id="custom-banner-txt"></div>
+        <div class="cb-actions">
+          <span class="cb-ok">Copied ✓</span>
+          <a href="#setup" class="term-head-btn emerald">New to treg? Get $1 free →</a>
+          <button type="button" class="term-clear" id="custom-banner-close" aria-label="Dismiss banner">×</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- BEFORE / AFTER -->
+  <section id="before-after" aria-labelledby="ba-h">
+    <div class="wrap">
+      <h2 class="sec-h2" id="ba-h">Stop trusting the badge.<br><span class="hl-quiet">Let your agent check it first.</span></h2>
+      <p class="sec-sub">The same Black Friday cart, before and after you add buy-smart to your agent.</p>
+
+      <div class="ba-grid">
+        <div class="ba-card ba-before">
+          <div class="ba-kicker">Before</div>
+          <h3 class="ba-title">You shop on your own</h3>
+          <ul class="ba-list">
+            <li><span class="ba-ico" aria-hidden="true">×</span><span>You trust the red "48% off" badge.</span></li>
+            <li><span class="ba-ico" aria-hidden="true">×</span><span>You never see the September price hike that made the discount look big.</span></li>
+            <li><span class="ba-ico" aria-hidden="true">×</span><span>A used unit can take Amazon's buy box without you noticing.</span></li>
+            <li><span class="ba-ico" aria-hidden="true">×</span><span>Owner complaints sit in Reddit threads you'll never find.</span></li>
+            <li><span class="ba-ico" aria-hidden="true">×</span><span>Checking means juggling price trackers, store tabs and forums, so you skip it.</span></li>
+          </ul>
+          <div class="ba-result">
+            <span class="ba-result-lbl">Dyson V15 Detect</span>
+            <span class="ba-result-val">You pay $440.07 for a used unit.</span>
+          </div>
+        </div>
+
+        <div class="ba-card ba-after">
+          <div class="ba-kicker">After</div>
+          <h3 class="ba-title">Your agent checks first</h3>
+          <ul class="ba-list">
+            <li><span class="ba-ico" aria-hidden="true">✓</span><span>You paste the link and ask if the deal is real.</span></li>
+            <li><span class="ba-ico" aria-hidden="true">✓</span><span>It compares today's price with Wayback and CamelCamelCamel history.</span></li>
+            <li><span class="ba-ico" aria-hidden="true">✓</span><span>It flags used and third-party buy boxes and finds the cheapest new one.</span></li>
+            <li><span class="ba-ico" aria-hidden="true">✓</span><span>It reads owner threads on Reddit and links the ones that matter.</span></li>
+            <li><span class="ba-ico" aria-hidden="true">✓</span><span>You get a verdict and a better move, for about half a cent.</span></li>
+          </ul>
+          <div class="ba-result">
+            <span class="ba-result-lbl">Dyson V15 Detect</span>
+            <span class="ba-result-val">You buy it new at Target for $407.97, warranty included.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ba-cta">
+        <a href="#setup" class="pill dark">Set up treg</a>
+        <a href="#traps" class="pill">See the six traps</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: 6-TRAP BENTO (TREG SHADOW-LIFTED CARDS + REAL STUDIO PRODUCT PHOTOGRAPHY) -->
+  <section id="traps" class="alt">
+    <div class="wrap">
+      <h2 class="sec-h2">How stores turn normal prices<br><span class="hl-quiet">into "48% off" Black Friday traps.</span></h2>
+      <p class="sec-sub">Stores count on you reading only today's red badge. Click a card to open its full audit.</p>
+
+      <div class="bento-6">
+        <button type="button" class="mini-term" data-jump-deal="0">
+          <div class="mt-head"><span class="p">&gt;</span> amazon.com/dp/B0C2J8KJH9</div>
+          <div class="mt-stage">
+            <img class="prod-photo" data-prod="dyson" alt="Dyson V15 Detect Cordless Vacuum">
+            <div class="mt-stage-fig">
+              <div class="mt-fig-main bad">$440.07 Used</div>
+              <div class="mt-fig-sub">Target New 1P $407.97</div>
+            </div>
+          </div>
+          <div class="mt-body">
+            <div class="mt-title">Used buybox hijack</div>
+            <div class="mt-desc">Amazon 1P sells out and the buybox silently flips to a 3P Used unit wearing a 48% off badge.</div>
+          </div>
+          <div class="mt-foot"><span>Open audit</span><span class="mt-cost">$0.00548</span></div>
+        </button>
+
+        <button type="button" class="mini-term" data-jump-deal="4">
+          <div class="mt-head"><span class="p">&gt;</span> Anker Prime 250W ($144)</div>
+          <div class="mt-stage">
+            <img class="prod-photo" data-prod="anker" alt="Anker Prime 250W Power Bank">
+            <div class="mt-stage-fig">
+              <div class="mt-fig-main warn">14.7% true off</div>
+              <div class="mt-fig-sub">Sep 15 peak $249.99</div>
+            </div>
+          </div>
+          <div class="mt-body">
+            <div class="mt-title">The pre-sale price spike</div>
+            <div class="mt-desc">Raising the list price in September turns a modest November dip into a loud "42% off" banner.</div>
+          </div>
+          <div class="mt-foot"><span>Open audit</span><span class="mt-cost">$0.00160</span></div>
+        </button>
+
+        <button type="button" class="mini-term" data-jump-deal="5">
+          <div class="mt-head"><span class="p">&gt;</span> AirPods Pro 2 ($266)</div>
+          <div class="mt-stage">
+            <img class="prod-photo" data-prod="airpods" alt="Apple AirPods Pro 2">
+            <div class="mt-stage-fig">
+              <div class="mt-fig-main bad">$266.01 (+27%)</div>
+              <div class="mt-fig-sub">Apple MSRP $249, ATL $139</div>
+            </div>
+          </div>
+          <div class="mt-body">
+            <div class="mt-title">Sold-out scalper takeover</div>
+            <div class="mt-desc">First-party stock runs dry mid-sale and 3rd-party resellers list above Apple's everyday MSRP.</div>
+          </div>
+          <div class="mt-foot"><span>Open audit</span><span class="mt-cost">$0.00025</span></div>
+        </button>
+
+        <button type="button" class="mini-term" data-jump-deal="1">
+          <div class="mt-head"><span class="p">&gt;</span> Sony XM5 ($298)</div>
+          <div class="mt-stage">
+            <img class="prod-photo" data-prod="xm5" alt="Sony WH-1000XM5 Headphones">
+            <div class="mt-stage-fig">
+              <div class="mt-fig-main bad">$298 vs $278 Jun</div>
+              <div class="mt-fig-sub">640↑ Reddit hinge flaws</div>
+            </div>
+          </div>
+          <div class="mt-body">
+            <div class="mt-title">Stripped models &amp; defect traps</div>
+            <div class="mt-desc">Catches chronic owner hardware failures, stripped Black Friday SKUs (XM5SA, B6E), and junk Shopping comps.</div>
+          </div>
+          <div class="mt-foot"><span>Open audit</span><span class="mt-cost">$0.00552</span></div>
+        </button>
+
+        <button type="button" class="mini-term" data-jump-deal="6">
+          <div class="mt-head"><span class="p">&gt;</span> keychron.com/products/keychron-q1-pro...</div>
+          <div class="mt-stage">
+            <img class="prod-photo" data-prod="keychron" alt="Keychron Q1 Pro Mechanical Keyboard">
+            <div class="mt-stage-fig">
+              <div class="mt-fig-main good">$129.49 (-11.9%)</div>
+              <div class="mt-fig-sub">Wayback median $157.49</div>
+            </div>
+          </div>
+          <div class="mt-body">
+            <div class="mt-title">Shopify &amp; DTC time-travel</div>
+            <div class="mt-desc">Keepa is blind outside Amazon. Wayback parses archived Shopify variant JSON directly for $0.00.</div>
+          </div>
+          <div class="mt-foot"><span>Open audit</span><span class="mt-cost">$0.00225</span></div>
+        </button>
+
+        <button type="button" class="mini-term" data-jump-deal="7">
+          <div class="mt-head"><span class="p">&gt;</span> semrush.com/pricing/seo-ai-search/</div>
+          <div class="mt-stage">
+            <img class="prod-photo" data-prod="semrush" alt="Semrush" style="height:56px;width:56px">
+            <div class="mt-stage-fig">
+              <div class="mt-fig-main good">$63.60/yr</div>
+              <div class="mt-fig-sub">vs $1,982/yr (31.2× less)</div>
+            </div>
+          </div>
+          <div class="mt-body">
+            <div class="mt-title">The annual SaaS lock-in trap</div>
+            <div class="mt-desc">Skip a $1,982/yr annual contract when your agent can run Serpstat and Cloro pay-per-call on treg.</div>
+          </div>
+          <div class="mt-foot"><span>Open audit</span><span class="mt-cost">$0.00025</span></div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: HAIRLINE-RULED BLACK FRIDAY CART LEDGER (ZERO COLORED LEFT STRIPES!) -->
+  <section id="cart">
+    <div class="wrap">
+      <h2 class="sec-h2">Audit your whole Black Friday cart.<br><span class="hl-quiet">Dodge fake deals &amp; swaps for &lt; 2¢.</span></h2>
+      <p class="sec-sub">Tick real Nov 25 captures or add your own, and see what to buy, swap, or skip.</p>
+
+      <div class="cart-shell">
+        <div class="cart-left">
+          <div class="cart-head-row">
+            <div class="cart-head-title">
+              <strong class="cart-title">Black Friday wishlist (Nov 25 captures)</strong>
+              <span class="cart-count" id="cart-sel-count">5 items selected</span>
+            </div>
+            <div class="cart-presets">
+              <button type="button" class="preset-btn" data-preset="default">Default (5)</button>
+              <button type="button" class="preset-btn" data-preset="all">All (8)</button>
+              <button type="button" class="preset-btn" data-preset="traps">Traps only</button>
+              <button type="button" class="preset-btn" data-preset="clear">Clear</button>
+            </div>
+          </div>
+
+          <div class="cart-list" id="cart-list" role="group" aria-label="Wishlist items"></div>
+
+          <form class="add-item-form" id="add-item-form">
+            <input type="text" class="add-inp name" id="add-name" placeholder="Add product or URL (e.g. LG C5 65&quot; OLED)" aria-label="Product name or URL">
+            <input type="number" class="add-inp price" id="add-price" placeholder="$ Price" min="1" step="0.01" aria-label="Listed price in USD">
+            <button type="submit" class="pill sm dark">+ Add to cart prompt</button>
+          </form>
+        </div>
+
+        <div class="cart-right">
+          <div>
+            <div class="cart-dual-kpis">
+              <div>
+                <div class="cdk-lbl">Direct swap savings</div>
+                <div class="cdk-num g" id="cart-swap-save">$32<span class="cents">.10</span></div>
+              </div>
+              <div>
+                <div class="cdk-lbl">Bad spend blocked</div>
+                <div class="cdk-num r" id="cart-blocked">$564<span class="cents">.01</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="cart-bar-labels">
+              <span>Verified spend (<span id="bar-spend-pct">63%</span>)</span>
+              <span class="cbl-saved">Blocked + swapped (<span id="bar-saved-pct">37%</span>)</span>
+            </div>
+            <div class="cart-bar-track">
+              <div class="cart-bar-spend" id="bar-spend" style="width:63%"></div>
+              <div class="cart-bar-saved" id="bar-saved" style="width:37%"></div>
+            </div>
+          </div>
+
+          <div class="cart-stat-rows">
+            <div class="cart-stat-row"><span>Original wishlist total</span><strong id="cart-orig">$1,609.02</strong></div>
+            <div class="cart-stat-row"><span>Verified checkout spend</span><strong id="cart-smart">$1,012.91</strong></div>
+            <div class="cart-stat-row" id="cart-pending-row" style="display:none"><span>Pending live audit</span><strong id="cart-pending">$0.00</strong></div>
+            <div class="cart-stat-row"><span>Action breakdown</span><strong class="g" id="cart-breakdown">2 buys, 1 swap, 2 skipped</strong></div>
+            <div class="cart-stat-row"><span>Exact treg API bill</span><strong class="g" id="cart-treg">$0.01833</strong></div>
+          </div>
+
+          <div class="cart-foot">
+            <div class="cart-prompt-mini" id="cart-prompt-preview">
+              <span class="g">&gt;</span> Use @treg buy-smart to audit my cart...
+            </div>
+
+            <div class="cart-btns">
+              <button type="button" class="pill green sm" id="copy-cart-prompt">Copy cart prompt</button>
+              <button type="button" class="pill ghost-dark sm" id="dl-cart-png">Receipt PNG</button>
+              <a class="pill ghost-dark sm" id="share-cart-x" href="https://x.com/intent/tweet" target="_blank" rel="noopener">Post to X</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky Mobile Cart Dock -->
+      <div class="mobile-cart-dock" id="mobile-cart-dock" aria-live="polite">
+        <div class="mcd-txt">
+          <div class="nowrap"><strong class="mcd-swap" id="mob-dock-swap">$32 swap</strong>, <span class="mcd-block" id="mob-dock-block">$564 blocked</span></div>
+          <div class="mcd-bill" id="mob-dock-bill">treg bill: $0.01833 (5 items)</div>
+        </div>
+        <button type="button" class="pill green sm" id="mob-dock-copy">Copy prompt</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: REAL RUN RECEIPT (EXACT treg_people_full.png BORDERLESS WARM-PAPER LEDGER!) -->
+  <section id="receipt" class="alt">
+    <div class="wrap">
+      <h2 class="sec-h2">Real run receipt.<br><span class="hl-quiet">Half a cent to expose a fake deal.</span></h2>
+      <p class="sec-sub">No subscription and no provider keys. Every metered call from the Nov 25 runs.</p>
+
+      <div class="receipt-tabs" id="receipt-tabs" role="tablist" aria-label="Select deal receipt"></div>
+
+      <div class="receipt-wrap">
+        <div class="receipt-meta-bar">
+          <span id="rc-head-left">Sony WH-1000XM5 Headphones (B09XS7JWHH)</span>
+          <span id="rc-head-right" class="rc-head-right">5 paid calls, $0.00552</span>
+        </div>
+        <table class="receipt-table">
+          <thead>
+            <tr>
+              <th>Step &amp; endpoint</th>
+              <th class="r">Calls</th>
+              <th class="r">Cost</th>
+            </tr>
+          </thead>
+          <tbody id="receipt-tbody"></tbody>
+        </table>
+      </div>
+
+      <p class="receipt-note">
+        A link audit costs <strong>$0.00552</strong> and a name-only audit <strong>$0.00651</strong>, so $1 of free credit covers 150–180 audits. It's billed from your treg balance, separate from your Claude or Codex plan.
+      </p>
+    </div>
+  </section>
+
+  <!-- SECTION 5: WHERE IT BREAKS (CLEAN HAIRLINE SPECIFICATION LEDGER — ZERO CARDOCALYPSE!) -->
+  <section id="limits">
+    <div class="wrap">
+      <h2 class="sec-h2">Where it breaks —<br><span class="hl-quiet">and what's the catch?</span></h2>
+      <p class="sec-sub">Every deal tool has blind spots. Here is where buy-smart says so instead of guessing.</p>
+
+      <div class="limits-ledger">
+        <div class="limit-row">
+          <div class="limit-label">Clipped coupons &amp; flash sales</div>
+          <div class="limit-text">Price history can't see Amazon's clip-on coupons or Prime-only lightning deals. Mention the coupon in your prompt (or pass <code>--coupon 40</code>); Keepa's extension still tracks these better.</div>
+        </div>
+        <div class="limit-row">
+          <div class="limit-label">JavaScript-only stores &amp; new SKUs</div>
+          <div class="limit-text">Wayback finds no snapshots on stores like Target, Best Buy and Walmart, or for products under 90 days old. buy-smart then marks the history unverified and checks live stockists instead.</div>
+        </div>
+        <div class="limit-row">
+          <div class="limit-label">History depth &amp; Reddit bias</div>
+          <div class="limit-text">CamelCamelCamel gives the lifetime low, high and average, so short spikes can slip through. Defect searches skew negative, so every audit links the exact threads it read.</div>
+        </div>
+        <div class="limit-row">
+          <div class="limit-label">How treg gets paid</div>
+          <div class="limit-text">No affiliate links and no selling checkout data. Calls are billed at cost from your prepaid balance (<a href="https://treg.to/integrate.md">integrate.md</a>), and treg earns on team plans.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: COMPARISON MATRIX -->
+  <section id="compare" class="alt">
+    <div class="wrap">
+      <h2 class="sec-h2">Why an agent beats<br><span class="hl-quiet">Keepa, Honey &amp; affiliate blogs.</span></h2>
+      <p class="sec-sub">Keepa is great for Amazon charts. <strong class="nowrap">@treg buy-smart</strong> adds commission-free verdicts, other stores, Reddit owners, and Shopify or SaaS checks.</p>
+
+      <div class="cmp-wrap" tabindex="0" role="region" aria-label="Comparison of buy-smart with Keepa, Honey and affiliate blogs">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th class="hi">@treg buy-smart</th>
+              <th>Keepa / Camel</th>
+              <th>Honey / Rakuten</th>
+              <th>SEO "Top 10" Blogs</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="feat">Zero affiliate kickbacks</td>
+              <td class="hi"><span class="yes">✓</span> $0 retail commission</td>
+              <td><span class="no">✗</span> Affiliate links</td>
+              <td><span class="no">✗</span> Affiliate hijacking</td>
+              <td><span class="no">✗</span> Paid placements</td>
+            </tr>
+            <tr>
+              <td class="feat">Amazon 1P vs 3P Used buybox guard</td>
+              <td class="hi"><span class="yes">✓</span> Auto-flagged (±$2 / exact)</td>
+              <td>Manual chart reading</td>
+              <td><span class="no">✗</span></td>
+              <td><span class="no">✗</span></td>
+            </tr>
+            <tr>
+              <td class="feat">Shopify, SSR DTC &amp; SaaS Wayback check</td>
+              <td class="hi"><span class="yes">✓</span> Built-in ($0 Archive.org)</td>
+              <td><span class="no">✗</span> Amazon only</td>
+              <td>Limited</td>
+              <td><span class="no">✗</span></td>
+            </tr>
+            <tr>
+              <td class="feat">Sanitized 40-store comps + BF SKU guard</td>
+              <td class="hi"><span class="yes">✓</span> Strips scams, used &amp; parts</td>
+              <td><span class="no">✗</span> Amazon only</td>
+              <td>Partial</td>
+              <td><span class="no">✗</span></td>
+            </tr>
+            <tr>
+              <td class="feat">Reddit defect clusters + optional Jev 1.13</td>
+              <td class="hi"><span class="yes">✓</span> Linked threads + Jev judge</td>
+              <td><span class="no">✗</span></td>
+              <td><span class="no">✗</span></td>
+              <td><span class="no">✗</span></td>
+            </tr>
+            <tr>
+              <td class="feat">Amazon clipped coupons</td>
+              <td class="hi">Manual (<code>--coupon</code>)</td>
+              <td><span class="yes">✓</span> Keepa tracks auto</td>
+              <td>Promo code testing</td>
+              <td><span class="no">✗</span></td>
+            </tr>
+            <tr>
+              <td class="feat">Pricing</td>
+              <td class="hi"><span class="yes">$0.00552–$0.00651</span> (153–181 free)</td>
+              <td>Free web/ext (Keepa API €19/mo)</td>
+              <td>Monetizes checkout data</td>
+              <td>Free (affiliate lead-gen)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="cmp-hint">Swipe the table sideways to compare.</p>
+    </div>
+  </section>
+
+  <!-- SECTION 7: COMPLETE 3-STEP ONBOARDING -->
+  <section id="setup">
+    <div class="wrap">
+      <h2 class="sec-h2">Connect treg once.<br><span class="hl-quiet">Say "Use @treg buy-smart to..."</span></h2>
+      <p class="sec-sub">Works with a product link, an a.co shortlink, a product name, a whole cart, or a SaaS pricing page.</p>
+
+      <div class="setup-card">
+        <div class="step0-bar">
+          <div class="step0-l">
+            <strong>New to treg?</strong> Claim $1.00 of free credit (about 150 audits), then connect your agent with <code>set up treg — https://treg.to/llms.txt</code>.
+          </div>
+          <div class="step0-actions">
+            <button type="button" class="pill sm" id="copy-step0-btn">Copy setup prompt</button>
+            <a href="https://treg.to/app?ref=buy-smart" class="pill dark sm">Claim $1 credit →</a>
+          </div>
+        </div>
+
+        <div class="agent-tabs" id="agent-tabs" role="tablist" aria-label="Choose your AI agent">
+          <button type="button" role="tab" aria-selected="true" class="agent-tab active" data-agent="claude"><img data-logo="claude" alt="Claude Code">Claude Code</button>
+          <button type="button" role="tab" aria-selected="false" class="agent-tab" data-agent="codex"><img data-logo="codex" alt="Codex">Codex</button>
+          <button type="button" role="tab" aria-selected="false" class="agent-tab" data-agent="openclaw"><img data-logo="openclaw" alt="OpenClaw">OpenClaw</button>
+          <button type="button" role="tab" aria-selected="false" class="agent-tab" data-agent="hermes"><img data-logo="hermes" alt="Hermes">Hermes</button>
+        </div>
+
+        <div class="step-lbl">1. Install the /buy-smart skill <span class="step-aside">(stdlib Python 3.9+, zero pip deps)</span></div>
+        <div class="code-bar">
+          <code id="install-cmd"><span class="g">$</span> npx skills add superdesigndev/treg --skill buy-smart</code>
+          <button type="button" class="term-head-btn emerald" id="copy-install-btn">Copy</button>
+        </div>
+        <div class="agent-note" id="agent-note">Claude Code: works with treg MCP (https://treg.to/mcp/) or the treg CLI.</div>
+
+        <div class="step-lbl">2. Pick a prompt and paste into your agent</div>
+        <div class="prompt-modes" id="prompt-modes" role="tablist" aria-label="Prompt mode">
+          <button type="button" role="tab" aria-selected="true" class="pm-btn active" data-pm="link">Paste a link</button>
+          <button type="button" role="tab" aria-selected="false" class="pm-btn" data-pm="name">Product name only</button>
+          <button type="button" role="tab" aria-selected="false" class="pm-btn" data-pm="cart">Whole Black Friday cart</button>
+          <button type="button" role="tab" aria-selected="false" class="pm-btn" data-pm="pick">Best in category</button>
+          <button type="button" role="tab" aria-selected="false" class="pm-btn" data-pm="saas">SaaS annual promo</button>
+        </div>
+        <div class="prompt-preview">
+          <span id="prompt-text">Use @treg buy-smart to check if this Black Friday deal is real: https://www.amazon.com/dp/B09XS7JWHH</span>
+          <button type="button" class="pill dark sm" id="copy-prompt-btn">Copy prompt</button>
+        </div>
+
+        <details class="skill-details">
+          <summary>
+            <span>Inspect the <strong>SKILL.md</strong> source</span>
+            <span aria-hidden="true">Expand ▾</span>
+          </summary>
+          <a class="skill-raw" href="https://treg.to/skills/buy-smart/SKILL.md">Open raw /skills/buy-smart/SKILL.md ↗</a>
+          <pre class="skill-code" id="skill-code-pre" tabindex="0"></pre>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- WARM-PAPER CLOSING STAGE (EXACT REAL treg.to POISE — ZERO OBSIDIAN RADIAL GLOW!) -->
+  <div class="final-stage">
+    <h2 class="final-h2">
+      Black Friday truth agent<br>
+      for
+      <span class="final-agents">
+        <img data-logo="claude" alt="Claude Code">
+        <img data-logo="codex" alt="Codex">
+        <img data-logo="openclaw" alt="OpenClaw">
+        <img data-logo="hermes" alt="Hermes">
+      </span>
+    </h2>
+    <p class="final-sub">
+      About 150 audits free with your $1.00 credit. No subscription, no affiliate links.
+    </p>
+    <div class="final-ctas">
+      <a href="https://treg.to/app?ref=buy-smart" class="pill dark">Claim $1 free treg credit →</a>
+      <button type="button" class="pill" id="watch-btn-2">
+        <span class="play-dot"><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span>
+        Watch the launch <span class="dur">0:36</span>
+      </button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="foot-in">
+      <div class="foot-brand">
+        <span class="treg-sq"><img data-logo="treg" alt=""></span>
+        <span>treg.to/buy-smart</span>
+      </div>
+      <div class="foot-links">
+        <a href="https://treg.to/resources">Resources</a>
+        <a href="https://treg.to/catalog">Catalog</a>
+        <a href="https://treg.to/pricing">Pricing</a>
+        <a href="https://treg.to/skills/buy-smart/SKILL.md">SKILL.md</a>
+        <a href="https://treg.to/integrate.md">integrate.md</a>
+        <a href="https://treg.to/llms.txt">llms.txt</a>
+        <a href="https://treg.to/terms">Terms</a>
+        <a href="https://treg.to/privacy">Privacy</a>
+        <a href="https://github.com/superdesigndev/treg" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://x.com/treg_ai" target="_blank" rel="noopener">X</a>
+        <a href="https://discord.gg/6mQYYfFMAn" target="_blank" rel="noopener">Discord</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- LAUNCH FILM LIGHTBOX MODAL -->
+  <div class="modal-bg" id="video-modal" role="dialog" aria-modal="true" aria-label="Launch film">
+    <div class="modal-box">
+      <div class="modal-head">
+        <span>/buy-smart — Black Friday Launch Film (1080p, 0:36)</span>
+        <button type="button" class="modal-close" id="modal-close" aria-label="Close video modal">×</button>
+      </div>
+      <video class="modal-video" id="launch-video" controls playsinline preload="metadata" poster="media/buy-smart/poster.jpg">
+        <source src="media/buy-smart/launch.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Copied to clipboard</div>
+
+<script>
+const DEALS = [{"id": "dyson", "tab": "Dyson V15", "priceShort": "$440", "prompt": "Use @treg buy-smart to check if this Dyson V15 Detect deal is real: https://www.amazon.com/dp/B0C2J8KJH9", "product": "Dyson V15 Detect Cordless Vacuum (B0C2J8KJH9)", "verdict": "TRAP \u2014 USED BUYBOX ($32 OVER NEW)", "tone": "red", "bsScore": 90, "scoreMode": "bs", "judgeLine": "Exact-penny 3P Used buybox match. Cheapest Brand New 1P: Target $407.97", "salePrice": 440.07, "claimedMsrp": 849.99, "claimedDisc": "48.2%", "baseline": 676.7, "baselineLabel": "Camel 1P Avg", "trueDisc": "3P Used unit", "atl": "Amazon New ATL $499.99 (Dec '23)", "cheapest": "Target (Brand New 1P) $407.97", "chartType": "line", "chartSource": "Price History (Camel 1P/3P + Live Nov 25)", "xray": {"storeBadge": "LIMITED TIME DEAL \u2014 48% OFF", "storeShortBadge": "48% OFF", "storePrice": "$440.07", "storeList": "List $849.99", "storeUrgency": "Only 2 left in stock", "storeBtn": "Buy Now", "truthBadge": "USED 3P BUYBOX / BS 90", "truthShortBadge": "3P USED / BS 90", "truthHead": "Amazon 1P OOS, buybox matches 3P Used ($440.07)", "truthMove": "Brand New 1P at Target is $407.97 (saves $32 + warranty)"}, "stripped": ["Walmart Refurb ($289.98)", "eBay Used ($472.39)", "Sam's Club ($867.90)"], "flags": ["Used 3P buybox match", "Sep 14 spike +25.6%", "Amazon 1P OOS", "Target $32 less (New)"], "chart": [{"iso": "2023-12-16", "d": "Dec '23", "p": 499.99, "kind": "low", "src": "Camel 1P ATL"}, {"iso": "2026-09-14", "d": "Sep 14", "p": 849.99, "kind": "spike", "src": "Camel 1P Peak (+25.6% vs avg)"}, {"iso": "2026-10-12", "d": "Oct 12", "p": 829.99, "kind": "norm", "src": "Camel 3P New Peak"}, {"iso": "2026-11-24", "d": "Nov 24", "p": 699.0, "kind": "norm", "src": "Camel 3P New Current"}, {"iso": "2026-11-25", "d": "Nov 25", "p": 440.07, "kind": "bad", "note": "3P Used", "src": "Live buybox = Camel 3P Used ($440.07)"}], "owners": ["Live Amazon buybox ($440.07, 'Only 2 left') exact-matched CamelCamelCamel's 3rd Party Used price ($440.07) while Amazon 1P was out of stock.", "Target carried the Dyson V15 Detect Total Clean Extra brand-new 1P for $407.97; r/VacuumCleaners owners flag out-of-warranty repair costs."], "move": "Skip Amazon's $440.07 Used buybox. Buy brand-new 1P at Target for $407.97 (saves $32.10 and keeps Dyson's 2-year warranty).", "cost": "$0.00548", "costNum": 0.00548, "calls": "4 paid calls, Wayback $0.00", "capturedAt": "Nov 25, 2026 19:42 UTC", "links": [{"lbl": "Amazon ASIN", "url": "https://www.amazon.com/dp/B0C2J8KJH9"}, {"lbl": "CamelCamelCamel", "url": "https://camelcamelcamel.com/product/B0C2J8KJH9"}, {"lbl": "Target Brand New", "url": "https://www.target.com/s?searchTerm=Dyson+V15+Detect+Total+Clean+Extra"}, {"lbl": "r/VacuumCleaners (37\u2191)", "url": "https://reddit.com/r/VacuumCleaners/comments/1vi211d/what_is_the_best_cordless_vacuum_of_2026_is_dyson/"}], "receipt": [["Wayback Machine CDX check", "web.archive.org (4 checks)", "web", "4", "$0.00000"], ["CamelCamelCamel 1P/3P history", "treg.web.extract (Crawl4AI)", "crawl4ai", "1", "$0.00025"], ["Live Amazon buybox & stock", "crawl4ai.amazon.product.detail", "crawl4ai", "1", "$0.00135"], ["40 multi-store offers sanitized", "serper.google.serp.shopping", "serper", "1", "$0.00200"], ["Reddit owner threads mined", "scrapecreators.reddit.search.posts", "scrapecreators", "1", "$0.00188"]], "rawJson": {"product": "Dyson V15 Detect Cordless Vacuum (B0C2J8KJH9)", "verdict": "WARNING \u2014 USED BUYBOX HIJACK (NOT NEW)", "manipulation_bs_score": 90, "sale_price": 440.07, "camel_1p_avg": 676.7, "camel_3p_used_current": 440.07, "flags": ["RECENT_PEAK_WITHIN_75D", "AMAZON_1P_OUT_OF_STOCK", "BUYBOX_LOW_STOCK_OR_3P_WARNING", "USED_BUYBOX_HIJACK_DETECTED", "CHEAPER_AT_TARGET"], "cheapest_verified_store": {"store": "Target", "price": 407.97, "first_party": true}, "total_treg_cost_usd": 0.00548}, "xShare": "Amazon's '48% off' Dyson V15 ($440.07) is a 3P USED buybox \u2014 Target has it brand-new 1P for $407.97. Caught with @treg buy-smart for $0.00548. Check your Black Friday cart: https://treg.to/buy-smart"}, {"id": "xm5", "tab": "Sony XM5", "priceShort": "$298", "prompt": "Use @treg buy-smart to check if this Black Friday deal is real: https://www.amazon.com/dp/B09XS7JWHH", "product": "Sony WH-1000XM5 Headphones (B09XS7JWHH)", "verdict": "SKIP \u2014 $20 OVER SUMMER + HINGE FLAW", "tone": "red", "bsScore": 100, "scoreMode": "bs", "judgeLine": "Jev 1.13 Deal Score 0.28 / 4 (Skip \u2014 Hardware Flaw, 99%, call ec03cf92). Walmart 1P: $288", "salePrice": 298.0, "claimedMsrp": 399.99, "claimedDisc": "25.5%", "baseline": 282.67, "baselineLabel": "Camel 1P Avg", "trueDisc": "-5.4% worse", "atl": "Summer Wayback $278 (Jun '26)", "cheapest": "Walmart (1P) $288.00", "chartType": "line", "chartSource": "Wayback Amazon Snapshots + Camel + Live Nov 25", "xray": {"storeBadge": "BLACK FRIDAY DEAL \u2014 26% OFF", "storeShortBadge": "26% OFF", "storePrice": "$298.00", "storeList": "List $399.99", "storeUrgency": "Amazon's Choice", "storeBtn": "Add to Cart", "truthBadge": "SKIP / BS 100 / JEV 0.28/4", "truthShortBadge": "SKIP / BS 100", "truthHead": "Sold for $278 on Amazon in June (+$20 worse today)", "truthMove": "Skip XM5. Buy Sony XM4 at $199.99 (25% below avg)"}, "stripped": ["eBay Parts ($142.99)", "WH-1000XM5SA Soft-Case Derivative SKU spotted in comps"], "flags": ["Inflated MSRP anchor", "Amazon 1P OOS (3P scalper)", "Reddit hinge defect cluster (640\u2191)", "$10 cheaper at Walmart"], "chart": [{"iso": "2025-10-20", "d": "Oct '25", "p": 398.0, "kind": "spike", "src": "Camel 3P Peak ($398.00)"}, {"iso": "2026-02-24", "d": "Feb 24", "p": 398.0, "kind": "norm", "src": "Wayback Amazon snapshot ($398.00)"}, {"iso": "2026-06-18", "d": "Jun 18", "p": 278.0, "kind": "low", "note": "Jun $278", "src": "Wayback Amazon snapshot ($278.00)"}, {"iso": "2026-06-22", "d": "Jun 22", "p": 278.0, "kind": "low", "src": "Wayback Amazon snapshot ($278.00)"}, {"iso": "2026-11-25", "d": "Nov 25", "p": 298.0, "kind": "bad", "note": "+$20 vs Jun", "src": "Live BF listing ($298.00 vs $282.67 avg)"}], "owners": ["r/SonyHeadphones (247\u2191): 'Sony WH-1000XM5 broken hinge - How EU law got me a full refund' plus 116\u2191 warranty-denial thread (640 upvotes across defect posts).", "Wayback Machine proved Amazon sold XM5 for $278.00 in June 2026 (Camel also logged a brief $169.99 Nov 24 flash OOS blip before 1P sold out)."], "move": "Skip XM5 at $288\u2013$298. Buy Sony WH-1000XM4 on Amazon 1P (B0863TXGM3) at $199.99 (25.2% below its $267.21 Camel avg, sturdier folding hinge, saves $98).", "cost": "$0.00552", "costNum": 0.00552, "calls": "5 paid calls, Wayback $0.00", "capturedAt": "Nov 25, 2026 18:14 UTC", "links": [{"lbl": "Amazon ASIN", "url": "https://www.amazon.com/dp/B09XS7JWHH"}, {"lbl": "CamelCamelCamel", "url": "https://camelcamelcamel.com/product/B09XS7JWHH"}, {"lbl": "Wayback Jun '26", "url": "https://web.archive.org/web/20260618/https://www.amazon.com/dp/B09XS7JWHH"}, {"lbl": "r/SonyHeadphones (247\u2191)", "url": "https://reddit.com/r/SonyHeadphones/comments/1obd8nj/sony_wh1000xm5_broken_hinge_how_eu_law_got_me_a/"}], "receipt": [["Wayback Machine snapshots", "web.archive.org (6 snaps)", "web", "6", "$0.00000"], ["CamelCamelCamel 1P/3P history", "treg.web.extract (Crawl4AI)", "crawl4ai", "1", "$0.00025"], ["Live Amazon detail & stock", "crawl4ai.amazon.product.detail", "crawl4ai", "1", "$0.00135"], ["40 multi-store offers sanitized", "serper.google.serp.shopping", "serper", "1", "$0.00200"], ["Reddit defect cluster scan", "scrapecreators.reddit.search.posts", "scrapecreators", "1", "$0.00188"], ["Jev 1.13 verdict (call ec03cf92)", "openrouter.ai-judge.decide", "jev", "1", "$0.00004"]], "rawJson": {"product": "Sony WH-1000XM5 Wireless Headphones (B09XS7JWHH)", "verdict": "SKIP", "manipulation_bs_score": 100, "sale_price": 298.0, "camel_1p_avg": 282.67, "true_discount_pct": -5.4, "flags": ["INFLATED_MSRP_ANCHOR", "AMAZON_1P_OOS_3P_SCALPER", "OWNER_DEFECT_CLUSTER", "BUYBOX_LOW_STOCK_OR_3P_WARNING", "CHEAPER_AT_WALMART"], "jev_live": {"call_id": "ec03cf92402944b38a6907b99e88bb2e", "deal_verdict": "skip_hardware_flaw", "prob": 0.99, "buy_confidence": 0.28, "cost_usd": 4.32e-05}, "total_treg_cost_usd": 0.00552}, "xShare": "Almost paid $298 for 'Black Friday' Sony XM5s \u2014 Wayback proved Amazon sold them for $278 in June + 640 upvotes on r/SonyHeadphones about snapping hinges. Caught with @treg buy-smart for $0.00552: https://treg.to/buy-smart"}, {"id": "breville", "tab": "Breville", "priceShort": "$495", "prompt": "Use @treg buy-smart to check if the Breville Barista Express at $495 is a real deal", "product": "Breville BES870XL Barista Express (B00CH9QWOU)", "verdict": "REAL DEAL \u2014 19.7% BELOW 13-YR AVG", "tone": "green", "bsScore": 10, "scoreMode": "bs", "judgeLine": "13-year price history verified. Amazon 1P In Stock: $494.95 (lowest verified store)", "salePrice": 494.95, "claimedMsrp": 749.95, "claimedDisc": "34.0%", "baseline": 616.08, "baselineLabel": "Camel 13-Yr Avg", "trueDisc": "19.7% true off", "atl": "Prior 2026 Low $499.95 (2019 $432 isolated)", "cheapest": "Amazon (1P In Stock) $494.95", "chartType": "line", "chartSource": "CamelCamelCamel + Wayback Jun '26 + Live Nov 25", "xray": {"storeBadge": "BLACK FRIDAY DEAL \u2014 34% OFF", "storeShortBadge": "34% OFF", "storePrice": "$494.95", "storeList": "List $749.95", "storeUrgency": "In Stock, Amazon.com", "storeBtn": "Buy Now", "truthBadge": "VERIFIED REAL DEAL / BS 10", "truthShortBadge": "REAL DEAL / BS 10", "truthHead": "$121.13 below 13-yr Amazon avg ($616.08), 2026 Low", "truthMove": "Greenlight at $494.95 Amazon 1P (beats Jun $499.95)"}, "stripped": ["eBay Used ($195)", "Zaffy Unknown ($209.99)", "Walmart 3P ElectroCell ($639)"], "flags": ["Minor Amazon Typical-price bounce ($693 Jun to $750 MSRP)", "Pre-inflation 2019 ATL isolated"], "chart": [{"iso": "2022-07-26", "d": "Jul '22", "p": 749.95, "kind": "norm", "src": "Camel 1P Peak / Official MSRP"}, {"iso": "2026-06-23", "d": "Jun 23", "p": 499.95, "kind": "norm", "src": "Wayback Amazon snapshot ($499.95)"}, {"iso": "2026-06-27", "d": "Jun 27", "p": 499.95, "kind": "norm", "src": "Wayback Amazon snapshot ($499.95)"}, {"iso": "2026-11-22", "d": "Nov 22", "p": 494.95, "kind": "good", "src": "Camel 1P Current ($494.95)"}, {"iso": "2026-11-25", "d": "Nov 25", "p": 494.95, "kind": "good", "note": "2026 Low", "src": "Live Amazon 1P In Stock ($494.95)"}], "owners": ["Zero recurring defect cluster across 25 scanned Reddit threads in r/espresso and r/BrevilleCoffee.", "Amazon's 'Typical price' dipped to $692.99 in June before returning to Breville's $749.95 MSRP (+10 minor BS flag), while $494.95 beats June's $499.95 and saves $121 vs average."], "move": "Verified buy if you want an all-in-one espresso machine: $494.95 Amazon 1P In Stock beats every verified US stockist.", "cost": "$0.00548", "costNum": 0.00548, "calls": "4 paid calls, Wayback $0.00", "capturedAt": "Nov 25, 2026 18:35 UTC", "links": [{"lbl": "Amazon ASIN", "url": "https://www.amazon.com/dp/B00CH9QWOU"}, {"lbl": "CamelCamelCamel", "url": "https://camelcamelcamel.com/product/B00CH9QWOU"}, {"lbl": "Wayback Jun '26", "url": "https://web.archive.org/web/20260623/https://www.amazon.com/dp/B00CH9QWOU"}, {"lbl": "r/BrevilleCoffee (18\u2191)", "url": "https://reddit.com/r/BrevilleCoffee/comments/1payy91/cant_decide_between_breville_bambino_or_breville/"}], "receipt": [["Wayback Machine snapshots", "web.archive.org (6 snaps)", "web", "6", "$0.00000"], ["CamelCamelCamel 13-yr history", "treg.web.extract (Crawl4AI)", "crawl4ai", "1", "$0.00025"], ["Live Amazon 1P detail", "crawl4ai.amazon.product.detail", "crawl4ai", "1", "$0.00135"], ["40 multi-store offers sanitized", "serper.google.serp.shopping", "serper", "1", "$0.00200"], ["Reddit r/espresso scan", "scrapecreators.reddit.search.posts", "scrapecreators", "1", "$0.00188"]], "rawJson": {"product": "Breville Barista Express (B00CH9QWOU)", "verdict": "REAL DEAL", "manipulation_bs_score": 10, "sale_price": 494.95, "camel_1p_avg": 616.08, "true_discount_pct": 19.7, "flags": ["LIST_PRICE_BUMPED"], "ancient_2019_atl_isolated": 432.48, "cheapest_verified_store": {"store": "Amazon (1P)", "price": 494.95, "first_party": true}, "total_treg_cost_usd": 0.00548}, "xShare": "Not every Black Friday sale is fake \u2014 @treg buy-smart verified the Breville Barista Express at $494.95 (19.7% below its 13-yr $616 avg, 0 defect clusters) for half a cent: https://treg.to/buy-smart"}, {"id": "ugreen", "tab": "UGREEN Qi2", "priceShort": "$110", "prompt": "Use @treg buy-smart to audit https://www.amazon.com/dp/B0G5YSLMJ1", "product": "UGREEN MagFlow Pro 25W Qi2.2 Stand (B0G5YSLMJ1)", "verdict": "REAL DEAL \u2014 $15 BELOW ALL-TIME LOW", "tone": "green", "bsScore": 0, "scoreMode": "bs", "judgeLine": "Fast-scan verified (2 calls, $0.0016, Jev skipped). Amazon UGREEN Official: $109.99", "salePrice": 109.99, "claimedMsrp": 159.99, "claimedDisc": "31.3%", "baseline": 143.74, "baselineLabel": "Camel Official 3P Avg", "trueDisc": "23.5% true off", "atl": "Prior ATL $124.99 (Sep 14, 2026)", "cheapest": "Amazon (UGREEN Official) $109.99", "chartType": "line", "chartSource": "CamelCamelCamel Official 3P Store + Live Nov 25", "xray": {"storeBadge": "BLACK FRIDAY \u2014 31% OFF", "storeShortBadge": "31% OFF", "storePrice": "$109.99", "storeList": "List $159.99", "storeUrgency": "UGREEN Official Store", "storeBtn": "Buy Now", "truthBadge": "CLEAN NEW ATL / BS 0", "truthShortBadge": "NEW ATL / BS 0", "truthHead": "$15.00 below prior Sep 14 all-time low ($124.99)", "truthMove": "Verified steal at $109.99 In Stock, lowest since launch"}, "stripped": ["New <120d SKU (0 Wayback snaps), Shopping/Reddit skipped to save cost"], "flags": ["Zero manipulation flags", "Beats prior all-time low by 12.0%"], "chart": [{"iso": "2026-08-23", "d": "Aug 23", "p": 159.99, "kind": "norm", "src": "Camel tracking start / launch MSRP"}, {"iso": "2026-09-14", "d": "Sep 14", "p": 124.99, "kind": "low", "note": "Prior ATL", "src": "Camel 3P New Lowest ($124.99)"}, {"iso": "2026-09-28", "d": "Sep 28", "p": 159.99, "kind": "norm", "src": "Camel 3P New Highest ($159.99)"}, {"iso": "2026-11-25", "d": "Nov 25", "p": 109.99, "kind": "good", "note": "New ATL", "src": "Live UGREEN Official ($109.99)"}], "owners": ["Launched Aug 23, 2026 \u2014 Wayback had 0 snapshots yet, so buy-smart used Camel's Official 3P Store history ($143.74 avg) without false Amazon-1P OOS flags.", "Zero manipulation flags (0/100 BS-Score): genuine $15.00 drop below its September $124.99 all-time low."], "move": "Verified Black Friday steal at $109.99 In Stock \u2014 lowest verified price since launch.", "cost": "$0.00160", "costNum": 0.0016, "calls": "2 paid calls, Fast-scan", "capturedAt": "Nov 25, 2026 18:36 UTC", "links": [{"lbl": "Amazon ASIN", "url": "https://www.amazon.com/dp/B0G5YSLMJ1"}, {"lbl": "CamelCamelCamel", "url": "https://camelcamelcamel.com/product/B0G5YSLMJ1"}], "receipt": [["Wayback Machine check (new SKU)", "web.archive.org (0 snaps)", "web", "1", "$0.00000"], ["CamelCamelCamel 3P New baseline", "treg.web.extract (Crawl4AI)", "crawl4ai", "1", "$0.00025"], ["Live Amazon listing check", "crawl4ai.amazon.product.detail", "crawl4ai", "1", "$0.00135"]], "rawJson": {"product": "UGREEN MagFlow Pro 25W Qi2.2 (B0G5YSLMJ1)", "verdict": "REAL DEAL", "manipulation_bs_score": 0, "sale_price": 109.99, "camel_3p_new_avg": 143.74, "prior_atl": 124.99, "true_discount_pct": 23.5, "flags": [], "total_treg_cost_usd": 0.0016}, "xShare": "UGREEN MagFlow Pro Qi2.2 stand at $109.99 is a legit Black Friday steal \u2014 $15 below its prior all-time low, 0/100 BS-Score. Verified in 2 calls ($0.0016) with @treg buy-smart: https://treg.to/buy-smart"}, {"id": "anker", "tab": "Anker 250W", "priceShort": "$144", "prompt": "Use @treg buy-smart to check if the Anker Prime 250W Power Bank at $144 is legit", "product": "Anker Prime 27,650mAh 250W Power Bank (B0BYP2F3SG)", "verdict": "FAIR \u2014 '42% OFF' HIDES +48% SEP SPIKE", "tone": "amber", "bsScore": 40, "scoreMode": "bs", "judgeLine": "Fast-scan verified (2 calls, $0.0016, Jev skipped). Live Amazon In Stock: $143.99", "salePrice": 143.99, "claimedMsrp": 249.99, "claimedDisc": "42.4%", "baseline": 168.9, "baselineLabel": "Camel 1P Avg", "trueDisc": "14.7% true off", "atl": "Amazon 1P ATL $129.99 (Dec '24)", "cheapest": "Amazon (In Stock) $143.99", "chartType": "line", "chartSource": "CamelCamelCamel 1P/3P Milestones + Live Nov 25", "xray": {"storeBadge": "BLACK FRIDAY \u2014 42% OFF", "storeShortBadge": "42% OFF", "storePrice": "$143.99", "storeList": "List $249.99", "storeUrgency": "Save $106.00 today", "storeBtn": "Buy Now", "truthBadge": "EXAGGERATED BADGE / BS 40", "truthShortBadge": "SPIKED / BS 40", "truthHead": "True discount is 14.7% vs $168.90 avg (+48% Sep 15 spike)", "truthMove": "Okay if needed now. Prior ATL was $129.99 (waiting saves $14)"}, "stripped": ["Stale Camel OOS overridden by live Crawl4AI In Stock"], "flags": ["Sep 15 spike +48.0% ($249.99)", "Exaggerated strikethrough (42% vs 14.7%)"], "chart": [{"iso": "2024-12-04", "d": "Dec '24", "p": 129.99, "kind": "low", "note": "ATL $130", "src": "Camel 1P Lowest ($129.99)"}, {"iso": "2026-05-04", "d": "May '26", "p": 179.99, "kind": "norm", "src": "Camel 3P New Current ($179.99)"}, {"iso": "2026-09-15", "d": "Sep 15", "p": 249.99, "kind": "spike", "src": "Camel 1P Peak (+48.0% vs avg)"}, {"iso": "2026-11-25", "d": "Nov 25", "p": 143.99, "kind": "warn", "note": "14.7% off", "src": "Live Amazon In Stock ($143.99)"}], "owners": ["CamelCamelCamel caught a +48.0% spike to $249.99 on Sep 15, 2026 (71 days pre-BF), turning a modest 14.7% discount off its $168.90 average into a loud '42% OFF' badge.", "Live Amazon detail verified In Stock (overriding Camel's stale OOS flag), preventing a false scalper alarm."], "move": "Fair price if you need 250W travel power today; otherwise wait for its verified $129.99 historical low.", "cost": "$0.00160", "costNum": 0.0016, "calls": "2 paid calls, Fast-scan", "capturedAt": "Nov 25, 2026 19:01 UTC", "links": [{"lbl": "Amazon ASIN", "url": "https://www.amazon.com/dp/B0BYP2F3SG"}, {"lbl": "CamelCamelCamel", "url": "https://camelcamelcamel.com/product/B0BYP2F3SG"}], "receipt": [["CamelCamelCamel 1P/3P history", "treg.web.extract (Crawl4AI)", "crawl4ai", "1", "$0.00025"], ["Live Amazon stock verification", "crawl4ai.amazon.product.detail", "crawl4ai", "1", "$0.00135"]], "rawJson": {"product": "Anker Prime 27,650mAh 250W Power Bank (B0BYP2F3SG)", "verdict": "FAIR \u2014 CHECK ALTERNATIVE", "manipulation_bs_score": 40, "sale_price": 143.99, "camel_1p_avg": 168.9, "sep15_peak": 249.99, "true_discount_pct": 14.7, "flags": ["EXAGGERATED_STRIKETHROUGH", "RECENT_PEAK_WITHIN_75D"], "total_treg_cost_usd": 0.0016}, "xShare": "Anker Prime 250W's '42% off' Black Friday badge ($143.99) is actually 14.7% off its $168.90 average \u2014 propped up by a +48% Sep 15 spike to $249.99. Caught in 2 calls ($0.0016) with @treg buy-smart: https://treg.to/buy-smart"}, {"id": "airpods", "tab": "AirPods Pro 2", "priceShort": "$266", "prompt": "Use @treg buy-smart to check AirPods Pro 2: https://www.amazon.com/dp/B0D1XD1ZV3", "product": "Apple AirPods Pro 2 (B0D1XD1ZV3)", "verdict": "SKIP \u2014 3P SCALPER (+27% ABOVE AVG)", "tone": "red", "bsScore": 80, "scoreMode": "bs", "judgeLine": "Fast-scan caught in 1 call ($0.00025, 1/40th cent). Wait for Amazon or Target 1P restock", "salePrice": 266.01, "claimedMsrp": 249.0, "claimedDisc": "+6.8% over MSRP", "baseline": 209.32, "baselineLabel": "Camel 1P Avg", "trueDisc": "-27.1% markup", "atl": "Amazon 1P ATL $139.00 (Nov '25)", "cheapest": "Wait for 1P restock (~$169\u2013$189)", "chartType": "line", "chartSource": "CamelCamelCamel 1P vs 3P New Split (1 Call, $0.00025)", "xray": {"storeBadge": "IN STOCK \u2014 FAST DELIVERY", "storeShortBadge": "IN STOCK", "storePrice": "$266.01", "storeList": "3P Peak $289.99", "storeUrgency": "3rd-party seller", "storeBtn": "Buy Now", "truthBadge": "3P SCALPER / BS 80", "truthShortBadge": "SCALPER / BS 80", "truthHead": "$17 ABOVE Apple's $249 MSRP (+27.1% over Amazon avg)", "truthMove": "Hard pass at $266.01. Last Nov ATL was $139.00 (wait)"}, "stripped": ["Amazon 1P Out of Stock, 3P New reseller took buybox at $266.01"], "flags": ["Amazon 1P OOS (3P scalper +27%)", "Oct 28 peak $249.99 (28d ago)", "Above Apple's $249 MSRP"], "chart": [{"iso": "2025-11-16", "d": "Nov '25", "p": 139.0, "kind": "low", "note": "ATL $139", "src": "Camel 1P Lowest ($139.00)"}, {"iso": "2026-09-25", "d": "Sep 25", "p": 289.99, "kind": "spike", "src": "Camel 3P New Peak ($289.99)"}, {"iso": "2026-10-28", "d": "Oct 28", "p": 249.99, "kind": "norm", "src": "Camel 1P Peak ($249.99, Apple MSRP)"}, {"iso": "2026-11-24", "d": "Nov 24", "p": 266.01, "kind": "bad", "note": "3P Scalper", "src": "Camel 3P New Buybox (1P OOS)"}], "owners": ["Amazon 1P ran out of stock and handed the buybox to a 3rd-party New seller at $266.01 \u2014 $17 OVER Apple's $249 MSRP, $56.69 above Amazon's $209.32 avg, and $127 above last November's $139 low.", "Caught deterministically in a single $0.00025 CamelCamelCamel extract with no extra API calls wasted."], "move": "Hard pass at $266.01. Never pay above $189 for AirPods Pro 2; wait for 1P restock at Amazon, Walmart, or Target.", "cost": "$0.00025", "costNum": 0.00025, "calls": "1 paid call (1/40th cent)", "capturedAt": "Nov 25, 2026 18:22 UTC", "links": [{"lbl": "Amazon ASIN", "url": "https://www.amazon.com/dp/B0D1XD1ZV3"}, {"lbl": "CamelCamelCamel", "url": "https://camelcamelcamel.com/product/B0D1XD1ZV3"}], "receipt": [["CamelCamelCamel 1P vs 3P split", "treg.web.extract (Crawl4AI)", "crawl4ai", "1", "$0.00025"]], "rawJson": {"product": "Apple AirPods Pro 2 (B0D1XD1ZV3)", "verdict": "SKIP \u2014 3P SCALPER (AMAZON OOS)", "manipulation_bs_score": 80, "sale_price": 266.01, "apple_msrp": 249.0, "camel_1p_avg": 209.32, "true_discount_pct": -27.1, "flags": ["ABOVE_MSRP_SCALPER", "RECENT_PEAK_WITHIN_75D", "AMAZON_1P_OOS_3P_SCALPER"], "total_treg_cost_usd": 0.00025}, "xShare": "Amazon 1P sold out of AirPods Pro 2 and handed the buybox to a 3P scalper charging $266.01 ($17 OVER Apple's $249 MSRP, vs $139 last Nov). Caught in 1 call ($0.00025) by @treg buy-smart: https://treg.to/buy-smart"}, {"id": "keychron", "tab": "Keychron Q1", "priceShort": "$129", "prompt": "Use @treg buy-smart to check https://www.keychron.com/products/keychron-q1-pro-qmk-via-wireless-custom-mechanical-keyboard", "product": "Keychron Q1 Pro QMK/VIA Wireless (Shopify DTC)", "verdict": "REAL DEAL \u2014 VERIFIED VIA WAYBACK", "tone": "green", "bsScore": 0, "scoreMode": "bs", "judgeLine": "Shopify DTC Wayback + 40-Shop Scan (2 calls, $0.00225). Keychron.com: $129.49", "salePrice": 129.49, "claimedMsrp": 184.99, "claimedDisc": "30.0%", "baseline": 157.49, "baselineLabel": "Wayback Median", "trueDisc": "17.8% true off", "atl": "Prior Wayback Low $146.99 (Dec '25)", "cheapest": "Keychron.com (DTC) $129.49", "chartType": "line", "chartSource": "Wayback Machine Shopify Variant JSON ($0) + Live DTC", "xray": {"storeBadge": "BFCM SALE \u2014 30% OFF", "storeShortBadge": "30% OFF", "storePrice": "$129.49", "storeList": "Regular $184.99", "storeUrgency": "Keychron.com (Keepa blind spot)", "storeBtn": "Add to Cart", "truthBadge": "VERIFIED SHOPIFY LOW / BS 0", "truthShortBadge": "SHOPIFY LOW / BS 0", "truthHead": "Beats Dec '25 archived price ($146.99) by $17.50", "truthMove": "Legit 30% BFCM deal directly on Keychron.com ($129.49)"}, "stripped": ["Q1 V2 Wired ($89.99 Wrong Model)", "Best Buy Bundle ($244.98)", "Stupid Bullets Tech ($159)"], "flags": ["Zero manipulation flags", "Beats Dec 2025 Wayback low by 11.9%"], "chart": [{"iso": "2025-12-15", "d": "Dec '25", "p": 146.99, "kind": "low", "note": "Dec $147", "src": "Wayback Shopify JSON ($146.99)"}, {"iso": "2026-03-01", "d": "Mar '26", "p": 167.99, "kind": "norm", "src": "Wayback Shopify JSON ($167.99)"}, {"iso": "2026-11-25", "d": "Nov 25", "p": 129.49, "kind": "good", "note": "New Low", "src": "Live Keychron.com DTC ($129.49)"}], "owners": ["Keepa is blind on Shopify stores \u2014 Wayback Machine parsed Keychron's archived Shopify JSON directly (Dec 2025 $146.99 and Mar 2026 $167.99, exact median $157.49) for $0.00.", "Sanitized Google Shopping confirmed Keychron.com ($129.49) beats Stupid Bullets Tech ($159.00) while stripping wired Q1 V2 ($89.99) and bundle noise."], "move": "Legit BFCM deal directly from Keychron.com \u2014 beats last December's holiday low by $17.50.", "cost": "$0.00225", "costNum": 0.00225, "calls": "2 paid calls, Wayback $0.00", "capturedAt": "Nov 25, 2026 18:44 UTC", "links": [{"lbl": "Keychron DTC", "url": "https://www.keychron.com/products/keychron-q1-pro-qmk-via-wireless-custom-mechanical-keyboard"}, {"lbl": "Wayback Dec '25", "url": "https://web.archive.org/web/20251215/https://www.keychron.com/products/keychron-q1-pro-qmk-via-wireless-custom-mechanical-keyboard"}], "receipt": [["Wayback Shopify variant JSON", "web.archive.org (6 snaps)", "web", "6", "$0.00000"], ["Live Shopify page extract", "treg.web.extract (Crawl4AI)", "crawl4ai", "1", "$0.00025"], ["40 multi-store offers sanitized", "serper.google.serp.shopping", "serper", "1", "$0.00200"]], "rawJson": {"product": "Keychron Q1 Pro QMK/VIA Wireless Keyboard", "verdict": "REAL DEAL", "manipulation_bs_score": 0, "sale_price": 129.49, "wayback_median": 157.49, "wayback_snapshots": [{"date": "2025-12-15", "price": 146.99}, {"date": "2026-03-01", "price": 167.99}], "true_discount_pct": 17.8, "flags": [], "total_treg_cost_usd": 0.00225}, "xShare": "Keepa doesn't work on Shopify stores \u2014 @treg buy-smart parsed Keychron's archived Shopify JSON via Wayback ($0) and proved the $129.49 Q1 Pro beats last December's $146.99 low: https://treg.to/buy-smart"}, {"id": "semrush", "tab": "Semrush", "priceShort": "$1,982/yr", "prompt": "Use @treg buy-smart to check if Semrush's annual SEO+AI plan ($1,982/yr) is worth it or cheaper on treg", "product": "Semrush SEO + AI Visibility Annual (Live Nov 2026)", "verdict": "KILL SUB \u2014 31.2\u00d7 CHEAPER ON TREG", "tone": "amber", "bsScore": 31, "scoreMode": "saas", "judgeLine": "Live /pricing/ extract ($0.00025) + treg Catalog Unit Math. Keep Semrush GUI if you need site crawler", "salePrice": 1982.04, "claimedMsrp": 2388.0, "claimedDisc": "17.0% annual", "baseline": 63.6, "baselineLabel": "treg Pay-Per-Call (2k checks/mo)", "trueDisc": "31.2\u00d7 cheaper", "atl": "treg $63.60/yr (1k Serpstat + 1k Cloro/mo)", "cheapest": "treg Pay-Per-Call $63.60/yr (saves $1,918/yr)", "chartType": "bars", "chartSource": "Annual Cost Comparison (Live semrush.com/pricing/ vs treg Catalog)", "xray": {"storeBadge": "SAVE 17% \u2014 BILLED ANNUALLY", "storeShortBadge": "17% ANNUAL", "storePrice": "$165.17/mo", "storeList": "Was $199/mo", "storeUrgency": "$1,982.04 upfront, 12-mo lock-in", "storeBtn": "Start Annual Plan", "truthBadge": "KILL SUBSCRIPTION / 31.2\u00d7 LESS", "truthShortBadge": "31.2\u00d7 CHEAPER", "truthHead": "1,000 Serpstat ($0.0025) + 1,000 Cloro ($0.0028)/mo = $63.60/yr", "truthMove": "Use treg for programmatic agent checks (keep Semrush only for GUI)"}, "stripped": ["12-month upfront lock-in", "Everyday 17% annual billing rate (not a special BF cut)"], "flags": ["12-month annual lock-in", "Saves $1,918.44/yr at 2,000 checks/mo", "GUI crawler not included"], "bars": [{"lbl": "Semrush Multi-Mkt", "val": 2978.04, "tone": "muted", "note": "$248.17/mo \u00d7 12"}, {"lbl": "Semrush SEO+AI", "val": 1982.04, "tone": "bad", "note": "$165.17/mo \u00d7 12"}, {"lbl": "Semrush Starter", "val": 1407.96, "tone": "muted", "note": "$117.33/mo \u00d7 12"}, {"lbl": "treg (Serpstat + Cloro)", "val": 63.6, "tone": "good", "note": "Dynamic slider below"}], "owners": ["Live audit.py saas-parse pulled all 3 Semrush annual tiers directly from semrush.com/pricing/seo-ai-search/ ($117.33, $165.17, $248.17/mo billed annually \u2014 Semrush's standard 17% annual billing discount) for $0.00025.", "Exact catalog math: 1,000 Serpstat domain overviews/mo ($0.0025) + 1,000 Cloro ChatGPT visibility checks/mo ($0.0028) = $5.30/mo ($63.60/yr). Keep Semrush if you rely on its GUI site-audit crawler and visual dashboards."], "move": "If your agent runs programmatic SEO and AI visibility checks, skip the $1,982/yr lock-in and run Serpstat + Cloro pay-per-call on treg (saves $1,918/yr).", "cost": "$0.00025", "costNum": 0.00025, "calls": "1 paid call, Live /pricing/", "capturedAt": "Nov 25, 2026 18:47 UTC", "links": [{"lbl": "Semrush Pricing", "url": "https://www.semrush.com/pricing/seo-ai-search/"}, {"lbl": "treg Catalog", "url": "https://treg.to/catalog"}], "receipt": [["Live semrush.com/pricing/ extract", "treg.web.extract (Crawl4AI)", "crawl4ai", "1", "$0.00025"], ["treg catalog rate-card math", "serpstat $0.0025 + cloro $0.0028", "web", "1", "$0.00000"]], "rawJson": {"saas": "Semrush SEO + AI Visibility Annual (Live Nov 2026)", "verdict": "KILL SUBSCRIPTION", "annual_promo_usd": 1982.04, "normal_monthly_x12_usd": 2388.0, "treg_formula": "1000 * $0.0025 (serpstat.google.domain.overview) + 1000 * $0.0028 (cloro.ai-search.chatgpt.scrape) * 12", "treg_annual_est_usd": 63.6, "cheaper_multiple": 31.2, "total_treg_cost_usd": 0.00025}, "xShare": "Semrush's annual SEO+AI plan is $1,982/yr. Running 1,000 Serpstat ($0.0025) + 1,000 Cloro ChatGPT ($0.0028) checks/mo via @treg is $63.60/yr (31.2\u00d7 cheaper, zero lock-in): https://treg.to/buy-smart"}];
+const CART_ITEMS = [{"id": "c_xm5", "imgKey": "xm5", "name": "Sony WH-1000XM5", "listed": 298.0, "action": "skip", "verdict": "SKIP TRAP", "tone": "red", "bestPrice": 0, "swapSave": 0, "cost": 0.00552, "note": "$20 above Jun Wayback + 640\u2191 hinge flaw", "checked": true}, {"id": "c_dyson", "imgKey": "dyson", "name": "Dyson V15 Detect (Amz)", "listed": 440.07, "action": "swap", "verdict": "SWAP \u2192 TARGET $408", "tone": "amber", "bestPrice": 407.97, "swapSave": 32.1, "cost": 0.00548, "note": "Amz is 3P Used, Target Brand New $407.97", "checked": true}, {"id": "c_airpods", "imgKey": "airpods", "name": "AirPods Pro 2 (Amz 3P)", "listed": 266.01, "action": "skip", "verdict": "SKIP SCALPER", "tone": "red", "bestPrice": 0, "swapSave": 0, "cost": 0.00025, "note": "Amazon OOS, $17 over Apple MSRP", "checked": true}, {"id": "c_breville", "imgKey": "breville", "name": "Breville Barista Express", "listed": 494.95, "action": "buy", "verdict": "REAL DEAL", "tone": "green", "bestPrice": 494.95, "swapSave": 0, "cost": 0.00548, "note": "19.7% below $616 13-yr avg", "checked": true}, {"id": "c_ugreen", "imgKey": "ugreen", "name": "UGREEN MagFlow Qi2.2", "listed": 109.99, "action": "buy", "verdict": "REAL DEAL", "tone": "green", "bestPrice": 109.99, "swapSave": 0, "cost": 0.0016, "note": "$15 below prior all-time low", "checked": true}, {"id": "c_anker", "imgKey": "anker", "name": "Anker Prime 250W Bank", "listed": 143.99, "action": "buy", "verdict": "FAIR (14.7% OFF)", "tone": "amber", "bestPrice": 143.99, "swapSave": 0, "cost": 0.0016, "note": "Not 42% off (+48% Sep spike), prior ATL $130", "checked": false}, {"id": "c_keychron", "imgKey": "keychron", "name": "Keychron Q1 Pro (DTC)", "listed": 129.49, "action": "buy", "verdict": "REAL DEAL", "tone": "green", "bestPrice": 129.49, "swapSave": 0, "cost": 0.00225, "note": "Beats Dec '25 Wayback low ($146.99)", "checked": false}, {"id": "c_semrush", "imgKey": "semrush", "name": "Semrush SEO+AI Annual", "listed": 1982.04, "action": "swap", "verdict": "SWAP \u2192 TREG $64/YR", "tone": "amber", "bestPrice": 63.6, "swapSave": 1918.44, "cost": 0.00025, "note": "31.2\u00d7 cheaper pay-per-call (2k checks/mo)", "checked": false}];
+const SKILL_PREVIEW = "---\nname: buy-smart\ndescription: Use when the user asks to audit a Black Friday, Cyber Monday, or retail deal, check whether a discount is real or manipulated (pre-sale yo-yo price hikes, fake MSRP anchors, Amazon 1P stock-out 3P scalpers, used-unit buybox hijacks, dropship clone markups, or stripped holiday derivative SKUs), compare live prices across retailers, audit a whole shopping cart, or compare an annual SaaS promo against pay-per-call treg endpoints. Accepts a product URL (including a.co/amzn.to shortlinks and regional Amazon domains), a product name, or both.\nmetadata:\n  summary: Audits product links, names, shopping carts, or SaaS annual promos against Wayback Machine ($0), CamelCamelCamel, sanitized multi-store comps, and Reddit owner threads, returning a 0-100 Manipulation BS-Score, a better move, and the exact itemized treg bill (~$0.0055 per audit).\n---\n\n# buy-smart\n\nBefore you click Buy, let your agent verify whether a discount is real or staged. Accepts a product\nURL (Amazon US/UK/DE/CA/AU/FR/ES/IT/JP, `a.co`/`amzn.to` shortlinks, Shopify, or DTC stores), a\nplain product name, a whole shopping cart, or a SaaS `/pricing` URL.\n\nRuns on treg, through its MCP tools (`catalog_search`, `catalog_get`, `call`) or the `treg` CLI;\neither is enough. With neither set up, https://treg.to/llms.txt says how. Install only if the human asked\nyou to; otherwise tell them how and stop.\n\nZero affiliate links. Zero SEO \"Top 10\" listicles. Default budget cap: **$0.03 per single-item\naudit** (typical URL audit: ~$0.0055; name-only audit: ~$0.0065).\n\n## Modes\n\n| Mode | Trigger | What it delivers |\n| --- | --- | --- |\n| **audit** (default) | Product link, shortlink, product name, or both | Regional ASIN resolution, Wayback ($0) + CamelCamelCamel 1P/3P history, live Amazon & sanitized 40-store comps, Reddit defect clusters, 0-100 BS-Score, optional Jev 1.13 verdict |\n| **cart** | Multiple links or product names | Parallel per-item audits aggregated into **Direct swap savings** vs. **Bad spend blocked** alongside exact metered treg bill |\n| **pick** | Category + budget (\"best 65-inch OLED TV under $1,500\") | Size-verified multi-store comps + niche Reddit owner threads + stripped holiday SKU guard -> #1 pick, runner-up, lowest verified 1P store |\n| **saas** | SaaS annual promo URL or name (Semrush, Clay, Apollo, Ahrefs) | Live `/pricing` extract + Wayback check + treg pay-per-call annual cost receipt (`BUY PROMO` vs. `KILL SUBSCRIPTION`) |\n\n## The 4-step loop\n\n1. **Resolve (`$0.00`, or `+$0.00099` if name-only).** Save the stdlib script at the end of this\n   file once as `buy_smart.py`, then resolve the user's input:\n   ```bash\n   python3 buy_smart.py resolve \"<exact user input>\" > /tmp/bs_resolved.json\n   ```\n   - If `mode == \"url_amazon\"`, you already have `asin`, `country`, `gl`, `currency`,\n     `canonical_url`, and regional `camel_url`. Go to Step 2.\n   - If `mode == \"product_name\"` (or a DTC link for a widely sold brand), search for the canonical\n     non-renewed Amazon ASIN so CamelCamelCamel works too:\n     ```bash\n     treg call treg.web.search --method POST --header \"X-treg-Route-Prefer: tinyfish\" \\\n       --data '{\"q\":\"<asin_search_query>\",\"limit\":8}' > /tmp/bs_search.json\n     ```\n2. **Pull live + historical receipts in parallel.** Save each response to `/tmp/`:\n\n   | Output | Call | Notes |\n   | --- | --- | --- |\n   | `/tmp/bs_wayback.json` | `python3 buy_smart.py wayback \"<canonical_url>\" --days 365 --samples 6` | Free ($0.00); parses Amazon, Shopify variant JSON, SSR stores, and SaaS `/pricing`; skips cleanly on JS SPAs or sandboxed network\n# ... (full SKILL.md + inline stdlib buy_smart.py at /skills/buy-smart/SKILL.md)";
+const LOGOS = {"treg": "media/buy-smart/logos/treg.svg", "claude": "media/buy-smart/logos/claude-code.png", "codex": "media/buy-smart/logos/codex.png", "openclaw": "media/buy-smart/logos/openclaw.png", "hermes": "media/buy-smart/logos/hermes.png", "jev": "media/buy-smart/logos/jev.png", "amazon": "media/buy-smart/logos/amazon.svg", "walmart": "media/buy-smart/logos/walmart.svg", "shopify": "media/buy-smart/logos/shopify.svg", "reddit": "media/buy-smart/logos/reddit.svg", "crawl4ai": "media/buy-smart/logos/crawl4ai.svg", "serper": "media/buy-smart/logos/serper.svg", "scrapecreators": "media/buy-smart/logos/scrapecreators.svg", "serpstat": "media/buy-smart/logos/serpstat.svg", "cloro": "media/buy-smart/logos/cloro.svg", "semrush": "media/buy-smart/logos/semrush.svg", "github": "media/buy-smart/logos/github.svg", "x": "media/buy-smart/logos/x.svg", "web": "media/buy-smart/logos/web.svg"};
+const PROD_IMGS = {"dyson": "media/buy-smart/dyson.jpg", "xm5": "media/buy-smart/xm5.jpg", "breville": "media/buy-smart/breville.jpg", "ugreen": "media/buy-smart/ugreen.jpg", "anker": "media/buy-smart/anker.jpg", "airpods": "media/buy-smart/airpods.jpg", "keychron": "media/buy-smart/keychron.jpg", "semrush": "media/buy-smart/logos/semrush.svg"};
+
+// Hydrate deduplicated SVG/PNG logos & studio product photos synchronously on paint 0
+document.querySelectorAll("img[data-logo]").forEach(img => {
+  const uri = LOGOS[img.dataset.logo];
+  if (uri) img.src = uri;
+});
+document.querySelectorAll("img[data-prod]").forEach(img => {
+  const uri = PROD_IMGS[img.dataset.prod];
+  if (uri) img.src = uri;
+});
+
+const AGENTS = [
+  { key: "claude", name: "Claude", logo: LOGOS.claude },
+  { key: "codex", name: "Codex", logo: LOGOS.codex },
+  { key: "openclaw", name: "OpenClaw", logo: LOGOS.openclaw },
+  { key: "hermes", name: "Hermes", logo: LOGOS.hermes }
+];
+const INSTALL_CMDS = {
+  claude: "npx skills add superdesigndev/treg --skill buy-smart",
+  codex: "npx skills add superdesigndev/treg --skill buy-smart --agent codex",
+  openclaw: "npx skills add superdesigndev/treg --skill buy-smart",
+  hermes: "npx skills add superdesigndev/treg --skill buy-smart"
+};
+const AGENT_NOTES = {
+  claude: "Claude Code: works with treg MCP (https://treg.to/mcp/) or the treg CLI.",
+  codex: "Codex: installs into your Codex skills directory; connect treg via https://treg.to/llms.txt.",
+  openclaw: "OpenClaw: paste `set up treg — https://treg.to/llms.txt` first if not connected.",
+  hermes: "Hermes: add `https://treg.to/mcp/` as your MCP server, then run the skill command above."
+};
+const PROMPTS = {
+  link: "Use @treg buy-smart to check if this Black Friday deal is real: https://www.amazon.com/dp/B09XS7JWHH",
+  name: "Use @treg buy-smart to check if the Dyson V15 Detect at $440 is a real deal or fake",
+  cart: "Use @treg buy-smart to audit my Black Friday cart and separate direct store-swap savings from traps: Sony XM5 ($298), Dyson V15 ($440), Breville Barista Express ($495), AirPods Pro 2 ($266)",
+  pick: "Use @treg buy-smart to find the best 65-inch OLED TV under $1,500 this Black Friday using real owner reviews and price history",
+  saas: "Use @treg buy-smart to check if Semrush's annual SEO+AI plan ($1,982/yr) is worth it or cheaper pay-per-call on treg"
+};
+
+document.getElementById("skill-code-pre").textContent = SKILL_PREVIEW;
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+}
+function fmtUsd(n) {
+  return "$" + Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtSplitUsd(n) {
+  const parts = Number(n).toFixed(2).split(".");
+  return `$${Number(parts[0]).toLocaleString()}<span class="cents">.${parts[1]}</span>`;
+}
+
+// Sticky nav border + auto-reveal mobile jump strip
+window.addEventListener("scroll", () => {
+  document.getElementById("topnav").classList.toggle("scrolled", window.scrollY > 12);
+  const mnav = document.querySelector(".mobile-subnav");
+  if (mnav) mnav.classList.toggle("visible", window.scrollY > 240);
+}, { passive: true });
+
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+function copyText(str, label) {
+  const ok = () => showToast(label || "Copied!");
+  const fallback = () => {
+    const ta = document.createElement("textarea");
+    ta.value = str;
+    ta.style.cssText = "position:fixed;opacity:0;pointer-events:none";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      const copied = document.execCommand("copy");
+      showToast(copied ? (label || "Copied!") : "Select & press Cmd/Ctrl+C");
+    } catch { showToast("Select & press Cmd/Ctrl+C"); }
+    ta.remove();
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(str).then(ok).catch(fallback);
+  } else {
+    fallback();
+  }
+}
+
+// Global Agent Persona Sync
+let agIdx = 0;
+let userPinnedAgent = false;
+let currentInstall = INSTALL_CMDS.claude;
+
+function setAgentPersona(key, pin = false) {
+  const idx = AGENTS.findIndex(a => a.key === key);
+  if (idx < 0) return;
+  agIdx = idx;
+  if (pin) userPinnedAgent = true;
+  const ag = AGENTS[idx];
+  const rotLogo = document.getElementById("rot-logo");
+  const rotName = document.getElementById("rot-name");
+  rotLogo.src = ag.logo; rotLogo.alt = ag.name; rotName.textContent = ag.name;
+  document.getElementById("term-agent-ico").src = ag.logo;
+  document.querySelectorAll(".agent-tab").forEach(b => {
+    const on = b.dataset.agent === key;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-selected", on ? "true" : "false");
+  });
+  currentInstall = INSTALL_CMDS[key];
+  document.getElementById("install-cmd").innerHTML = `<span class="g">$</span> ${escHtml(currentInstall)}`;
+  const noteEl = document.getElementById("agent-note");
+  if (noteEl) noteEl.textContent = AGENT_NOTES[key] || "";
+}
+document.querySelectorAll(".agent-tab").forEach(btn => btn.addEventListener("click", () => setAgentPersona(btn.dataset.agent, true)));
+
+const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (!reduceMotion) {
+  setInterval(() => {
+    if (userPinnedAgent) return;
+    agIdx = (agIdx + 1) % AGENTS.length;
+    const img = document.getElementById("rot-logo");
+    const nm = document.getElementById("rot-name");
+    img.style.opacity = "0"; img.style.transform = "scale(0.86)";
+    setTimeout(() => {
+      img.src = AGENTS[agIdx].logo; img.alt = AGENTS[agIdx].name; nm.textContent = AGENTS[agIdx].name;
+      document.getElementById("term-agent-ico").src = AGENTS[agIdx].logo;
+      img.style.opacity = "1"; img.style.transform = "scale(1)";
+    }, 170);
+  }, 2900);
+}
+
+// ---------- PHYSICAL X-RAY PRICE TAG WITH REAL PRODUCT PHOTO ----------
+const xrayStage = document.getElementById("xray-stage");
+const xrayRange = document.getElementById("xray-range");
+function setXraySplit(pct) {
+  const clamped = Math.max(14, Math.min(86, Number(pct)));
+  xrayStage.style.setProperty("--split", clamped + "%");
+  xrayRange.value = String(clamped);
+}
+xrayRange.addEventListener("input", e => setXraySplit(e.target.value));
+
+function renderXray(d) {
+  const x = d.xray;
+  const isMob = window.innerWidth <= 780;
+  const storeBadge = isMob ? x.storeShortBadge : x.storeBadge;
+  const truthBadge = isMob ? x.truthShortBadge : x.truthBadge;
+  const prodSrc = PROD_IMGS[d.id] || "";
+  const photoStyle = d.id === "semrush" ? "style='padding:8px'" : "";
+
+  document.getElementById("xray-store").innerHTML = `
+    <span class="xr-lbl">Before<span class="xr-more">: the store's tag</span></span>
+    <div class="xs-wrap">
+      <img class="prod-photo xray-photo" src="${prodSrc}" alt="${escHtml(d.tab)}" ${photoStyle}>
+      <div class="xs-left">
+        <span class="xs-badge">${escHtml(storeBadge)}</span>
+        <div class="xs-price-row">
+          <span class="xs-price">${escHtml(x.storePrice)}</span>
+          <span class="xs-list">${escHtml(x.storeList)}</span>
+          <span class="xs-urg">${escHtml(x.storeUrgency)}</span>
+        </div>
+      </div>
+    </div>
+    <span class="xs-btn">${escHtml(x.storeBtn)}</span>
+  `;
+  document.getElementById("xray-truth").innerHTML = `
+    <span class="xr-lbl">After<span class="xr-more">: your agent's audit</span></span>
+    <div class="xt-box">
+      <span class="xt-tag xt-${d.tone}">${escHtml(truthBadge)}</span>
+      <div class="xt-head">${escHtml(x.truthHead)}</div>
+      <div class="xt-right">${escHtml(x.truthMove)}</div>
+    </div>
+  `;
+  setXraySplit(isMob ? 47 : 48);
+}
+
+// ---------- BORDERLESS INTERACTIVE CROSSHAIR SVG CHART ----------
+let activeChartMeta = null;
+
+const CHART_FONT = "'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace";
+
+// Drawn at the container's real pixel size, so labels stay 12px at every width.
+function buildChartSvg(deal, W, H) {
+  const pts = deal.chart;
+  const padL = 50, padR = 30, padT = 28, padB = 28;
+  const times = pts.map(p => Date.parse(p.iso + "T00:00:00Z"));
+  const tMin = Math.min(...times), tMax = Math.max(...times);
+  const tSpan = Math.max(86400000, tMax - tMin);
+  const sx = i => {
+    const tFrac = (times[i] - tMin) / tSpan;
+    const rFrac = pts.length > 1 ? i / (pts.length - 1) : 0;
+    return padL + (0.72 * tFrac + 0.28 * rFrac) * (W - padL - padR);
+  };
+
+  const vals = pts.map(p => p.p).concat(deal.baseline ? [deal.baseline] : []);
+  const rawMin = Math.min(...vals), rawMax = Math.max(...vals);
+  const span = Math.max(20, rawMax - rawMin);
+  const lo = Math.max(0, rawMin - span * 0.16);
+  const hi = rawMax + span * 0.22;
+  const sy = v => padT + (1 - (v - lo) / Math.max(1, hi - lo)) * (H - padT - padB);
+
+  const ay = deal.baseline ? sy(deal.baseline) : null;
+  const step = span > 260 ? 100 : (span > 110 ? 50 : 25);
+  const tLow = Math.ceil(rawMin / step) * step;
+  const tHigh = Math.floor(rawMax / step) * step;
+  const tMid = Math.round(((tLow + tHigh) / 2) / step) * step;
+  // Drop ticks that would crowd the average line
+  const ticks = [...new Set([tLow, tMid, tHigh])].filter(v => v >= lo && v <= hi && (ay === null || Math.abs(sy(v) - ay) >= 18));
+
+  const lineCol = deal.tone === "green" ? "#118453" : (deal.tone === "red" ? "#B8322B" : "#9A5300");
+  const gradId = "grad-" + deal.id;
+  const coords = pts.map((p, i) => ({ ...p, x: sx(i), y: sy(p.p) }));
+  activeChartMeta = { coords, W, H, padT, padB, baseline: deal.baseline, baselineLabel: deal.baselineLabel };
+
+  const isMixedDrop = deal.id === "dyson" && coords.length >= 2;
+  const mainCoords = isMixedDrop ? coords.slice(0, -1) : coords;
+  const pathD = mainCoords.map((c, i) => `${i === 0 ? "M" : "L"} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(" ");
+  const dashedTail = isMixedDrop
+    ? `<line x1="${coords[coords.length-2].x.toFixed(1)}" y1="${coords[coords.length-2].y.toFixed(1)}" x2="${coords[coords.length-1].x.toFixed(1)}" y2="${coords[coords.length-1].y.toFixed(1)}" stroke="${lineCol}" stroke-width="2.1" stroke-dasharray="4 3"/>`
+    : "";
+  const fullPathForArea = coords.map((c, i) => `${i === 0 ? "M" : "L"} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`).join(" ");
+  const areaD = `${fullPathForArea} L ${coords[coords.length - 1].x.toFixed(1)} ${H - padB} L ${coords[0].x.toFixed(1)} ${H - padB} Z`;
+
+  const gridSvg = ticks.map(v => {
+    const y = sy(v).toFixed(1);
+    return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="rgba(16,16,16,0.06)" stroke-width="1"/>
+      <text x="${padL - 9}" y="${(Number(y) + 4).toFixed(1)}" text-anchor="end" fill="#5F5D59" font-family="${CHART_FONT}" font-size="12">$${v}</text>`;
+  }).join("");
+
+  let spikeZoneSvg = "";
+  const spikePt = coords.find(c => c.kind === "spike");
+  if (spikePt && deal.baseline && spikePt.p > deal.baseline * 1.15) {
+    const yTop = sy(spikePt.p), yBase = sy(deal.baseline);
+    spikeZoneSvg = `
+      <rect x="${padL}" y="${yTop.toFixed(1)}" width="${W - padL - padR}" height="${Math.max(4, yBase - yTop).toFixed(1)}" fill="url(#hatch-red)" opacity="0.48"/>
+      <line x1="${spikePt.x.toFixed(1)}" y1="${yTop.toFixed(1)}" x2="${spikePt.x.toFixed(1)}" y2="${yBase.toFixed(1)}" stroke="#B8322B" stroke-width="1" stroke-dasharray="2 2" opacity="0.55"/>
+    `;
+  }
+
+  const avgSvg = ay !== null ? `
+    <line x1="${padL}" y1="${ay.toFixed(1)}" x2="${W - padR}" y2="${ay.toFixed(1)}" stroke="#5F5D59" stroke-width="1.1" stroke-dasharray="4 4"/>
+    <text x="${padL + 6}" y="${(ay - 6).toFixed(1)}" text-anchor="start" fill="#5F5D59" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" font-family="${CHART_FONT}" font-size="12">Avg $${Math.round(deal.baseline)}</text>
+  ` : "";
+
+  let prevLabelX = -999, prevLabelY = -999, lastDateX = -999;
+  const lastPtX = coords[coords.length - 1].x;
+  const dotsSvg = coords.map((c, i) => {
+    const isLast = i === coords.length - 1;
+    const col = c.kind === "spike" || c.kind === "bad" ? "#B8322B" : (c.kind === "good" || c.kind === "low" ? "#0E7548" : (c.kind === "warn" ? "#9A5300" : "#101010"));
+    const r = (isLast || c.kind === "spike") ? 4.5 : 3.4;
+    let lblSvg = "";
+    if (c.note || c.kind === "spike") {
+      let ly = isLast ? Math.min(H - padB - 8, c.y + 4) : c.y - 13;
+      if (ly < 14) ly = c.y + 20;
+      if (ay !== null && Math.abs(ly - ay) < 16) ly = (c.y > ay) ? c.y + 20 : Math.max(14, c.y - 15);
+      const lx = isLast ? c.x - 14 : c.x;
+      if (Math.abs(lx - prevLabelX) < 76 && Math.abs(ly - prevLabelY) < 17) ly = c.y + 21;
+      prevLabelX = lx; prevLabelY = ly;
+      const anchor = isLast ? "end" : (i === 0 ? "start" : "middle");
+      lblSvg = `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${anchor}" fill="${col}" stroke="#FFFFFF" stroke-width="4" paint-order="stroke" font-family="${CHART_FONT}" font-size="12" font-weight="500">${escHtml(c.note || ('Spike $' + Math.round(c.p)))}</text>`;
+    }
+    const showDate = isLast || (c.x - lastDateX >= 64 && (lastPtX - c.x >= 72));
+    if (showDate) lastDateX = c.x;
+    return `
+      <circle cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="${r}" fill="${col}" stroke="#fff" stroke-width="1.6"/>
+      ${lblSvg}
+      ${showDate ? `<text x="${c.x.toFixed(1)}" y="${H - 6}" text-anchor="${isLast ? 'end' : (i === 0 ? 'start' : 'middle')}" fill="#5F5D59" font-family="${CHART_FONT}" font-size="12">${escHtml(c.d)}</text>` : ""}
+    `;
+  }).join("");
+
+  return `<svg id="active-chart-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Price history chart">
+    <defs>
+      <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${lineCol}" stop-opacity="0.13"/>
+        <stop offset="100%" stop-color="${lineCol}" stop-opacity="0.00"/>
+      </linearGradient>
+      <pattern id="hatch-red" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+        <line x1="0" y1="0" x2="0" y2="6" stroke="#B8322B" stroke-width="1.3" opacity="0.22"/>
+      </pattern>
+    </defs>
+    ${gridSvg}
+    ${spikeZoneSvg}
+    ${avgSvg}
+    <path d="${areaD}" fill="url(#${gradId})"/>
+    <path d="${pathD}" fill="none" stroke="${lineCol}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dashedTail}
+    ${dotsSvg}
+    <line id="ch-line" x1="0" y1="${padT}" x2="0" y2="${H - padB}" stroke="#101010" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
+    <circle id="ch-dot" cx="0" cy="0" r="5.5" fill="none" stroke="#101010" stroke-width="1.8" opacity="0"/>
+  </svg>
+  <div class="chart-tip" id="chart-tip"></div>`;
+}
+
+function mountChart(deal) {
+  const wrap = document.getElementById("chart-wrap");
+  if (!wrap || deal.chartType === "bars") return;
+  wrap.innerHTML = "";
+  const W = Math.max(280, Math.round(wrap.clientWidth));
+  const H = Math.max(170, Math.round(wrap.clientHeight));
+  wrap.innerHTML = buildChartSvg(deal, W, H);
+  attachChartScrubber(wrap);
+}
+
+function attachChartScrubber(wrap) {
+  if (!wrap || wrap.dataset.scrub) return;
+  wrap.dataset.scrub = "1";
+
+  function onMove(ev) {
+    const svg = document.getElementById("active-chart-svg");
+    const tip = document.getElementById("chart-tip");
+    const chLine = document.getElementById("ch-line");
+    const chDot = document.getElementById("ch-dot");
+    if (!svg || !tip || !chLine || !chDot || !activeChartMeta) return;
+    const { coords, W, baseline } = activeChartMeta;
+    const rect = svg.getBoundingClientRect();
+    const relX = ((ev.clientX - rect.left) / Math.max(1, rect.width)) * W;
+    let best = coords[0], bestDist = Infinity;
+    coords.forEach(c => {
+      const dist = Math.abs(c.x - relX);
+      if (dist < bestDist) { bestDist = dist; best = c; }
+    });
+    chLine.setAttribute("x1", best.x.toFixed(1)); chLine.setAttribute("x2", best.x.toFixed(1)); chLine.setAttribute("opacity", "0.42");
+    chDot.setAttribute("cx", best.x.toFixed(1)); chDot.setAttribute("cy", best.y.toFixed(1)); chDot.setAttribute("opacity", "1");
+    const delta = baseline ? ((best.p - baseline) / baseline) * 100 : null;
+    const dHtml = delta !== null
+      ? `<span class="${delta > 2 ? 'ct-delta-bad' : 'ct-delta-good'}">${delta >= 0 ? '+' : ''}${delta.toFixed(1)}% vs avg</span>`
+      : "";
+    tip.innerHTML = `<div><strong>${escHtml(best.iso)}</strong> ${fmtUsd(best.p)} ${dHtml}</div><div class="ct-src">${escHtml(best.src)}</div>`;
+    tip.style.left = (best.x / W > 0.56) ? "12px" : "auto";
+    tip.style.right = (best.x / W > 0.56) ? "auto" : "12px";
+    tip.classList.add("show");
+  }
+  function onLeave() {
+    const tip = document.getElementById("chart-tip");
+    const chLine = document.getElementById("ch-line");
+    const chDot = document.getElementById("ch-dot");
+    if (chLine) chLine.setAttribute("opacity", "0");
+    if (chDot) chDot.setAttribute("opacity", "0");
+    if (tip) tip.classList.remove("show");
+  }
+  wrap.addEventListener("pointermove", onMove);
+  wrap.addEventListener("pointerdown", onMove);
+  wrap.addEventListener("pointerleave", onLeave);
+}
+
+// ---------- SEMRUSH BAR CHART + LIVE MOUNTED SLIDER ----------
+let saasCallsPerMo = 1000;
+function buildSaasBarsShell() {
+  return `
+    <div id="saas-bars-rows"></div>
+    <div class="saas-slider-box">
+      <div id="saas-slider-head" class="saas-slider-head"></div>
+      <input type="range" id="saas-slider" min="100" max="3000" step="100" value="${saasCallsPerMo}" aria-label="Adjust monthly SEO and AI checks">
+    </div>
+  `;
+}
+function updateSaasBars(deal) {
+  const tregAnnual = (saasCallsPerMo * 0.0025 + saasCallsPerMo * 0.0028) * 12;
+  const maxVal = 2978.04;
+  const mult = (1982.04 / Math.max(tregAnnual, 0.01)).toFixed(1);
+  const rowsHost = document.getElementById("saas-bars-rows");
+  if (rowsHost) {
+    rowsHost.innerHTML = `<div class="bar-chart">${deal.bars.map((b, i) => {
+      const val = i === 3 ? tregAnnual : b.val;
+      const pct = Math.max(2.5, (val / maxVal) * 100);
+      const note = i === 3 ? `${saasCallsPerMo.toLocaleString()} Serpstat + ${saasCallsPerMo.toLocaleString()} Cloro/mo` : b.note;
+      return `<div class="bar-row"><div class="bar-row-top"><span>${escHtml(b.lbl)}</span><strong>${fmtUsd(val)}/yr <span class="bar-note">(${escHtml(note)})</span></strong></div><div class="bar-track"><div class="bar-fill bf-${b.tone}" style="width:${pct.toFixed(1)}%"></div></div></div>`;
+    }).join("")}</div>`;
+  }
+  const headEl = document.getElementById("saas-slider-head");
+  if (headEl) {
+    headEl.innerHTML = `<span>Monthly volume: <strong>${saasCallsPerMo.toLocaleString()}</strong> Serpstat + <strong>${saasCallsPerMo.toLocaleString()}</strong> Cloro</span><span class="ssh-total">${fmtUsd(tregAnnual)}/yr (${mult}× cheaper)</span>`;
+  }
+  const kpiEl = document.getElementById("kpi-true-val");
+  if (kpiEl) kpiEl.textContent = `${mult}× cheaper`;
+  const scoreEl = document.getElementById("score-big-val");
+  if (scoreEl) scoreEl.textContent = `${mult}× cheaper`;
+  const subEl = document.getElementById("score-sub-val");
+  if (subEl) subEl.textContent = `${(saasCallsPerMo * 2).toLocaleString()} API checks/mo vs annual plan`;
+  const atlEl = document.getElementById("viz-atl");
+  if (atlEl) atlEl.textContent = `treg ${fmtUsd(tregAnnual)}/yr`;
+}
+
+// ---------- RENDER HERO DEAL (NO DONUT GAUGE, NO PILL SOUP!) ----------
+let activeDealIdx = 0;
+
+function renderDeal(idx, scrollTab = false) {
+  activeDealIdx = idx;
+  const d = DEALS[idx];
+  document.getElementById("foot-calls").textContent = d.calls;
+  document.getElementById("foot-cost").textContent = d.cost;
+  document.getElementById("foot-status").textContent = `Captured ${d.capturedAt}, zero affiliate links`;
+
+  document.querySelectorAll(".deal-tab").forEach((b, i) => {
+    const on = i === idx;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-selected", on ? "true" : "false");
+    if (on && scrollTab && window.innerWidth <= 1140) {
+      b.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    }
+  });
+
+  const shortStep = (step) => step
+    .replace("Wayback Machine CDX check", "Wayback")
+    .replace("Wayback Machine snapshots", "Wayback")
+    .replace("Wayback Machine check (new SKU)", "Wayback")
+    .replace("Wayback Shopify variant JSON", "Wayback JSON")
+    .replace("CamelCamelCamel 1P/3P history", "Camel")
+    .replace("CamelCamelCamel 13-yr history", "Camel")
+    .replace("CamelCamelCamel 3P New baseline", "Camel 3P")
+    .replace("CamelCamelCamel 1P vs 3P split", "Camel 1P/3P")
+    .replace("Live Amazon buybox & stock", "Amazon live")
+    .replace("Live Amazon detail & stock", "Amazon live")
+    .replace("Live Amazon 1P detail", "Amazon live")
+    .replace("Live Amazon listing check", "Amazon live")
+    .replace("Live Amazon stock verification", "Amazon live")
+    .replace("Live Shopify page extract", "Shopify live")
+    .replace("Live semrush.com/pricing/ extract", "Semrush /pricing/")
+    .replace("40 multi-store offers sanitized", "40 shops")
+    .replace("Reddit owner threads mined", "Reddit")
+    .replace("Reddit defect cluster scan", "Reddit")
+    .replace("Reddit r/espresso scan", "Reddit")
+    .replace("Jev 1.13 verdict (call ec03cf92)", "Jev 1.13")
+    .replace("treg catalog rate-card math", "treg catalog");
+
+  document.getElementById("trace-strip").innerHTML =
+    d.receipt.map(([step]) =>
+      `<span class="trace-step"><span class="chk">✓</span> ${escHtml(shortStep(step))}</span>`
+    ).join('<span class="trace-sep" aria-hidden="true">→</span>');
+
+  renderXray(d);
+
+  const isSaas = d.scoreMode === "saas";
+  const scoreCol = isSaas ? "var(--green-text)" : (d.bsScore >= 60 ? "var(--red)" : (d.bsScore >= 25 ? "var(--amber)" : "var(--green-text)"));
+  const scoreHead = isSaas ? "31.2× cheaper" : `BS ${d.bsScore} / 100`;
+  const scoreSub = isSaas
+    ? "2,000 API checks/mo vs annual plan"
+    : (d.bsScore >= 60 ? "High manipulation risk" : (d.bsScore >= 25 ? "Exaggerated marketing" : "Clean verified deal"));
+  const fiCls = d.tone === "green" ? "fi-green" : (d.tone === "red" ? "fi-red" : "fi-amber");
+
+  const chartArea = d.chartType === "bars"
+    ? `<div id="saas-bars-host">${buildSaasBarsShell()}</div>`
+    : `<div class="chart-wrap" id="chart-wrap"></div>`;
+
+  document.getElementById("audit-body").innerHTML = `
+    <div class="audit-top">
+      <div>
+        <div class="audit-prod">${escHtml(d.product)}</div>
+        <div class="audit-meta">${escHtml(d.judgeLine)}</div>
+      </div>
+      <div class="verdict-txt vt-${d.tone}">${escHtml(d.verdict)}</div>
+    </div>
+
+    <div class="audit-grid">
+      <div class="audit-col-l">
+        <div class="viz-block">
+          <div class="viz-head">
+            <span>${escHtml(d.chartSource)}</span>
+            <span id="viz-atl">${escHtml(d.atl)}</span>
+          </div>
+          ${chartArea}
+        </div>
+        <div class="kpi-strip">
+          <div>
+            <div class="kpi-lbl">Listed offer</div>
+            <div class="kpi-val">${fmtUsd(d.salePrice)}</div>
+          </div>
+          <div>
+            <div class="kpi-lbl">Claimed off</div>
+            <div class="kpi-val quiet">${escHtml(d.claimedDisc)}</div>
+          </div>
+          <div>
+            <div class="kpi-lbl">True reality</div>
+            <div class="kpi-val ${d.tone}" id="kpi-true-val">${escHtml(d.trueDisc)}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="audit-col-r">
+        <div>
+          <div class="score-line">
+            <div class="score-row">
+              <div class="score-big" id="score-big-val" style="color:${scoreCol}">${scoreHead}</div>
+              <div class="score-sub" id="score-sub-val">${scoreSub}</div>
+            </div>
+            <div class="flags-inline">${d.flags.map(escHtml).join(" · ")}</div>
+          </div>
+
+          <ul class="evidence-list">
+            ${d.owners.map(o => `<li>${escHtml(o)}</li>`).join("")}
+          </ul>
+        </div>
+
+        <div class="proof-links">
+          ${d.links.map(lk => `<a class="proof-link" href="${escHtml(lk.url)}" target="_blank" rel="noopener">${escHtml(lk.lbl)} ↗</a>`).join("")}
+        </div>
+      </div>
+    </div>
+
+    <div class="move-bar">
+      <div class="move-txt"><strong>Better move:</strong> ${escHtml(d.move)}</div>
+      <div class="move-actions">
+        <button type="button" class="pill sm" id="dl-deal-png">Receipt PNG</button>
+        <a class="pill sm dark" id="share-deal-x" href="https://x.com/intent/tweet?text=${encodeURIComponent(d.xShare)}" target="_blank" rel="noopener">Post to X</a>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("drawer-ledger").innerHTML =
+    d.receipt.map(([step, ep, , calls, cost]) =>
+      `<tr><td>${escHtml(step)}<span class="ml-ep">${escHtml(ep)}</span></td><td class="r">${calls}×</td><td class="r">${cost}</td></tr>`
+    ).join("") +
+    `<tr class="ml-total"><td>Total treg metered bill</td><td class="r"></td><td class="r">${d.cost}</td></tr>`;
+  document.getElementById("drawer-stripped").innerHTML =
+    `Filtered out: ${d.stripped.map(s => `<s>${escHtml(s)}</s>`).join(", ")}`;
+  document.getElementById("drawer-json").textContent = JSON.stringify(d.rawJson, null, 2);
+
+  const sr = document.getElementById("sr-announcer");
+  if (sr) sr.textContent = `${d.product}: ${d.verdict}`;
+
+  if (d.chartType === "bars") {
+    updateSaasBars(d);
+    const slider = document.getElementById("saas-slider");
+    if (slider) {
+      slider.addEventListener("input", e => {
+        saasCallsPerMo = Number(e.target.value);
+        updateSaasBars(d);
+      });
+    }
+  } else {
+    mountChart(d);
+  }
+
+  document.getElementById("dl-deal-png").addEventListener("click", () => downloadReceiptPng(d));
+}
+
+// ---------- 1-CLICK THERMAL RECEIPT PNG (Clean Matte Obsidian, Fixed Final-Line Wrapping!) ----------
+function wrapCanvasLines(ctx, text, maxW, maxLines = 2) {
+  const words = String(text).split(/\s+/);
+  const lines = [];
+  let cur = "";
+  for (const w of words) {
+    const test = cur ? cur + " " + w : w;
+    if (ctx.measureText(test).width > maxW && cur) {
+      if (lines.length === maxLines - 1) { lines.push(cur + "…"); cur = ""; break; }
+      lines.push(cur);
+      cur = w;
+    } else cur = test;
+  }
+  if (cur) lines.push(cur);
+  return lines.slice(0, maxLines);
+}
+
+function downloadReceiptPng(dealOrCart, isCart = false) {
+  const c = document.createElement("canvas");
+  c.width = 1200; c.height = 675;
+  const ctx = c.getContext("2d");
+
+  ctx.fillStyle = "#FDFCFB"; ctx.fillRect(0, 0, 1200, 675);
+  ctx.fillStyle = "#141416";
+  ctx.beginPath(); ctx.roundRect(42, 42, 1116, 591, 24); ctx.fill();
+
+  const accent = isCart ? "#6EE7B7" : (dealOrCart.tone === "green" ? "#6EE7B7" : (dealOrCart.tone === "red" ? "#FCA5A5" : "#FCD34D"));
+  ctx.fillStyle = accent; ctx.font = "600 20px monospace";
+  ctx.fillText(isCart ? "BLACK FRIDAY CART AUDIT  —  @treg buy-smart" : `@treg buy-smart  —  ${dealOrCart.verdict}`, 84, 108, 1032);
+
+  const leftMaxW = isCart ? 1032 : 710;
+  ctx.fillStyle = "#FFFFFF"; ctx.font = "600 38px -apple-system, BlinkMacSystemFont, sans-serif";
+  const rawTitle = isCart
+    ? `Blocked ${fmtUsd(dealOrCart.blocked)} in traps + ${fmtUsd(dealOrCart.swapSave)} swap savings`
+    : dealOrCart.product;
+  const titleLines = wrapCanvasLines(ctx, rawTitle, leftMaxW, 2);
+  titleLines.forEach((ln, i) => ctx.fillText(ln, 84, 166 + i * 46, leftMaxW));
+
+  const subY = 166 + titleLines.length * 46 + 18;
+  ctx.fillStyle = "#B4B4C2"; ctx.font = "500 21px monospace";
+  if (isCart) {
+    ctx.fillText(`Wishlist: ${fmtUsd(dealOrCart.orig)}  →  Verified checkout: ${fmtUsd(dealOrCart.smart)}`, 84, subY, 1032);
+    ctx.fillText(`Breakdown: ${dealOrCart.breakdown}`, 84, subY + 42, 1032);
+    ctx.fillStyle = "#6EE7B7"; ctx.font = "600 34px monospace";
+    ctx.fillText(`Exact treg API bill: $${dealOrCart.treg.toFixed(5)}`, 84, subY + 112, 1032);
+  } else {
+    ctx.fillText(`Listed: ${fmtUsd(dealOrCart.salePrice)} (${dealOrCart.claimedDisc})`, 84, subY, leftMaxW);
+    ctx.fillText(`True reality: ${dealOrCart.trueDisc}  |  Bill: ${dealOrCart.cost}`, 84, subY + 36, leftMaxW);
+
+    ctx.fillStyle = "#E4E4EE"; ctx.font = "500 22px -apple-system, BlinkMacSystemFont, sans-serif";
+    const moveLines = wrapCanvasLines(ctx, "Better move: " + dealOrCart.move, leftMaxW, 3);
+    moveLines.forEach((ln, i) => ctx.fillText(ln, 84, subY + 96 + i * 32, leftMaxW));
+
+    // Clean right typographic score + price sparkline (no donut!)
+    ctx.strokeStyle = "rgba(255,255,255,0.12)"; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(826, 140); ctx.lineTo(826, 484); ctx.stroke();
+
+    ctx.fillStyle = accent; ctx.font = "600 44px monospace";
+    ctx.fillText(dealOrCart.scoreMode === "saas" ? "31.2×" : `BS ${dealOrCart.bsScore}`, 856, 206);
+    ctx.fillStyle = "#9C9CA8"; ctx.font = "500 16px monospace";
+    ctx.fillText(dealOrCart.scoreMode === "saas" ? "CHEAPER PAY-PER-CALL" : "OUT OF 100 MANIPULATION", 856, 238);
+
+    if (dealOrCart.chart && dealOrCart.chart.length >= 2) {
+      const pts = dealOrCart.chart;
+      const mn = Math.min(...pts.map(x => x.p)), mx = Math.max(...pts.map(x => x.p));
+      const sp = Math.max(10, mx - mn);
+      ctx.beginPath();
+      pts.forEach((pt, idx) => {
+        const px = 856 + (idx / (pts.length - 1)) * 250;
+        const py = 446 - ((pt.p - mn) / sp) * 130;
+        if (idx === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      });
+      ctx.strokeStyle = accent; ctx.lineWidth = 3.5; ctx.lineJoin = "round"; ctx.stroke();
+      const last = pts[pts.length - 1];
+      ctx.fillStyle = accent; ctx.beginPath();
+      ctx.arc(1106, 446 - ((last.p - mn) / sp) * 130, 6.5, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  ctx.strokeStyle = "rgba(255,255,255,0.12)"; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(84, 532); ctx.lineTo(1116, 532); ctx.stroke();
+
+  const dynSrc = isCart
+    ? "Zero affiliate links, audited via @treg buy-smart, Nov 25, 2026"
+    : `Zero affiliate links, ${dealOrCart.calls}, ${dealOrCart.capturedAt}`;
+  ctx.fillStyle = "#6EE7B7"; ctx.font = "600 22px monospace";
+  ctx.fillText("treg.to/buy-smart", 84, 584);
+  ctx.fillStyle = "#8E8E9A"; ctx.font = "500 18px monospace";
+  ctx.fillText(dynSrc, 356, 584, 760);
+
+  const a = document.createElement("a");
+  a.download = isCart ? "treg-buy-smart-cart-receipt.png" : `treg-buy-smart-${dealOrCart.id}.png`;
+  a.href = c.toDataURL("image/png");
+  a.click();
+  showToast("Downloaded 1200×675 Receipt PNG!");
+}
+
+// Build Hero Deal Tabs With Real 18x18 Studio Product Micro-Thumbs
+const tabsEl = document.getElementById("deal-tabs");
+DEALS.forEach((d, i) => {
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.setAttribute("role", "tab");
+  btn.setAttribute("aria-selected", i === 0 ? "true" : "false");
+  btn.className = "deal-tab" + (i === 0 ? " active" : "");
+  btn.innerHTML = `<img class="prod-photo tab-thumb" src="${PROD_IMGS[d.id]}" alt=""><span>${escHtml(d.tab)}</span><span class="tab-price">${escHtml(d.priceShort)}</span>`;
+  btn.addEventListener("click", () => {
+    document.getElementById("custom-banner").classList.remove("open");
+    renderDeal(i, true);
+  });
+  tabsEl.appendChild(btn);
+});
+renderDeal(0, false);
+
+// One-time reveal: the store's tag slides back to show what it hides
+if (!reduceMotion && "IntersectionObserver" in window && CSS.registerProperty !== undefined) {
+  const restSplit = xrayRange.value;
+  xrayStage.style.setProperty("--split", "88%");
+  xrayRange.value = "86";
+  const io = new IntersectionObserver(entries => {
+    if (!entries[0].isIntersecting) return;
+    io.disconnect();
+    setTimeout(() => {
+      xrayStage.classList.add("intro");
+      setXraySplit(restSplit);
+      setTimeout(() => xrayStage.classList.remove("intro"), 1400);
+    }, 350);
+  }, { threshold: 0.6 });
+  io.observe(xrayStage);
+}
+
+// Expandable Per-Deal Receipt & JSON Drawer
+const drawerBtn = document.getElementById("receipt-drawer-btn");
+const drawerWrap = document.getElementById("receipt-drawer");
+drawerBtn.addEventListener("click", () => {
+  const open = drawerWrap.classList.toggle("open");
+  drawerBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  const ch = document.getElementById("drawer-chev");
+  if (ch) ch.textContent = open ? "▴" : "▾";
+});
+
+// Clickable 6-Trap Bento Cards
+document.querySelectorAll("[data-jump-deal]").forEach(card => {
+  card.addEventListener("click", () => {
+    const idx = Number(card.dataset.jumpDeal);
+    document.getElementById("custom-banner").classList.remove("open");
+    renderDeal(idx, true);
+    document.getElementById("auditor").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+});
+
+// Honest Custom Prompt Router (XSS-safe)
+const customInput = document.getElementById("custom-input");
+customInput.addEventListener("focus", () => customInput.select());
+document.getElementById("term-clear").addEventListener("click", () => {
+  customInput.value = "";
+  customInput.focus();
+});
+
+function normalizeUserInput(raw) {
+  const s = (raw || "").trim();
+  if (!s) return PROMPTS.link;
+  if (/^use\s+@treg\s+buy-smart/i.test(s)) return s;
+  if (/^https?:\/\//i.test(s)) return `Use @treg buy-smart to check if this Black Friday deal is real: ${s}`;
+  return `Use @treg buy-smart to check if ${s} is a real deal or fake`;
+}
+function dispatchCustomPrompt() {
+  const clean = normalizeUserInput(customInput.value);
+  customInput.value = clean;
+  const isUk = /amazon\.co\.uk|£/i.test(clean);
+  const isDe = /amazon\.de|€/i.test(clean);
+  const isSaas = /\/pricing|semrush|clay|apollo|ahrefs/i.test(clean);
+  const asinM = clean.match(/\/(?:dp|gp\/product)\/([A-Z0-9]{10})/i);
+  const route = isSaas
+    ? "SaaS mode: live /pricing extract + treg catalog (~$0.00025)"
+    : isUk
+      ? `UK (GBP): uk.camelcamelcamel.com${asinM ? '/product/' + asinM[1].toUpperCase() : ''} + Wayback ($0)`
+      : isDe
+        ? `DE (EUR): de.camelcamelcamel.com${asinM ? '/product/' + asinM[1].toUpperCase() : ''} + Wayback ($0)`
+        : `US (USD): ${asinM ? 'ASIN ' + asinM[1].toUpperCase() + ' ($0.00552 full URL audit)' : 'auto-resolve ASIN + Camel + 40 shops ($0.00651 name-only)'}`;
+  document.getElementById("custom-banner-txt").innerHTML =
+    `<div><strong>Static preview — pre-routed for your agent:</strong> ${escHtml(route)}</div>` +
+    `<div class="cb-prompt">${escHtml(clean)}</div>`;
+  document.getElementById("custom-banner").classList.add("open");
+  copyText(clean, "Prompt copied! Paste into Claude, Codex, OpenClaw, or Hermes.");
+}
+document.getElementById("term-run-custom").addEventListener("click", dispatchCustomPrompt);
+customInput.addEventListener("keydown", e => { if (e.key === "Enter") dispatchCustomPrompt(); });
+document.getElementById("custom-banner-close").addEventListener("click", () => document.getElementById("custom-banner").classList.remove("open"));
+
+// ---------- HAIRLINE-RULED CART WISHLIST LEDGER WITH STUDIO PRODUCT PHOTOS ----------
+const cartState = CART_ITEMS.map(x => ({ ...x }));
+let lastCartStats = {};
+
+function rebuildCartDom() {
+  const list = document.getElementById("cart-list");
+  list.innerHTML = "";
+  cartState.forEach((item, i) => {
+    const wrap = document.createElement("div");
+    wrap.className = "cart-item-shell";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.setAttribute("role", "checkbox");
+    btn.setAttribute("aria-checked", item.checked ? "true" : "false");
+    btn.className = "cart-item" + (item.checked ? " on" : "");
+    btn.dataset.idx = String(i);
+    const imgSrc = item.imgKey && PROD_IMGS[item.imgKey] ? PROD_IMGS[item.imgKey] : null;
+    const imgHtml = imgSrc
+      ? `<img class="prod-photo ci-photo" src="${imgSrc}" alt=""${item.imgKey === "semrush" ? " style='padding:5px'" : ""}>`
+      : "";
+    btn.innerHTML = `
+      <div class="ci-l">
+        <span class="cart-chk" aria-hidden="true">${item.checked ? "✓" : ""}</span>
+        ${imgHtml}
+        <div class="ci-meta">
+          <div class="cart-name">${escHtml(item.name)}</div>
+          <div class="cart-note">${escHtml(item.note)}</div>
+        </div>
+      </div>
+      <div class="ci-r">
+        <div class="cart-price">${fmtUsd(item.listed)}</div>
+        <span class="ci-verdict cv-${item.tone}">${escHtml(item.verdict)}</span>
+      </div>
+    `;
+    btn.addEventListener("click", () => {
+      cartState[i].checked = !cartState[i].checked;
+      btn.classList.toggle("on", cartState[i].checked);
+      btn.setAttribute("aria-checked", cartState[i].checked ? "true" : "false");
+      btn.querySelector(".cart-chk").textContent = cartState[i].checked ? "✓" : "";
+      updateCartMetrics();
+    });
+    wrap.appendChild(btn);
+    if (item.custom) {
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "ci-del";
+      del.setAttribute("aria-label", `Remove ${item.name}`);
+      del.textContent = "×";
+      del.addEventListener("click", () => {
+        cartState.splice(i, 1);
+        rebuildCartDom();
+        updateCartMetrics();
+      });
+      wrap.appendChild(del);
+    }
+    list.appendChild(wrap);
+  });
+}
+
+function updateCartMetrics() {
+  let orig = 0, smart = 0, pendingTotal = 0, swapSave = 0, blocked = 0, buys = 0, swaps = 0, skips = 0, pend = 0, treg = 0, selected = 0;
+  cartState.forEach(item => {
+    if (!item.checked) return;
+    selected++;
+    orig += item.listed;
+    treg += item.cost;
+    if (item.action === "buy") { buys++; smart += item.bestPrice; }
+    else if (item.action === "swap") { swaps++; smart += item.bestPrice; swapSave += item.swapSave; }
+    else if (item.action === "skip") { skips++; blocked += item.listed; }
+    else { pend++; pendingTotal += item.listed; }
+  });
+
+  const auditedOrig = orig - pendingTotal;
+  const spendPct = auditedOrig > 0 ? Math.round((smart / auditedOrig) * 100) : 0;
+  const savedPct = auditedOrig > 0 ? 100 - spendPct : 0;
+  const parts = [];
+  if (buys) parts.push(`${buys} buy${buys === 1 ? "" : "s"}`);
+  if (swaps) parts.push(`${swaps} swap${swaps === 1 ? "" : "s"}`);
+  if (skips) parts.push(`${skips} skipped`);
+  if (pend) parts.push(`${pend} pending`);
+  const breakdown = parts.join(", ") || "None selected";
+
+  lastCartStats = { orig, smart, swapSave, blocked, treg, breakdown };
+  const itemWord = selected === 1 ? "item" : "items";
+  document.getElementById("cart-sel-count").textContent = `${selected} ${itemWord} selected`;
+  document.getElementById("cart-swap-save").innerHTML = fmtSplitUsd(swapSave);
+  document.getElementById("cart-blocked").innerHTML = fmtSplitUsd(blocked);
+  document.getElementById("cart-orig").textContent = fmtUsd(orig);
+  document.getElementById("cart-smart").textContent = fmtUsd(smart);
+  const pendRow = document.getElementById("cart-pending-row");
+  if (pendRow) {
+    pendRow.style.display = pendingTotal > 0 ? "flex" : "none";
+    document.getElementById("cart-pending").textContent = fmtUsd(pendingTotal);
+  }
+  document.getElementById("cart-breakdown").textContent = breakdown;
+  document.getElementById("cart-treg").textContent = `$${treg.toFixed(5)}`;
+  document.getElementById("bar-spend-pct").textContent = `${spendPct}%`;
+  document.getElementById("bar-saved-pct").textContent = `${savedPct}%`;
+  document.getElementById("bar-spend").style.width = `${spendPct}%`;
+  document.getElementById("bar-saved").style.width = `${savedPct}%`;
+
+  const pickedNames = cartState.filter(x => x.checked).map(x => `${x.name} ($${Math.round(x.listed)})`).join(", ");
+  document.getElementById("cart-prompt-preview").innerHTML = `<span class="g">&gt;</span> Use @treg buy-smart to audit my cart: ${escHtml(pickedNames || "select items in the wishlist")}`;
+
+  const shareCartTxt = `Audited my ${selected}-item Black Friday cart with @treg buy-smart for $${treg.toFixed(4)} — blocked $${blocked.toFixed(2)} in fake deals & scalpers + $${swapSave.toFixed(2)} in direct store swaps. Check yours: https://treg.to/buy-smart`;
+  const shareCartLink = document.getElementById("share-cart-x");
+  if (shareCartLink) shareCartLink.href = `https://x.com/intent/tweet?text=${encodeURIComponent(shareCartTxt)}`;
+
+  document.getElementById("mob-dock-swap").textContent = `$${Math.round(swapSave).toLocaleString()} swap`;
+  document.getElementById("mob-dock-block").textContent = `$${Math.round(blocked).toLocaleString()} blocked`;
+  document.getElementById("mob-dock-bill").textContent = `treg bill: $${treg.toFixed(5)} (${selected} ${itemWord})`;
+}
+
+rebuildCartDom();
+updateCartMetrics();
+
+document.querySelectorAll("[data-preset]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const p = btn.dataset.preset;
+    cartState.forEach((it, idx) => {
+      if (p === "all") it.checked = true;
+      else if (p === "clear") it.checked = false;
+      else if (p === "traps") it.checked = (it.action === "skip" || it.action === "swap");
+      else it.checked = idx < 5;
+    });
+    rebuildCartDom();
+    updateCartMetrics();
+  });
+});
+
+document.getElementById("add-item-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const nameEl = document.getElementById("add-name");
+  const priceEl = document.getElementById("add-price");
+  const name = nameEl.value.trim();
+  const price = parseFloat(priceEl.value);
+  if (!name || !(price > 0)) { showToast("Enter a product name/URL and price"); return; }
+  cartState.push({
+    id: "custom_" + Date.now(), imgKey: null, name: name.slice(0, 48), listed: price,
+    action: "pending", verdict: "PENDING AUDIT", tone: "pend",
+    bestPrice: price, swapSave: 0, cost: 0.00651,
+    note: "Added to your @treg prompt (est. $0.00651)", checked: true, custom: true
+  });
+  nameEl.value = ""; priceEl.value = "";
+  rebuildCartDom();
+  updateCartMetrics();
+  showToast("Added to your cart prompt");
+});
+
+function copyCartPrompt() {
+  const picked = cartState.filter(x => x.checked).map(x => `${x.name} ($${x.listed.toFixed(2)})`).join(", ");
+  const prompt = `Use @treg buy-smart to audit my Black Friday cart and separate direct store-swap savings from traps: ${picked || "Sony WH-1000XM5 ($298), Breville Barista Express ($495)"}`;
+  copyText(prompt, "Copied Cart Audit prompt!");
+}
+document.getElementById("copy-cart-prompt").addEventListener("click", copyCartPrompt);
+document.getElementById("mob-dock-copy").addEventListener("click", copyCartPrompt);
+document.getElementById("dl-cart-png").addEventListener("click", () => downloadReceiptPng(lastCartStats, true));
+
+if ("IntersectionObserver" in window) {
+  const cartRightEl = document.querySelector(".cart-right");
+  const mobDockEl = document.getElementById("mobile-cart-dock");
+  if (cartRightEl && mobDockEl) {
+    new IntersectionObserver(entries => {
+      mobDockEl.classList.toggle("hidden", entries[0].isIntersecting);
+    }, { threshold: 0.15 }).observe(cartRightEl);
+  }
+}
+
+// ---------- BORDERLESS WARM-PAPER RECEIPT TABLE (ALL 8 DEALS, CLEAN UNDERLINE TABS) ----------
+const rcTabsEl = document.getElementById("receipt-tabs");
+function renderReceiptSection(idx) {
+  const d = DEALS[idx];
+  rcTabsEl.querySelectorAll(".rc-tab").forEach(b => {
+    const on = Number(b.dataset.dealIdx) === idx;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-selected", on ? "true" : "false");
+  });
+  document.getElementById("rc-head-left").textContent = `${d.product} (${d.capturedAt})`;
+  document.getElementById("rc-head-right").textContent = `${d.calls}, ${d.cost}`;
+  const freePerDollar = Math.floor(1.0 / Math.max(d.costNum, 0.00025));
+
+  document.getElementById("receipt-tbody").innerHTML =
+    d.receipt.map(([step, ep, icoKey, calls, cost]) => {
+      const isFree = (parseFloat(cost.replace("$", "")) || 0) === 0;
+      const costCls = isFree ? "r mono rc-free" : "r mono";
+      return `
+        <tr>
+          <td>
+            <div class="rc-step-wrap">
+              <img src="${LOGOS[icoKey] || LOGOS.web}" alt="">
+              <div><strong>${escHtml(step)}</strong><span class="rc-ep">${escHtml(ep)}</span></div>
+            </div>
+          </td>
+          <td class="r mono">${escHtml(calls)}</td>
+          <td class="${costCls}">${cost}</td>
+        </tr>
+      `;
+    }).join("") +
+    `<tr class="total-row">
+      <td>Total verified treg bill <span class="rc-runs">(~${freePerDollar.toLocaleString()} runs per $1 credit)</span></td>
+      <td class="r mono">${escHtml(d.calls.split(",")[0])}</td>
+      <td class="r mono rc-total">${d.cost}</td>
+    </tr>`;
+}
+
+[1, 0, 2, 3, 4, 6, 5, 7].forEach((dealIdx, pos) => {
+  const d = DEALS[dealIdx];
+  const b = document.createElement("button");
+  b.type = "button"; b.setAttribute("role", "tab");
+  b.dataset.dealIdx = String(dealIdx);
+  b.className = "rc-tab" + (pos === 0 ? " active" : "");
+  b.innerHTML = `<span>${escHtml(d.tab)}</span><span class="rc-tab-cost">${escHtml(d.cost)}</span>`;
+  b.addEventListener("click", () => renderReceiptSection(dealIdx));
+  rcTabsEl.appendChild(b);
+});
+renderReceiptSection(1);
+
+// ---------- SETUP COPY CONTROLS ----------
+document.getElementById("copy-step0-btn").addEventListener("click", () => copyText("set up treg — https://treg.to/llms.txt", "Copied treg setup prompt!"));
+document.getElementById("copy-install-btn").addEventListener("click", () => copyText(currentInstall, "Copied install command!"));
+
+let currentPrompt = PROMPTS.link;
+document.querySelectorAll(".pm-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".pm-btn").forEach(b => {
+      const on = b === btn;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    currentPrompt = PROMPTS[btn.dataset.pm];
+    document.getElementById("prompt-text").textContent = currentPrompt;
+  });
+});
+document.getElementById("copy-prompt-btn").addEventListener("click", () => copyText(currentPrompt, "Copied @treg buy-smart prompt!"));
+
+// ---------- LAUNCH FILM MODAL (Focus Trap + Scroll Lock + Return Focus) ----------
+const modal = document.getElementById("video-modal");
+const video = document.getElementById("launch-video");
+let modalReturnFocus = null;
+function openModal(ev) {
+  modalReturnFocus = (ev && ev.currentTarget) || document.activeElement;
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+  document.getElementById("modal-close").focus();
+  video.play().catch(() => {});
+}
+function closeModal() {
+  if (!modal.classList.contains("open")) return;
+  modal.classList.remove("open");
+  document.body.style.overflow = "";
+  video.pause();
+  if (modalReturnFocus && modalReturnFocus.focus) modalReturnFocus.focus();
+}
+document.getElementById("watch-btn").addEventListener("click", openModal);
+document.getElementById("watch-btn-2").addEventListener("click", openModal);
+document.getElementById("modal-close").addEventListener("click", closeModal);
+modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+modal.addEventListener("keydown", e => {
+  if (e.key !== "Tab") return;
+  const focusables = modal.querySelectorAll("button, video, [tabindex]:not([tabindex='-1'])");
+  const first = focusables[0], last = focusables[focusables.length - 1];
+  if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+});
+
+// Redraw the chart and price tag at their real pixel size when the layout width changes
+let lastLayoutW = window.innerWidth, layoutTimer = null;
+window.addEventListener("resize", () => {
+  if (window.innerWidth === lastLayoutW) return;
+  lastLayoutW = window.innerWidth;
+  clearTimeout(layoutTimer);
+  layoutTimer = setTimeout(() => {
+    const d = DEALS[activeDealIdx];
+    renderXray(d);
+    mountChart(d);
+  }, 120);
+});
+
+// ---------- WAI-ARIA TABLIST ROVING ARROWS (With stopPropagation!) + GUARDED SHORTCUTS ----------
+document.querySelectorAll('[role="tablist"]').forEach(list => {
+  list.addEventListener("keydown", e => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    const tabs = [...list.querySelectorAll('[role="tab"]')];
+    const i = tabs.indexOf(document.activeElement);
+    if (i < 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const next = tabs[(i + (e.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length];
+    next.focus();
+    next.click();
+  });
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    if (modal.classList.contains("open")) { closeModal(); return; }
+    document.getElementById("custom-banner").classList.remove("open");
+    return;
+  }
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const el = document.activeElement;
+  const tag = el && el.tagName;
+  if (tag === "INPUT" || tag === "TEXTAREA" || modal.classList.contains("open")) return;
+  const inAnyTablist = el && el.closest('[role="tablist"]');
+  if (e.key === "/") { e.preventDefault(); customInput.focus(); customInput.select(); }
+  else if (!inAnyTablist && e.key === "ArrowRight") { renderDeal((activeDealIdx + 1) % DEALS.length, true); }
+  else if (!inAnyTablist && e.key === "ArrowLeft") { renderDeal((activeDealIdx - 1 + DEALS.length) % DEALS.length, true); }
+  else if (e.key >= "1" && e.key <= "8") { renderDeal(Number(e.key) - 1, true); }
+});
+</script>
+</body>
+</html>
