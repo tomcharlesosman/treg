@@ -1,4 +1,8 @@
 {
   "rewrites": [{ "source": "/buy-smart", "destination": "/index.html" }],
-  "headers": [{ "source": "/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] }]
+  "headers": [
+    { "source": "/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
+    { "source": "/(.*)\\.md", "headers": [{ "key": "Content-Type", "value": "text/plain; charset=utf-8" }] },
+    { "source": "/.well-known/skills/index.json", "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }] }
+  ]
 }
