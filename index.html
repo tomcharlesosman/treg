@@ -98,9 +98,19 @@
   .ex-tabs button img { width: 22px; height: 22px; object-fit: contain; mix-blend-mode: multiply; }
   .ex-tabs button:hover { color: var(--ink); }
   .ex-tabs button[aria-selected="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); color: var(--ink); font-weight: 600; }
+  /* Auto-advance cue: a thin line fills along the selected deal until the next one shows */
+  .ex-tabs button { position: relative; overflow: hidden; }
+  .ex-tabs button::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 5px; height: 2px; border-radius: 2px;
+    background: var(--ink); opacity: .55; transform: scaleX(0); transform-origin: left; }
+  .ex-tabs.auto button[aria-selected="true"]::after { animation: fill var(--dwell, 7s) linear forwards; }
+  .ex-tabs.auto.paused button[aria-selected="true"]::after { animation-play-state: paused; }
+  @keyframes fill { to { transform: scaleX(1); } }
 
   .convo { background: var(--surface); border: 1px solid rgba(16,16,16,.06); border-radius: 24px; box-shadow: var(--shadow); padding: 28px; }
-  .reply[hidden] { display: none; }
+  /* All answers share one cell, so the box keeps the tallest answer's height and nothing below moves */
+  .convo { display: grid; }
+  .convo > .reply { grid-area: 1 / 1; }
+  .convo > .reply[hidden] { display: block; visibility: hidden; }
   .turn { display: flex; gap: 12px; }
   .turn-you { justify-content: flex-end; margin-bottom: 20px; }
   .bubble { max-width: 560px; background: var(--card); border-radius: 18px 18px 4px 18px; padding: 12px 16px; font-size: 15px; color: var(--ink2); }
@@ -668,11 +678,56 @@
     });
   };
 
-  // Example deals: show one answer at a time
-  tablist($(".ex-tabs"), tab => {
+  // Example deals: show one answer at a time. Scroll only the tab strip, never the page.
+  const exList = $(".ex-tabs");
+  const showDeal = tab => {
     $$(".reply").forEach(p => { p.hidden = p.id !== tab.getAttribute("aria-controls"); });
-    tab.scrollIntoView({ block: "nearest", inline: "nearest" });
-  });
+    const l = tab.offsetLeft - exList.offsetLeft, r = l + tab.offsetWidth;
+    if (l < exList.scrollLeft) exList.scrollTo({ left: l - 8, behavior: "smooth" });
+    else if (r > exList.scrollLeft + exList.clientWidth) exList.scrollTo({ left: r - exList.clientWidth + 8, behavior: "smooth" });
+  };
+  tablist(exList, tab => { stopAuto(); showDeal(tab); });
+
+  // Auto-advance through the deals while the example is on screen. Pauses on hover or focus,
+  // stops for good once someone picks a deal, and never runs when motion is reduced.
+  const DWELL = 7000;
+  const exTabs = $$('[role="tab"]', exList);
+  const demo = $("#example");
+  let autoOn = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let timer = null, inView = false, hovered = false, focused = false, startedAt = 0, left = DWELL;
+  const running = () => autoOn && inView && !hovered && !focused && !document.hidden;
+  const restartCue = () => {
+    const sel = exTabs.find(t => t.getAttribute("aria-selected") === "true");
+    if (sel) { sel.style.animation = "none"; void sel.offsetWidth; sel.style.animation = ""; }
+  };
+  const advance = () => {
+    const i = exTabs.findIndex(t => t.getAttribute("aria-selected") === "true");
+    const next = exTabs[(i + 1) % exTabs.length];
+    exTabs.forEach(t => { const on = t === next; t.setAttribute("aria-selected", on ? "true" : "false"); t.tabIndex = on ? 0 : -1; });
+    showDeal(next);
+    left = DWELL; restartCue(); schedule();
+  };
+  const schedule = () => {
+    clearTimeout(timer);
+    exList.classList.toggle("paused", !running());
+    if (!running()) return;
+    startedAt = Date.now();
+    timer = setTimeout(advance, left);
+  };
+  const pause = () => { if (timer) { left = Math.max(800, left - (Date.now() - startedAt)); clearTimeout(timer); timer = null; } schedule(); };
+  function stopAuto() { autoOn = false; clearTimeout(timer); exList.classList.remove("auto", "paused"); }
+  if (autoOn && "IntersectionObserver" in window) {
+    exList.style.setProperty("--dwell", DWELL / 1000 + "s");
+    exList.classList.add("auto", "paused");
+    new IntersectionObserver(es => { inView = es[0].isIntersecting; inView ? schedule() : pause(); }, { threshold: 0.3 }).observe(demo);
+    demo.addEventListener("pointerenter", ev => { if (ev.pointerType === "mouse") { hovered = true; pause(); } });
+    demo.addEventListener("pointerleave", ev => { if (ev.pointerType === "mouse") { hovered = false; schedule(); } });
+    demo.addEventListener("focusin", () => { focused = true; pause(); });
+    demo.addEventListener("focusout", ev => { if (!demo.contains(ev.relatedTarget)) { focused = false; schedule(); } });
+    document.addEventListener("visibilitychange", () => (document.hidden ? pause() : schedule()));
+  } else {
+    autoOn = false;
+  }
 
   // Install command per agent
   const cmd = $("#install-cmd"), note = $("#agent-note");
