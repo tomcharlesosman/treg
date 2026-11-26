@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lint Your Black Friday Cart Before You Buy | treg /buy-smart</title>
-<meta name="description" content="Paste any Black Friday link into Claude Code, Codex, OpenClaw, or Hermes. @treg buy-smart checks price archives, store listings, and Reddit for half a cent.">
+<title>Catch Fake Black Friday Deals Before You Click Buy | treg /buy-smart</title>
+<meta name="description" content="Paste any Black Friday link into Claude Code, Codex, OpenClaw, or Hermes. Catch fake sales across price history, 40 stores, and Reddit. $1 free (~150 checks).">
 <link rel="canonical" href="https://treg.to/buy-smart"/>
 <link rel="icon" type="image/svg+xml" href="https://treg.to/favicon.svg"/>
 <meta property="og:type" content="website"/>
 <meta property="og:url" content="https://treg.to/buy-smart"/>
 <meta property="og:title" content="That &quot;48% off&quot; Dyson on Amazon ($440.07) was used."/>
-<meta property="og:description" content="Target had it new for $407.97. Check any deal in Claude Code or Codex: price archives, 40 stores, and Reddit defects for ~$0.0055. Zero affiliate links."/>
+<meta property="og:description" content="Target had it new for $407.97. Check any deal in Claude Code, Codex, OpenClaw, or Hermes: price history, 40 stores, Reddit warnings. $1 free, zero affiliate links."/>
 <meta property="og:image" content="https://treg.to/media/og/buy-smart.jpg"/>
 <meta property="og:image:width" content="1200"/>
 <meta property="og:image:height" content="630"/>
 <meta name="twitter:card" content="summary_large_image"/>
 <meta name="twitter:site" content="@treg_ai"/>
 <meta name="twitter:title" content="That &quot;48% off&quot; Dyson on Amazon ($440.07) was used."/>
-<meta name="twitter:description" content="Target had it new for $407.97. Check any deal in Claude Code or Codex: price archives, 40 stores, and Reddit defects for ~$0.0055. Zero affiliate links."/>
+<meta name="twitter:description" content="Target had it new for $407.97. Check any deal in Claude Code, Codex, OpenClaw, or Hermes: price history, 40 stores, Reddit warnings. $1 free, zero affiliate links."/>
 <meta name="twitter:image" content="https://treg.to/media/og/buy-smart.jpg"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -140,8 +140,9 @@
   .src span { color: var(--muted); }
   .src a { display: inline-flex; align-items: center; min-height: 32px; color: var(--ink2); font-weight: 500; text-underline-offset: 4px; text-decoration-color: rgba(16,16,16,.25); }
   .cost { margin: 10px 4px 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--muted); }
-  .cost b { font-family: var(--mono); font-weight: 500; color: var(--green-text); }
+  .cost b { font-weight: 600; color: var(--green-text); }
   .demo-note { margin-top: 14px; font-size: 13.5px; color: var(--muted); text-align: center; }
+  .demo-bridge { margin-top: 6px; text-align: center; }
 
   /* Sections */
   .band { padding: 120px 0; }
@@ -298,23 +299,23 @@
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
       </div>
-      <a href="#setup" class="pill dark sm">Install skill</a>
+      <a href="#setup" class="pill dark sm">Check deals free</a>
     </div>
   </nav>
 
   <main id="top">
   <header class="hero">
-    <p class="slug">/buy-smart skill</p>
-    <h1>Lint your Black Friday cart<br><span class="green">before you click Buy.</span></h1>
-    <p class="lede">Paste any link or cart into Claude Code, Codex, OpenClaw, or Hermes. <strong>@treg buy&#8209;smart</strong> checks price archives, 40 stores, and Reddit threads for half a cent ($1 free to start). No affiliate links.</p>
+    <p class="slug">/buy-smart · Black Friday deal checker</p>
+    <h1>Catch fake Black Friday deals<br><span class="green">before you click Buy.</span></h1>
+    <p class="lede">Stop juggling price charts and Reddit tabs. Paste any link or cart into Claude Code, Codex, OpenClaw, or Hermes for a Buy, Wait, or Skip verdict. <strong>$1&nbsp;free&nbsp;(~150&nbsp;checks)</strong>. Zero affiliate links.</p>
     <div class="ctas">
-      <a href="#setup" class="pill dark">Install /buy-smart</a>
-      <button type="button" class="pill" id="watch-btn"><span class="play"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg></span>Watch a live check <span class="dur">0:36</span></button>
+      <a href="#setup" class="pill dark">Check your cart free</a>
+      <button type="button" class="pill" id="watch-btn"><span class="play"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg></span>See a fake deal caught <span class="dur">0:36</span></button>
     </div>
 
     <section class="demo" id="example" aria-labelledby="demo-h">
       <div class="demo-top">
-        <h2 id="demo-h">Five checks from Nov 25</h2>
+        <h2 id="demo-h">What it caught on Nov 25</h2>
         <div class="ex-tabs" role="tablist" aria-label="Example deals"><button type="button" role="tab" id="tab-dyson" aria-controls="ex-dyson" aria-selected="true" tabindex="0"><img src="media/buy-smart/dyson.jpg" width="22" height="22" alt="">Dyson V15</button><button type="button" role="tab" id="tab-xm5" aria-controls="ex-xm5" aria-selected="false" tabindex="-1"><img src="media/buy-smart/xm5.jpg" width="22" height="22" alt="">Sony XM5</button><button type="button" role="tab" id="tab-breville" aria-controls="ex-breville" aria-selected="false" tabindex="-1"><img src="media/buy-smart/breville.jpg" width="22" height="22" alt="">Breville</button><button type="button" role="tab" id="tab-anker" aria-controls="ex-anker" aria-selected="false" tabindex="-1"><img src="media/buy-smart/anker.jpg" width="22" height="22" alt="">Anker power bank</button><button type="button" role="tab" id="tab-airpods" aria-controls="ex-airpods" aria-selected="false" tabindex="-1"><img src="media/buy-smart/airpods.jpg" width="22" height="22" alt="">AirPods Pro 2</button></div>
       </div>
       <div class="convo">
@@ -345,7 +346,7 @@
               </div>
               <ul class="why"><li>Amazon sold out, so a third-party <b>used</b> listing took over the default Buy button at $440.07.</li><li>Target has it <b>brand new for $407.97</b> ($32.10 cheaper), with Dyson's full 2-year warranty intact.</li><li>The “48% off” badge measures from an $849.99 list price. Amazon's usual new price is <b>~$677</b>.</li></ul>
               <div class="src"><span>Sources</span><a href="https://www.amazon.com/dp/B0C2J8KJH9" target="_blank" rel="noopener">Amazon listing</a><a href="https://camelcamelcamel.com/product/B0C2J8KJH9" target="_blank" rel="noopener">Price history</a><a href="https://www.target.com/s?searchTerm=Dyson+V15+Detect+Total+Clean+Extra" target="_blank" rel="noopener">Target</a><a href="https://reddit.com/r/VacuumCleaners/comments/1vi211d/what_is_the_best_cordless_vacuum_of_2026_is_dyson/" target="_blank" rel="noopener">r/VacuumCleaners</a></div>
-              <div class="cost">4 paid lookups + free archive checks · cost <b>$0.00548</b> · saved $32.10 + warranty</div>
+              <div class="cost"><b>Saved $32.10 + full warranty</b> · 4 sources checked · cost $0.00548 (covered by $1 free credit)</div>
             </div>
           </div>
         </div>
@@ -376,7 +377,7 @@
               </div>
               <ul class="why"><li>Wayback Machine caught Amazon selling it for <b>$278 in June 2026</b>, $20 below today's price.</li><li>Owners on r/SonyHeadphones report <b>snapping hinges</b> across threads with 640 upvotes.</li><li>If you want Sony, the <b>XM4 is $199.99</b> ($98 less) with a sturdier folding hinge.</li></ul>
               <div class="src"><span>Sources</span><a href="https://www.amazon.com/dp/B09XS7JWHH" target="_blank" rel="noopener">Amazon listing</a><a href="https://web.archive.org/web/20260618/https://www.amazon.com/dp/B09XS7JWHH" target="_blank" rel="noopener">June archive</a><a href="https://camelcamelcamel.com/product/B09XS7JWHH" target="_blank" rel="noopener">Price history</a><a href="https://reddit.com/r/SonyHeadphones/comments/1obd8nj/sony_wh1000xm5_broken_hinge_how_eu_law_got_me_a/" target="_blank" rel="noopener">r/SonyHeadphones</a></div>
-              <div class="cost">5 paid lookups + free archive checks · cost <b>$0.00552</b> · XM4 saves $98</div>
+              <div class="cost"><b>Saved $98 with XM4 + dodged snapping hinges</b> · 5 sources checked · cost $0.00552</div>
             </div>
           </div>
         </div>
@@ -405,9 +406,9 @@
                   <p class="vs-head">Lowest price all year, $121 below average.</p>
                 </div>
               </div>
-              <ul class="why"><li>Verified <b>$121 below</b> its 13-year average price of $616 in CamelCamelCamel history.</li><li>Beats June's $499.95 low and ships directly from Amazon, rather than a third-party reseller.</li><li>Clean reliability record across 25 Reddit owner threads.</li></ul>
+              <ul class="why"><li>Verified <b>$121 below</b> its 13-year average price of $616 in CamelCamelCamel history.</li><li>Beats June's $499.95 low and ships directly from Amazon, not a third-party reseller.</li><li>Clean reliability record across 25 Reddit owner threads.</li></ul>
               <div class="src"><span>Sources</span><a href="https://www.amazon.com/dp/B00CH9QWOU" target="_blank" rel="noopener">Amazon listing</a><a href="https://camelcamelcamel.com/product/B00CH9QWOU" target="_blank" rel="noopener">Price history</a><a href="https://web.archive.org/web/20260623/https://www.amazon.com/dp/B00CH9QWOU" target="_blank" rel="noopener">June archive</a></div>
-              <div class="cost">4 paid lookups + free archive checks · cost <b>$0.00548</b> · verified $121 below avg</div>
+              <div class="cost"><b>Verified $121 below average</b> · 4 sources checked · cost $0.00548</div>
             </div>
           </div>
         </div>
@@ -436,9 +437,9 @@
                   <p class="vs-head">Really 15% off, not 42%. Hiked to $250 in September.</p>
                 </div>
               </div>
-              <ul class="why"><li>Price rose to <b>$249.99 in September</b>, setting the reference price behind today's “42% off” badge.</li><li>Against its usual $168.90 street price, the actual discount is <b>14.7%</b>.</li><li>Buy only if you need it today. It has previously dropped to <b>$129.99</b>.</li></ul>
+              <ul class="why"><li>Price rose to <b>$249.99 in September</b>, setting the inflated price behind today's “42% off” badge.</li><li>Against its usual $168.90 street price, the actual discount is <b>14.7%</b>.</li><li>Buy only if you need it today. It has previously dropped to <b>$129.99</b>.</li></ul>
               <div class="src"><span>Sources</span><a href="https://www.amazon.com/dp/B0BYP2F3SG" target="_blank" rel="noopener">Amazon listing</a><a href="https://camelcamelcamel.com/product/B0BYP2F3SG" target="_blank" rel="noopener">Price history</a></div>
-              <div class="cost">2 paid lookups · cost <b>$0.00160</b> · real discount: 15%, not 42%</div>
+              <div class="cost"><b>Exposed fake 42% tag (really 15% off)</b> · 2 sources checked · cost $0.00160</div>
             </div>
           </div>
         </div>
@@ -469,23 +470,24 @@
               </div>
               <ul class="why"><li>Amazon sold out, leaving a third-party seller on the listing at <b>$266.01</b>.</li><li>That is <b>$17 above Apple's $249 retail price</b> and $127 above last November's $139 low.</li><li>Skip this listing and wait for Amazon, Walmart, or Target to restock.</li></ul>
               <div class="src"><span>Sources</span><a href="https://www.amazon.com/dp/B0D1XD1ZV3" target="_blank" rel="noopener">Amazon listing</a><a href="https://camelcamelcamel.com/product/B0D1XD1ZV3" target="_blank" rel="noopener">Price history</a></div>
-              <div class="cost">1 paid lookup · cost <b>$0.00025</b> · caught $17 reseller markup</div>
+              <div class="cost"><b>Dodged $17 reseller markup</b> · 1 lookup · cost $0.00025</div>
             </div>
           </div>
         </div>
       </div>
-      <p class="demo-note">Live checks run Nov 25, 2026, trimmed to fit. In your chat, your agent returns the full breakdown with every source linked.</p>
+      <p class="demo-note">Real checks from Nov 25, 2026, trimmed to fit. In your chat, your agent links every source.</p>
+      <p class="demo-bridge"><a href="#setup" class="text-link">Got a Black Friday list? Check it now with $1 free (~150 checks) →</a></p>
     </section>
   </header>
 
   <section id="how" class="band">
     <div class="wrap">
-      <h2 class="h2">What web search misses</h2>
-      <p class="sub">Standard web search returns affiliate roundups, skips price charts, and misses when the Buy button flips to a used listing. /buy-smart runs three structured checks instead.</p>
+      <h2 class="h2">What plain web search misses</h2>
+      <p class="sub">Standard web search returns affiliate roundups, skips price history, and misses when the Buy button flips to a used unit. Skip 20 minutes of tab-hopping: /buy-smart checks three things in seconds.</p>
       <ol class="steps">
-        <li><span class="n">1</span><h3>Real price baselines</h3><p>Reads CamelCamelCamel history and Wayback Machine snapshots so your agent compares today's price against what the item actually sells for, instead of the “list” price.</p></li>
-        <li><span class="n">2</span><h3>Live stock and other stores</h3><p>Inspects the live listing to separate new retailer stock from third-party used units and resellers, then checks competing stores and Shopify shops.</p></li>
-        <li><span class="n">3</span><h3>Owner defect threads</h3><p>Searches Reddit for recurring hardware failures, then hands you a Buy, Wait, or Skip call with every archived snapshot, listing, and thread linked.</p></li>
+        <li><span class="n">1</span><h3>What it actually sells for</h3><p>Reads CamelCamelCamel history and Wayback Machine snapshots to compare today's price against what the item really sells for, not an inflated “list” price.</p></li>
+        <li><span class="n">2</span><h3>Live stock + 40 other stores</h3><p>Checks the live listing to tell new retail stock apart from used units and resellers, then scans 40 competing stores and Shopify shops for a better price.</p></li>
+        <li><span class="n">3</span><h3>Real owner complaints</h3><p>Searches Reddit for recurring hardware failures and warranty headaches, then gives you a plain Buy, Wait, or Skip verdict with every source linked.</p></li>
       </ol>
     </div>
   </section>
@@ -493,14 +495,14 @@
   <section id="catches" class="band alt">
     <div class="wrap">
       <h2 class="h2">Price charts don't catch used units or broken hinges</h2>
-      <p class="sub">Six deal traps that turned up in our Nov 25 checks.</p>
+      <p class="sub">Six store tricks that turned up in our Nov 25 checks.</p>
       <div class="tricks">
-        <article><h3>Phantom “list” prices</h3><p>Discount badges often measure off an MSRP the store rarely charges. Comparing the historical average shows the real cut.</p></article>
-        <article><h3>Pre-sale price hikes</h3><p>Listings climb weeks before Black Friday so a 15% drop can wear a 42% badge (Anker Prime 250W).</p></article>
-        <article><h3>Used units in the Buy button</h3><p>When Amazon sells out, a third-party used unit can take the default Buy button and lose the new-item warranty (Dyson V15).</p></article>
-        <article><h3>Out-of-stock reseller markups</h3><p>An “in stock” tag on a sold-out item often hides a third-party reseller charging above retail (AirPods Pro 2).</p></article>
-        <article><h3>Known hardware defects</h3><p>Price charts never read owner reviews. Reddit defect threads catch chronic failures like Sony XM5 hinge snaps.</p></article>
-        <article><h3>Better prices off Amazon</h3><p>Browser trackers watch one store. Live checks across competing retailers and Shopify shops find lower prices elsewhere.</p></article>
+        <article><h3>Inflated “list” prices</h3><p>Discount tags often measure off an inflated “list” price the store rarely charges. Comparing price history reveals the real drop.</p></article>
+        <article><h3>Pre-sale price hikes</h3><p>Sellers raise prices weeks before Black Friday so a modest cut looks massive on sale day (Anker Prime 250W).</p></article>
+        <article><h3>Used units in the Buy button</h3><p>When Amazon runs out, a used third-party listing can take over the default Buy button and lose the warranty (Dyson V15).</p></article>
+        <article><h3>Sold-out reseller markups</h3><p>An “in stock” tag on a popular item often hides a third-party seller charging more than retail (AirPods Pro 2).</p></article>
+        <article><h3>Known hardware defects</h3><p>Price graphs never read buyer complaints. Reddit threads catch recurring product flaws before you buy (Sony XM5 hinges).</p></article>
+        <article><h3>Lower prices off Amazon</h3><p>Browser trackers only watch one store. Scanning competing retailers and Shopify shops catches cheaper new stock elsewhere.</p></article>
       </div>
     </div>
   </section>
@@ -508,16 +510,16 @@
   <section id="results" class="band">
     <div class="wrap">
       <h2 class="h2">Not every deal is fake</h2>
-      <p class="sub">Seven live checks from Nov 25, 2026. Total tool cost for all seven: $0.022.</p>
+      <p class="sub">Seven live checks from Nov 25: 3 skips (saving $147 on better picks), 1 inflated discount, and 3 verified lows for 2 cents ($0.022).</p>
       <div class="table-wrap">
         <table class="results">
           <caption class="sr-only">Results of seven Black Friday checks</caption>
           <thead><tr><th scope="col">Product</th><th scope="col" class="num">Price</th><th scope="col">Verdict</th><th scope="col">Why</th><th scope="col" class="num">Cost</th></tr></thead>
           <tbody><tr><td><div class="prod"><img src="media/buy-smart/dyson.jpg" width="40" height="40" alt=""><div><b>Dyson V15 Detect</b><span>Amazon</span></div></div></td>
             <td class="num">$440.07</td><td><span class="verdict v-skip">Skip</span></td><td class="reason">Used third-party listing. Brand new at Target for $407.97.</td><td class="num">$0.00548</td></tr><tr><td><div class="prod"><img src="media/buy-smart/xm5.jpg" width="40" height="40" alt=""><div><b>Sony WH-1000XM5</b><span>Amazon</span></div></div></td>
-            <td class="num">$298.00</td><td><span class="verdict v-skip">Skip</span></td><td class="reason">$20 above June's $278 price, plus chronic hinge snaps.</td><td class="num">$0.00552</td></tr><tr><td><div class="prod"><img src="media/buy-smart/airpods.jpg" width="40" height="40" alt=""><div><b>AirPods Pro 2</b><span>Amazon reseller</span></div></div></td>
-            <td class="num">$266.01</td><td><span class="verdict v-skip">Skip</span></td><td class="reason">Reseller charging $17 above Apple retail.</td><td class="num">$0.00025</td></tr><tr><td><div class="prod"><img src="media/buy-smart/anker.jpg" width="40" height="40" alt=""><div><b>Anker Prime 250W</b><span>Amazon</span></div></div></td>
-            <td class="num">$143.99</td><td><span class="verdict v-wait">Wait</span></td><td class="reason">Really 15% off street price, not 42%. Previously $129.99.</td><td class="num">$0.00160</td></tr><tr><td><div class="prod"><img src="media/buy-smart/breville.jpg" width="40" height="40" alt=""><div><b>Breville Barista Express</b><span>Amazon</span></div></div></td>
+            <td class="num">$298.00</td><td><span class="verdict v-skip">Skip</span></td><td class="reason">$20 above June ($278), snapping hinges. XM4 is $199.99 ($98 less).</td><td class="num">$0.00552</td></tr><tr><td><div class="prod"><img src="media/buy-smart/airpods.jpg" width="40" height="40" alt=""><div><b>AirPods Pro 2</b><span>Amazon reseller</span></div></div></td>
+            <td class="num">$266.01</td><td><span class="verdict v-skip">Skip</span></td><td class="reason">Third-party seller charging $17 above Apple retail.</td><td class="num">$0.00025</td></tr><tr><td><div class="prod"><img src="media/buy-smart/anker.jpg" width="40" height="40" alt=""><div><b>Anker Prime 250W</b><span>Amazon</span></div></div></td>
+            <td class="num">$143.99</td><td><span class="verdict v-wait">Wait</span></td><td class="reason">Really 15% off usual price, not 42%. Previously $129.99.</td><td class="num">$0.00160</td></tr><tr><td><div class="prod"><img src="media/buy-smart/breville.jpg" width="40" height="40" alt=""><div><b>Breville Barista Express</b><span>Amazon</span></div></div></td>
             <td class="num">$494.95</td><td><span class="verdict v-buy">Buy</span></td><td class="reason">Lowest price all year, $121 below its 13-year average.</td><td class="num">$0.00548</td></tr><tr><td><div class="prod"><img src="media/buy-smart/ugreen.jpg" width="40" height="40" alt=""><div><b>UGREEN MagFlow Qi2.2</b><span>Amazon</span></div></div></td>
             <td class="num">$109.99</td><td><span class="verdict v-buy">Buy</span></td><td class="reason">All-time low, $15 under its previous best.</td><td class="num">$0.00160</td></tr><tr><td><div class="prod"><img src="media/buy-smart/keychron.jpg" width="40" height="40" alt=""><div><b>Keychron Q1 Pro</b><span>keychron.com</span></div></div></td>
             <td class="num">$129.49</td><td><span class="verdict v-buy">Buy</span></td><td class="reason">Beats last December&#x27;s $146.99 direct price.</td><td class="num">$0.00225</td></tr></tbody>
@@ -528,42 +530,43 @@
 
   <section id="pricing" class="band alt">
     <div class="wrap narrow">
-      <h2 class="h2">Pay at cost: half a cent a check</h2>
-      <p class="sub">Deal sites are “free” because they get paid when you click Buy. With treg, you pay per lookup at cost, so your agent has no reason to push a bad deal. Your $1 free credit covers ~150 checks.</p>
+      <h2 class="h2">Your first ~150 checks are free</h2>
+      <p class="sub">Deal sites are “free” because they get paid when you click Buy. With treg, your $1 free credit covers ~150 full checks, then you pay at cost (about half a cent each). Zero affiliate links.</p>
       <div class="prices">
-        <div><span class="big">$0.00552</span><span>Full check from a link</span></div>
-        <div><span class="big">$0.00651</span><span>Full check from a product name</span></div>
+        <div><span class="big">$1 free</span><span>Covers ~150 full deal checks</span></div>
+        <div><span class="big">~$0.005</span><span>At-cost rate after · 0% affiliate cut</span></div>
       </div>
       <details class="receipt">
         <summary>See the exact itemized bill (Sony XM5, $0.00552)</summary>
         <table>
-          <thead><tr><th scope="col">Lookup</th><th scope="col" class="num">Calls</th><th scope="col" class="num">Cost</th></tr></thead>
-          <tbody><tr><td>Archived Amazon prices (Wayback Machine)</td><td class="num">6</td><td class="num">$0.00000</td></tr><tr><td>Price history (CamelCamelCamel)</td><td class="num">1</td><td class="num">$0.00025</td></tr><tr><td>Live Amazon listing and stock</td><td class="num">1</td><td class="num">$0.00135</td></tr><tr><td>Prices at 40 other stores</td><td class="num">1</td><td class="num">$0.00200</td></tr><tr><td>Owner threads on Reddit</td><td class="num">1</td><td class="num">$0.00188</td></tr><tr><td>Second-opinion model verdict (Jev 1.13, optional)</td><td class="num">1</td><td class="num">$0.00004</td></tr><tr class="total"><td>Total</td><td></td><td class="num">$0.00552</td></tr></tbody>
+          <thead><tr><th scope="col">Source</th><th scope="col" class="num">Lookups</th><th scope="col" class="num">Cost</th></tr></thead>
+          <tbody><tr><td>Archived Amazon prices (Wayback Machine)</td><td class="num">6</td><td class="num">$0.00000</td></tr><tr><td>Price history (CamelCamelCamel)</td><td class="num">1</td><td class="num">$0.00025</td></tr><tr><td>Live Amazon listing and stock</td><td class="num">1</td><td class="num">$0.00135</td></tr><tr><td>Prices at 40 other stores</td><td class="num">1</td><td class="num">$0.00200</td></tr><tr><td>Owner threads on Reddit</td><td class="num">1</td><td class="num">$0.00188</td></tr><tr><td>Extra sanity check (optional)</td><td class="num">1</td><td class="num">$0.00004</td></tr><tr class="total"><td>Total</td><td></td><td class="num">$0.00552</td></tr></tbody>
         </table>
-        <p>Simple checks cost even less: the AirPods check took one lookup, $0.00025. Your agent's own usage stays on your Claude or Codex plan.</p>
+        <p>Simple checks cost even less: the AirPods check took one lookup, $0.00025. Your agent's own usage stays on your existing agent plan.</p>
       </details>
     </div>
   </section>
 
   <section id="setup" class="band">
     <div class="wrap narrow">
-      <h2 class="h2">Set up in two steps</h2>
+      <h2 class="h2">Run your first check in 60 seconds</h2>
+      <p class="sub">Read-only. Never touches your logins, cart, or payment details.</p>
       <div class="setup">
         <div class="step">
           <h3><span class="n">1</span>Connect treg ($1 free credit)</h3>
-          <p>Paste this prompt into your agent. It reads treg's setup doc, connects the MCP server or CLI, and opens your $1 balance.</p>
-          <div class="code"><code>set up treg — https://treg.to/llms.txt</code><button type="button" class="pill sm" data-copy="set up treg — https://treg.to/llms.txt">Copy</button></div>
+          <p>Paste this into your agent. It sets up treg automatically and activates your $1 free credit.</p>
+          <div class="code"><code>set up treg - https://treg.to/llms.txt</code><button type="button" class="pill sm" data-copy="set up treg - https://treg.to/llms.txt">Copy</button></div>
           <a href="https://treg.to/app?ref=buy-smart" class="text-link">Or create your account on treg.to →</a>
         </div>
         <div class="step">
-          <h3><span class="n">2</span>Install /buy-smart</h3>
+          <h3><span class="n">2</span>Add /buy-smart to your agent</h3>
           <div class="agents" role="tablist" aria-label="Your agent"><button type="button" role="tab" class="agent on" data-agent="claude" aria-selected="true" tabindex="0"><img src="media/buy-smart/logos/claude-code.png" width="20" height="20" alt="">Claude Code</button><button type="button" role="tab" class="agent" data-agent="codex" aria-selected="false" tabindex="-1"><img src="media/buy-smart/logos/codex.png" width="20" height="20" alt="">Codex</button><button type="button" role="tab" class="agent" data-agent="openclaw" aria-selected="false" tabindex="-1"><img src="media/buy-smart/logos/openclaw.png" width="20" height="20" alt="">OpenClaw</button><button type="button" role="tab" class="agent" data-agent="hermes" aria-selected="false" tabindex="-1"><img src="media/buy-smart/logos/hermes.png" width="20" height="20" alt="">Hermes</button></div>
           <div class="code dark"><code id="install-cmd">npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart</code><button type="button" class="pill sm" id="copy-install">Copy</button></div>
-          <p class="hint" id="agent-note">Works through the treg MCP server or the treg CLI.</p>
+          <p class="hint" id="agent-note">Run in your terminal, or paste into Claude Code and ask it to install.</p>
         </div>
         <div class="step">
-          <h3><span class="n">3</span>Check a link, product, or cart</h3>
-          <ul class="prompts"><li><span class="p-kind">A link</span><code>Use @treg buy-smart to check if this Black Friday deal is real: https://www.amazon.com/dp/B09XS7JWHH</code><button type="button" class="pill sm" data-copy="Use @treg buy-smart to check if this Black Friday deal is real: https://www.amazon.com/dp/B09XS7JWHH">Copy</button></li><li><span class="p-kind">A product name</span><code>Use @treg buy-smart to check if the Dyson V15 Detect at $440 is a real deal</code><button type="button" class="pill sm" data-copy="Use @treg buy-smart to check if the Dyson V15 Detect at $440 is a real deal">Copy</button></li><li><span class="p-kind">Your whole cart</span><code>Use @treg buy-smart to audit my Black Friday cart: Sony XM5 ($298), Dyson V15 ($440), Breville Barista Express ($495), AirPods Pro 2 ($266)</code><button type="button" class="pill sm" data-copy="Use @treg buy-smart to audit my Black Friday cart: Sony XM5 ($298), Dyson V15 ($440), Breville Barista Express ($495), AirPods Pro 2 ($266)">Copy</button></li><li><span class="p-kind">The best pick</span><code>Use @treg buy-smart to find the best 65-inch OLED TV under $1,500 this Black Friday</code><button type="button" class="pill sm" data-copy="Use @treg buy-smart to find the best 65-inch OLED TV under $1,500 this Black Friday">Copy</button></li></ul>
+          <h3><span class="n">3</span>Check a link, cart, or SaaS promo</h3>
+          <ul class="prompts"><li><span class="p-kind">A link</span><code>Use @treg buy-smart to check if this Black Friday deal is real: https://www.amazon.com/dp/B09XS7JWHH</code><button type="button" class="pill sm" data-copy="Use @treg buy-smart to check if this Black Friday deal is real: https://www.amazon.com/dp/B09XS7JWHH">Copy</button></li><li><span class="p-kind">A product name</span><code>Use @treg buy-smart to check if the Dyson V15 Detect at $440 is a real deal</code><button type="button" class="pill sm" data-copy="Use @treg buy-smart to check if the Dyson V15 Detect at $440 is a real deal">Copy</button></li><li><span class="p-kind">Your whole cart</span><code>Use @treg buy-smart to check my Black Friday cart: Sony XM5 ($298), Dyson V15 ($440), Breville Barista Express ($495), AirPods Pro 2 ($266)</code><button type="button" class="pill sm" data-copy="Use @treg buy-smart to check my Black Friday cart: Sony XM5 ($298), Dyson V15 ($440), Breville Barista Express ($495), AirPods Pro 2 ($266)">Copy</button></li><li><span class="p-kind">The best pick</span><code>Use @treg buy-smart to find the best 65-inch OLED TV under $1,500 this Black Friday</code><button type="button" class="pill sm" data-copy="Use @treg buy-smart to find the best 65-inch OLED TV under $1,500 this Black Friday">Copy</button></li><li><span class="p-kind">A SaaS promo</span><code>Use @treg buy-smart to check if this Semrush Black Friday annual deal beats paying per call</code><button type="button" class="pill sm" data-copy="Use @treg buy-smart to check if this Semrush Black Friday annual deal beats paying per call">Copy</button></li></ul>
           <a href="skills/buy-smart/SKILL.md" class="text-link">Read the skill's instructions (SKILL.md) →</a>
         </div>
       </div>
@@ -574,21 +577,21 @@
     <div class="wrap narrow">
       <h2 class="h2">Questions and limits</h2>
       <div class="faq">
-        <details><summary>Does it buy anything or log in to my accounts?</summary><p>No. It never touches your logins, cart, or payment details. It only reads public listings, archived pages, and owner threads, then passes the findings to your agent. You decide and you buy.</p></details>
-        <details><summary>How is this different from Keepa, CamelCamelCamel, or Honey?</summary><p>Keepa and CamelCamelCamel only chart Amazon. /buy-smart reads CamelCamelCamel too, then checks competing retailers (including Shopify shops), Wayback archives, and Reddit defect threads to give you one plain verdict with no affiliate links. Honey tests coupon codes; it won't tell you the base price rose in September.</p></details>
-        <details><summary>Which stores does it work with?</summary><p>Amazon (US, UK, Germany, and more), Shopify and direct-to-consumer stores, plus live prices across major retailers like Target and Walmart. It can also check annual SaaS Black Friday promos (like Semrush or Clay) against paying per call on treg.</p></details>
-        <details><summary>Where can it get things wrong?</summary><p>It can't see Amazon's clip-on coupons or Prime-only lightning deals, so mention those in your prompt. Brand-new launches and some stores have no price archive; it flags that instead of guessing. Defect searches naturally lean negative, which is why every Reddit thread is linked for you to judge.</p></details>
-        <details><summary>How does treg make money?</summary><p>Lookups are billed at cost from your prepaid balance, and treg earns on team plans. No affiliate commissions, no sponsored picks, and no selling your shopping history. Details are in <a href="https://treg.to/integrate.md">integrate.md</a>.</p></details>
+        <details><summary>Does it buy anything or log in to my accounts?</summary><p>No. It never touches your logins, cart, or payment details. It only reads public store pages, price archives, and Reddit threads, then sends the findings to your agent. You decide and you buy.</p></details>
+        <details><summary>How is this different from Keepa, CamelCamelCamel, or Honey?</summary><p>Keepa and CamelCamelCamel only chart Amazon. /buy-smart reads CamelCamelCamel too, then checks competing retailers (including Shopify shops), Wayback archives, and Reddit defect threads to give you one plain verdict with zero affiliate links. Honey tests coupon codes; it won't tell you the base price was hiked in September.</p></details>
+        <details><summary>Which stores does it work with?</summary><p>Amazon (US, UK, Germany, and more), Shopify and direct-to-consumer brands, plus live prices across major retailers like Target and Walmart. It also checks annual SaaS Black Friday promos (like Semrush or Clay) against paying per call on treg.</p></details>
+        <details><summary>Where can it get things wrong?</summary><p>It can't see Amazon clip-on coupons or Prime-only lightning deals, so mention those in your prompt. Brand-new launches and some small stores have no price archive; it flags that instead of guessing. Reddit threads lean negative, which is why every thread is linked for you to judge.</p></details>
+        <details><summary>How does treg make money?</summary><p>Lookups are billed at cost from your prepaid balance after your $1 free credit, and treg earns on team plans. No affiliate commissions, no sponsored picks, and no selling your shopping history. See <a href="https://treg.to/integrate.md">full billing details</a>.</p></details>
       </div>
     </div>
   </section>
 
   <section class="final">
-    <h2>7 checks cost $0.022.<br>Lint your cart next.</h2>
+    <h2>Spend half a cent<br>before you spend $400.</h2>
     <div class="final-agents"><img src="media/buy-smart/logos/claude-code.png" width="36" height="36" alt="Claude Code"><img src="media/buy-smart/logos/codex.png" width="36" height="36" alt="Codex"><img src="media/buy-smart/logos/openclaw.png" width="36" height="36" alt="OpenClaw"><img src="media/buy-smart/logos/hermes.png" width="36" height="36" alt="Hermes"></div>
     <div class="ctas">
       <a href="https://treg.to/app?ref=buy-smart" class="pill dark">Start with $1 free (~150 checks)</a>
-      <button type="button" class="pill" id="watch-btn-2"><span class="play"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg></span>Watch a live check <span class="dur">0:36</span></button>
+      <button type="button" class="pill" id="watch-btn-2"><span class="play"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg></span>See a fake deal caught <span class="dur">0:36</span></button>
     </div>
   </section>
   </main>
@@ -604,9 +607,9 @@
     </div>
   </footer>
 
-  <div class="modal" id="video-modal" role="dialog" aria-modal="true" aria-label="Launch film">
+  <div class="modal" id="video-modal" role="dialog" aria-modal="true" aria-label="Live deal check">
     <div class="modal-box">
-      <div class="modal-head"><span>buy-smart launch film · 0:36</span><button type="button" class="modal-close" id="modal-close" aria-label="Close the film">×</button></div>
+      <div class="modal-head"><span>See a fake deal caught · 0:36</span><button type="button" class="modal-close" id="modal-close" aria-label="Close the video">×</button></div>
       <video class="modal-video" id="launch-video" controls playsinline preload="none" poster="media/buy-smart/poster.jpg">
         <source src="media/buy-smart/launch.mp4" type="video/mp4">
       </video>
@@ -616,7 +619,7 @@
 
 <script>
 {
-  const INSTALL = {"claude": ["npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart", "Works through the treg MCP server or the treg CLI."], "codex": ["npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart --agent codex", "Installs into your Codex skills folder."], "openclaw": ["npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart", "If treg isn't connected yet, do step 1 first."], "hermes": ["npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart", "Add https://treg.to/mcp/ as an MCP server first."]};
+  const INSTALL = {"claude": ["npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart", "Run in your terminal, or paste into Claude Code and ask it to install."], "codex": ["npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart --agent codex", "Run in your terminal, or paste into Codex to add it to your skills folder."], "openclaw": ["npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart", "Run in your terminal, or paste into OpenClaw. If treg isn't connected yet, do step 1 first."], "hermes": ["npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart", "Run in your terminal, or paste into Hermes. If treg isn't connected yet, do step 1 first."]};
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
