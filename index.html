@@ -63,17 +63,31 @@
   .nav-links a { font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; min-height: 36px; display: inline-flex; align-items: center; }
   .nav-links a:hover { color: var(--ink); }
 
-  /* Buttons */
-  .pill { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 46px; padding: 0 22px; border-radius: 999px;
-    border: 1px solid var(--line-2); background: var(--surface); font-size: 15px; font-weight: 500; line-height: 1; text-decoration: none; white-space: nowrap;
-    transition: background .15s, border-color .15s, transform .15s var(--ease); }
-  .pill:hover { background: var(--card); transform: translateY(-1px); }
+  /* Buttons (matching treg launch pages: doomscroll, rea-growth, people-search) */
+  .pill { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 20px; border-radius: 999px;
+    border: 1px solid var(--line-2); background: var(--surface); font-size: 14.5px; font-weight: 500; line-height: 1; text-decoration: none; white-space: nowrap;
+    transition: background .15s, border-color .15s, transform .2s var(--ease), box-shadow .2s var(--ease); }
+  .pill:hover { background: #F5F4F1; transform: translateY(-1px); }
   .pill.dark { background: var(--ink); border-color: var(--ink); color: #fff; }
-  .pill.dark:hover { background: #262625; }
+  .pill.dark:hover { background: #262625; box-shadow: 0 12px 26px -14px rgba(16,16,16,.5); }
   .pill.sm { min-height: 36px; padding: 0 14px; font-size: 13.5px; }
-  .play { width: 20px; height: 20px; border-radius: 99px; background: var(--ink); display: inline-flex; align-items: center; justify-content: center; }
-  .play svg { width: 8px; height: 9px; fill: #fff; margin-left: 1px; }
-  .dur { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .xr-cta { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .xr-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; padding: 12px 22px; border-radius: 999px;
+    background: var(--ink); color: #fff; text-decoration: none; font-size: 15px; font-weight: 500; line-height: 1; white-space: nowrap;
+    transition: transform .25s var(--ease), box-shadow .25s var(--ease), background .15s; }
+  .xr-btn span { display: inline-block; transition: transform .25s var(--ease); }
+  .xr-btn:hover { background: #262625; transform: translateY(-1px); box-shadow: 0 14px 30px -14px rgba(16,16,16,.55); }
+  .xr-btn:hover span { transform: translateX(4px); }
+  .xr-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 12px 20px; border-radius: 999px;
+    background: #fff; color: var(--ink); text-decoration: none; font-size: 15px; font-weight: 500; line-height: 1; white-space: nowrap;
+    box-shadow: 0 0 0 1px var(--line-2); transition: background .2s, transform .2s var(--ease); }
+  .xr-link:hover { background: #F5F4F1; transform: translateY(-1px); }
+  .pill.play { gap: 9px; padding: 7px 18px 7px 7px; min-height: 44px; background: #fff; border: 0; box-shadow: 0 0 0 1px var(--line-2); font-size: 15px; color: var(--ink); }
+  .pill.play:hover { background: #F5F4F1; }
+  .pill.play .pi { width: 30px; height: 30px; border-radius: 50%; background: var(--green); display: grid; place-items: center; flex: none; transition: transform .2s var(--ease); }
+  .pill.play:hover .pi { transform: scale(1.06); }
+  .pill.play .pi svg { width: 10px; height: 11px; fill: #fff; margin-left: 2px; }
+  .pill.play .dur { font-family: var(--mono); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
   .text-link { display: inline-flex; align-items: center; min-height: 36px; font-size: 14.5px; font-weight: 500; color: var(--ink2); text-underline-offset: 4px; text-decoration-color: rgba(16,16,16,.3); }
   .text-link:hover { text-decoration-color: var(--ink); }
 
@@ -250,7 +264,7 @@
     .nav { padding: 12px 16px; }
     .hero { padding: 112px 18px 0; }
     .lede { font-size: 17px; margin: 22px auto 28px; }
-    .ctas { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 400px; margin: 0 auto; }
+    .xr-cta { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 400px; margin: 0 auto; gap: 10px; }
     .demo { margin-top: 56px; }
     .demo-top { margin: 0 -18px 12px; padding: 0 18px; }
     .ex-tabs { margin: 0 -18px; padding: 2px 18px; width: calc(100% + 36px); }
@@ -299,7 +313,7 @@
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
       </div>
-      <a href="#setup" class="pill dark sm">Check deals free</a>
+      <a href="https://treg.to/app?ref=buy-smart" class="pill dark sm" id="ctaNav">Check deals free</a>
     </div>
   </nav>
 
@@ -308,9 +322,10 @@
     <p class="slug">/buy-smart · Black Friday deal checker</p>
     <h1>Catch fake Black Friday deals<br><span class="green">before you click Buy.</span></h1>
     <p class="lede">Stop juggling price charts and Reddit tabs. Paste any link or cart into Claude Code, Codex, OpenClaw, or Hermes for a Buy, Wait, or Skip verdict. <strong>$1&nbsp;free&nbsp;(~150&nbsp;checks)</strong>. Zero affiliate links.</p>
-    <div class="ctas">
-      <a href="#setup" class="pill dark">Check your cart free</a>
-      <button type="button" class="pill" id="watch-btn"><span class="play"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg></span>See a fake deal caught <span class="dur">0:36</span></button>
+    <div class="xr-cta">
+      <a href="https://treg.to/app?ref=buy-smart" class="xr-btn" id="ctaHero">Check your cart free <span>→</span></a>
+      <a href="#setup" class="xr-link" id="ctaCopy">Copy prompt ↓</a>
+      <button type="button" class="pill play" id="watch-btn"><span class="pi"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg></span>See a fake deal caught <span class="dur">0:36</span></button>
     </div>
 
     <section class="demo" id="example" aria-labelledby="demo-h">
@@ -589,9 +604,9 @@
   <section class="final">
     <h2>Spend half a cent<br>before you spend $400.</h2>
     <div class="final-agents"><img src="media/buy-smart/logos/claude-code.png" width="36" height="36" alt="Claude Code"><img src="media/buy-smart/logos/codex.png" width="36" height="36" alt="Codex"><img src="media/buy-smart/logos/openclaw.png" width="36" height="36" alt="OpenClaw"><img src="media/buy-smart/logos/hermes.png" width="36" height="36" alt="Hermes"></div>
-    <div class="ctas">
-      <a href="https://treg.to/app?ref=buy-smart" class="pill dark">Start with $1 free (~150 checks)</a>
-      <button type="button" class="pill" id="watch-btn-2"><span class="play"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg></span>See a fake deal caught <span class="dur">0:36</span></button>
+    <div class="xr-cta">
+      <a href="https://treg.to/app?ref=buy-smart" class="xr-btn" id="ctaFinal">Start with $1 free (~150 checks) <span>→</span></a>
+      <button type="button" class="pill play" id="watch-btn-2"><span class="pi"><svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg></span>See a fake deal caught <span class="dur">0:36</span></button>
     </div>
   </section>
   </main>
@@ -652,6 +667,20 @@
     else fallback();
   };
   $$("[data-copy]").forEach(b => b.addEventListener("click", () => copy(b.dataset.copy)));
+
+  // Hero "Copy prompt" CTA: copies setup + skill prompt and scrolls to #setup (matches doomscroll / rea-growth)
+  const ctaCopy = $("#ctaCopy");
+  if (ctaCopy) {
+    ctaCopy.addEventListener("click", ev => {
+      ev.preventDefault();
+      const prompt = "I approve you setup treg following https://treg.to/llms.txt\n\nThen install the skill with: " + INSTALL.claude[0] + "\nand run /buy-smart on a Black Friday link or cart I give you.";
+      copy(prompt);
+      ctaCopy.textContent = "Copied ✓";
+      setTimeout(() => { ctaCopy.textContent = "Copy prompt ↓"; }, 1600);
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      $("#setup").scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+    });
+  }
 
   // Tab lists: click, arrow keys, Home/End
   const tablist = (list, onSelect) => {
