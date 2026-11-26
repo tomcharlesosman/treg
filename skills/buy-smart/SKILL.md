@@ -1,6 +1,6 @@
 ---
 name: buy-smart
-description: Use when the user asks to audit a Black Friday, Cyber Monday, or retail deal, check whether a discount is real or manipulated (pre-sale yo-yo price hikes, fake MSRP anchors, Amazon 1P stock-out 3P scalpers, used-unit buybox hijacks, dropship clone markups, or stripped holiday derivative SKUs), compare live prices across retailers, audit a whole shopping cart, or compare an annual SaaS promo against pay-per-call treg endpoints. Accepts a product URL (including a.co/amzn.to shortlinks and regional Amazon domains), a product name, or both.
+description: Use when the user asks to check a retail deal, holiday sale, discount, or promo code, verify whether a markdown is real or manipulated (pre-sale price hikes, fake list-price anchors, Amazon 1P stock-out 3P scalpers, used-unit buybox hijacks, dropship clone markups, or stripped holiday derivative SKUs), compare live prices across retailers, check a whole shopping cart, or compare an annual SaaS promo against pay-per-call treg endpoints. Accepts a product URL (including a.co/amzn.to shortlinks and regional Amazon domains), a product name, or both.
 metadata:
   summary: Audits product links, names, shopping carts, or SaaS annual promos against Wayback Machine ($0), CamelCamelCamel, sanitized multi-store comps, and Reddit owner threads, returning a 0-100 Manipulation BS-Score, a better move, and the exact itemized treg bill (~$0.0055 per audit).
 ---
