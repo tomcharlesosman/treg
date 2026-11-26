@@ -549,13 +549,13 @@
         <div class="step">
           <h3><span class="n">2</span>Install the buy-smart skill</h3>
           <div class="agents" role="tablist" aria-label="Your agent"><button type="button" role="tab" class="agent on" data-agent="claude" aria-selected="true" tabindex="0"><img src="media/buy-smart/logos/claude-code.png" width="20" height="20" alt="">Claude Code</button><button type="button" role="tab" class="agent" data-agent="codex" aria-selected="false" tabindex="-1"><img src="media/buy-smart/logos/codex.png" width="20" height="20" alt="">Codex</button><button type="button" role="tab" class="agent" data-agent="openclaw" aria-selected="false" tabindex="-1"><img src="media/buy-smart/logos/openclaw.png" width="20" height="20" alt="">OpenClaw</button><button type="button" role="tab" class="agent" data-agent="hermes" aria-selected="false" tabindex="-1"><img src="media/buy-smart/logos/hermes.png" width="20" height="20" alt="">Hermes</button></div>
-          <div class="code dark"><code id="install-cmd">npx skills add superdesigndev/treg --skill buy-smart</code><button type="button" class="pill sm" id="copy-install">Copy</button></div>
+          <div class="code dark"><code id="install-cmd">npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart</code><button type="button" class="pill sm" id="copy-install">Copy</button></div>
           <p class="hint" id="agent-note">Works through the treg MCP server or the treg CLI.</p>
         </div>
         <div class="step">
           <h3><span class="n">3</span>Ask your agent</h3>
           <ul class="prompts"><li><span class="p-kind">A link</span><code>Use @treg buy-smart to check if this Black Friday deal is real: https://www.amazon.com/dp/B09XS7JWHH</code><button type="button" class="pill sm" data-copy="Use @treg buy-smart to check if this Black Friday deal is real: https://www.amazon.com/dp/B09XS7JWHH">Copy</button></li><li><span class="p-kind">A product name</span><code>Use @treg buy-smart to check if the Dyson V15 Detect at $440 is a real deal</code><button type="button" class="pill sm" data-copy="Use @treg buy-smart to check if the Dyson V15 Detect at $440 is a real deal">Copy</button></li><li><span class="p-kind">Your whole cart</span><code>Use @treg buy-smart to audit my Black Friday cart: Sony XM5 ($298), Dyson V15 ($440), Breville Barista Express ($495), AirPods Pro 2 ($266)</code><button type="button" class="pill sm" data-copy="Use @treg buy-smart to audit my Black Friday cart: Sony XM5 ($298), Dyson V15 ($440), Breville Barista Express ($495), AirPods Pro 2 ($266)">Copy</button></li><li><span class="p-kind">The best pick</span><code>Use @treg buy-smart to find the best 65-inch OLED TV under $1,500 this Black Friday</code><button type="button" class="pill sm" data-copy="Use @treg buy-smart to find the best 65-inch OLED TV under $1,500 this Black Friday">Copy</button></li></ul>
-          <a href="https://treg.to/skills/buy-smart/SKILL.md" class="text-link">Read the skill's instructions (SKILL.md) →</a>
+          <a href="skills/buy-smart/SKILL.md" class="text-link">Read the skill's instructions (SKILL.md) →</a>
         </div>
       </div>
     </div>
@@ -589,7 +589,7 @@
       <span class="foot-brand"><span class="treg-sq"><img src="media/buy-smart/logos/treg.svg" width="14" height="14" alt=""></span>treg.to/buy-smart</span>
       <nav class="foot-links" aria-label="Footer">
         <a href="https://treg.to/resources">Resources</a><a href="https://treg.to/catalog">Catalog</a><a href="https://treg.to/pricing">Pricing</a>
-        <a href="https://treg.to/skills/buy-smart/SKILL.md">SKILL.md</a><a href="https://treg.to/llms.txt">llms.txt</a><a href="https://treg.to/terms">Terms</a><a href="https://treg.to/privacy">Privacy</a>
+        <a href="skills/buy-smart/SKILL.md">SKILL.md</a><a href="https://treg.to/llms.txt">llms.txt</a><a href="https://treg.to/terms">Terms</a><a href="https://treg.to/privacy">Privacy</a>
         <a href="https://github.com/superdesigndev/treg" target="_blank" rel="noopener">GitHub</a><a href="https://x.com/treg_ai" target="_blank" rel="noopener">X</a><a href="https://discord.gg/6mQYYfFMAn" target="_blank" rel="noopener">Discord</a>
       </nav>
     </div>
@@ -607,7 +607,7 @@
 
 <script>
 {
-  const INSTALL = {"claude": ["npx skills add superdesigndev/treg --skill buy-smart", "Works through the treg MCP server or the treg CLI."], "codex": ["npx skills add superdesigndev/treg --skill buy-smart --agent codex", "Installs into your Codex skills folder."], "openclaw": ["npx skills add superdesigndev/treg --skill buy-smart", "If treg isn't connected yet, do step 1 first."], "hermes": ["npx skills add superdesigndev/treg --skill buy-smart", "Add https://treg.to/mcp/ as an MCP server first."]};
+  const INSTALL = {"claude": ["npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart", "Works through the treg MCP server or the treg CLI."], "codex": ["npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart --agent codex", "Installs into your Codex skills folder."], "openclaw": ["npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart", "If treg isn't connected yet, do step 1 first."], "hermes": ["npx skills add https://treg-buy-smart-preview.vercel.app --skill buy-smart", "Add https://treg.to/mcp/ as an MCP server first."]};
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
